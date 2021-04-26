@@ -65,8 +65,9 @@ class Game {
 
     movePlayer(id,dir){
         var player = this.players[id];
+        player.rotate(dir)
         const [dx,dy] = this.dirToCoord(dir)
-        if(this.map.check(player.x+dx,player.y+dy)){
+        if(this.map.moveCheck(player, player.x+dx,player.y+dy)){
             player.move(dx,dy)
             this.map.movePlayer(id,dx,dy)
         }
@@ -78,7 +79,12 @@ class Game {
     playerActivateBlock(id){
         var player = this.players[id];
         var [dx,dy] = this.dirToCoord(player.dir);
-        this.map.activate(player.x+dx,player.y+dy);
+        this.map.activate(player,player.x+dx,player.y+dy);
+    }
+
+    playerActivateItem(id,itemidx) {
+        var player = this.players[id];
+        player.useitem(itemidx)
     }
 
     useInp(id,inp){
@@ -88,9 +94,10 @@ class Game {
         else if(inp == 'space'){
             this.PlayerActivateBlock(id);
         }
+        else if(typeof inp == 'number') {
+            this.playerActivateItem(id,inp-1)
+        }
     }
-
-
 
     update(){
         var inputQueue = [ //player's input dictionary {id : (w,a,s,d,space)}

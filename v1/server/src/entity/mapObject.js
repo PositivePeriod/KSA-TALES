@@ -98,4 +98,12 @@ export class MapObject {
         return data
     }
 
+    moveCheck(player,x,y) {
+        return this.data[x][y].canPass(player);
+    }
+
+    activate(player,x,y) {
+
+    }
+
 }

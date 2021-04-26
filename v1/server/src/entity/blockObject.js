@@ -41,10 +41,27 @@ export class FloorObject extends BlockObject {
     constructor(type, x, y) {
         super(type, x, y);
         this.color = { r: 170, g: 100, b: 16 };
+        this.isTrap = false;
+        this.showTrap = false;
     }
 
     canPass(player) {
         return true;
+    }
+
+    existTrap() {
+        return this.isTrap
+    }
+
+    addTrap() {
+        this.isTrap = true;
+    }
+
+    brighten() {
+        this.color = { r: 250, g: 250, b: 50 };
+        this.showTrap = true;
+        // wait for some time
+        setTimeout(()=>{this.showTrap=false;}, 2000);
     }
 }
 
@@ -65,6 +82,7 @@ export class ProblemObject extends BlockObject {
             //show quiz_id[this.id]
             if(player.answerInput == answer_id['quiz_id'])//player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
             {
+                player.hasSolved(this.id)
                 return this.id;
             }
             else return False;
