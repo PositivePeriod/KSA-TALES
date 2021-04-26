@@ -14,34 +14,34 @@ export class PlayerObject {
             case 'KeyD':
                 var next = this.map.data[this.x+1][this.y];
                 if (next.pass) {
-                    this.x += 1
-                    this.dir = 'right'
+                    this.x += 1;
+                    this.dir = 'right';
                 }
             case 'KeyD':
                 var next = this.map.data[this.x-1][this.y];
                 if (next.pass) {
-                    this.x -= 1
-                    this.dir = 'left'
+                    this.x -= 1;
+                    this.dir = 'left';
                 }
             case 'KeyW':
                 var next = this.map.data[this.x][this.y+1];
                 if (next.pass) {
-                    this.y += 1
-                    this.dir = 'up'
+                    this.y += 1;
+                    this.dir = 'up';
                 }
             case 'KeyS':
                 var next = this.map.data[this.x][this.y-1];
                 if (next.pass) {
-                    this.y -= 1
-                    this.dir = 'down'
+                    this.y -= 1;
+                    this.dir = 'down';
                 }
             case 'KeyF':
-                var adjs = [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]];
+                const adjs = [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]];
                 for (var [dx, dy] of adjs) {
-                    var adj = this.data[this.x+dx][this.y+dy];
+                    var adj = this.map.data[this.x+dx][this.y+dy];
                     if (adj.type == 'Q') {
-                        qid = adj.id
-                        this.solve(adj)
+                        qid = adj.id;
+                        this.solve(adj);
                     }
                 }
 
@@ -54,8 +54,14 @@ export class PlayerObject {
         // load question
     }
 
+    appenditem(item) {
+        this.inventory.push(item)
+    }
+
     useitem(idx) {
-        var item = inventory[idx];
+        var item = this.inventory[idx];
+        this.inventory.splice(idx, 1)
+        item.activate();
     }
 
 }s
