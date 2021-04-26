@@ -1,13 +1,13 @@
 import { BlockObject } from './blockObject.js'
 
 export class MapObject {
-    constructor(x, y, data) {
-        this.x = x;
-        this.y = y;
+    constructor(width, height, data) {
+        this.width = width;
+        this.height = height;
 
         this.data = null;
         if (data !== undefined) {
-            data.then(function (resolvedData) {
+            data.then(function(resolvedData) {
                 this.initData(resolvedData);
             }.bind(this));
         } else {
@@ -39,7 +39,7 @@ export class MapObject {
                 }
             }
             this.data = data
-    
+
         } else {
             blueprint = blueprint.split('\n');
 
@@ -47,7 +47,7 @@ export class MapObject {
             this.y = blueprint.length;
             for (var i = 0; i < this.y; i++) {
                 blueprint[i] = blueprint[i].trim();
-                blueprint[i] += 'W'.repeat(this.x-blueprint[i].length);
+                blueprint[i] += 'W'.repeat(this.x - blueprint[i].length);
             }
 
             const data = new Array(this.x);
@@ -68,28 +68,8 @@ export class MapObject {
 
     }
 
-    resize(stageWidth, stageHeight) {
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio
-        this.pos.x = stageWidth / 2 - this.grid * this.x / 2;
-        this.pos.y = stageHeight / 2 - this.grid * this.y / 2;
-
-        if (this.data != null) {
-            for (var x = 0; x < this.x; x++) {
-                for (var y = 0; y < this.y; y++) {
-                    this.data[x][y].resize(this.pos.x + x * this.grid, this.pos.y + y * this.grid, this.grid);
-                }
-            }
-        }
-    }
-
-    draw(ctx) {
-        if (this.data != null) {
-            for (var x = 0; x < this.x; x++) {
-                for (var y = 0; y < this.y; y++) {
-                    this.data[x][y].draw(ctx);
-                }
-            }
-        }
+    getBlock(x, y) {
+        return (0 <= x < this.width && 0 <= y < this.height) ? this.data[x][y] : null
     }
 
     coordinate(x, y) {
@@ -98,4 +78,24 @@ export class MapObject {
             'y': this.pos.y + y * this.grid
         }
     }
+
+    show(playerX, playerY, range) {
+        const data = new Array(2 * range.width + 1);
+        for (var x = playerX - range.width; x < playerX + range.width; x++) {
+            data[x] = new Array(2 * range.height + 1);
+            for (var y = playerY - range.height; y < playerY + range.height; y++) {
+                const block = this.getBlock(x, y);
+                const block = new BlockObject(
+                    'ground',
+                    this.x + x * this.size,
+                    this.y + y * this.size,
+                    this.size
+                );
+                data[x][y] = block;
+            }
+        }
+        this.data = data
+        return data
+    }
+
 }

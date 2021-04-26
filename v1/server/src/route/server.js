@@ -13,13 +13,22 @@ const socketio = require('socket.io')
 const MSG = Object.freeze({
     CONNECT_SERVER: 'connectServer',
     JOIN_GAME: 'joinGame',
+    UPDATE_GAME: 'updateGame',
     LEAVE_GAME: 'leaveGame',
+    HANDLE_INPUT: 'handleInput',
     DISCONNECT_SERVER: 'disconnectServer',
+})
+
+const PW = Object.freeze({
+    AA1_1: 'CDQE',
+    AA1_2: 'DKRO',
+    AA2_1: 'CVPF'
 })
 
 class ServerManager {
     constructor() {
-        this.socketList = [];
+        this.game = new Game();
+        this.socketList = {};
 
         this.app = express();
         this.app.use('/assets', express.static(path.join(__dirname, `/assets`)));
@@ -37,9 +46,8 @@ class ServerManager {
     initializeSocket() {
         this.io = socketio(this.server);
         this.io.on(MSG.CONNECT_SERVER, socket => {
-            console.log(`Account connect ; ${socket.id}`);
             socket.emit(MSG.CONNECT_SERVER, socket.id);
-            this.socketList.set(socket.id, socket);
+            this.socketList[socket.id]= socket;
 
             // this === socket
             socket.on(MSG.JOIN_GAME, joinGame);
@@ -49,29 +57,39 @@ class ServerManager {
             socket.on(MSG.DISCONNECT_SERVER, disconnect);
         });
 
-        function joinGame() {
-            console.log(`Account join room ; ${this.id} ${room.id}`);
-            game.tryToAddPlayer.push([this, username]); // TODO 
+        function joinGame(data) {
+            // console.log(`Account join room ; ${socket.id} ${room.id}`);
+            var socket = this;
+            var name = data.userID;
+            var password = data.userPW;
+            if (PW[name] === password){
+                this.game.addPlayer(socket, name); // TODO 
+            }
         }
 
         function updateGame() {
+            // client가 server에 요청? // TODO
 
+            // TODO 없애도 되나?
         }
 
         function leaveGame() {
-
+            var socket = this;
+            this.game.removePlayer(socket);
         }
-        
+
         function handleInput(data) {
-            console.log(`Get command ; ${id}`);
-            game.handleInput(this, command);
+            // console.log(`Get command ; ${id}`);
+            var socket = this;
+            var command = data.command;
+            game.handleInput(socket, command);
         }
 
         function disconnect() {
-            console.log(`Account disconnect ; ${this.id}`);
-            socketList.delete(this.id);
+            var socket = this;
+            delete this.socketList[socket.id];
         }
     }
 }
 
-var gameServer = new ServerManager();
+var gameServer = new ServerManager(game);
