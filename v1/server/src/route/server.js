@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
-const socketio = require('socket.io')
+const socketio = require('socket.io');
+const { MSG, AAtoCODE } = require('../constant');
 // const mainRouter = require(`./${version}/src/mainRouter`);
 // const problemRouter = require(`./${version}/src/problemRouter`);
 
@@ -10,25 +11,13 @@ const socketio = require('socket.io')
 // app.use('/problem', problemRouter);
 // app.use('/', mainRouter)
 
-const MSG = Object.freeze({
-    CONNECT_SERVER: 'connectServer',
-    JOIN_GAME: 'joinGame',
-    UPDATE_GAME: 'updateGame',
-    LEAVE_GAME: 'leaveGame',
-    HANDLE_INPUT: 'handleInput',
-    DISCONNECT_SERVER: 'disconnectServer',
-})
-
-const PW = Object.freeze({
-    AA1_1: 'CDQE',
-    AA1_2: 'DKRO',
-    AA2_1: 'CVPF'
-})
 
 class ServerManager {
     constructor() {
         this.game = new Game();
         this.socketList = {};
+        this.playSocket = {}; // TODO
+        this.spectateSocket = {}; // TODO
 
         this.app = express();
         this.app.use('/assets', express.static(path.join(__dirname, `/assets`)));
@@ -47,23 +36,29 @@ class ServerManager {
         this.io = socketio(this.server);
         this.io.on(MSG.CONNECT_SERVER, socket => {
             socket.emit(MSG.CONNECT_SERVER, socket.id);
-            this.socketList[socket.id]= socket;
+            this.socketList[socket.id] = socket;
 
             // this === socket
             socket.on(MSG.JOIN_GAME, joinGame);
             socket.on(MSG.UPDATE_GAME, updateGame);
             socket.on(MSG.LEAVE_GAME, leaveGame);
+
+            socket.on(MSG.JOIN_SPECTATE, null); // TODO
+            socket.on(MSG.LEAVE_SPECTATE, null); // TODO
+
             socket.on(MSG.HANDLE_INPUT, handleInput)
+
             socket.on(MSG.DISCONNECT_SERVER, disconnect);
         });
 
         function joinGame(data) {
             // console.log(`Account join room ; ${socket.id} ${room.id}`);
             var socket = this;
-            var name = data.userID;
-            var password = data.userPW;
-            if (PW[name] === password){
-                this.game.addPlayer(socket, name); // TODO 
+            var AA = data.AA;
+            var code = data.CODE;
+            var playerName = data.name;
+            if (AAtoCODE[AA] === code) {
+                this.game.addPlayer(socket, AA, playerName); // TODO 
             }
         }
 

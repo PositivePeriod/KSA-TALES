@@ -1,72 +1,92 @@
-import { KeyboardManager, MouseManager } from "../../client/util/inputManager.js";
+import { AAtoCODE } from "../constant.js";
+import { ProblemBlock } from "./blockObject.js";
 import { MapObject } from "./entity/mapObject.js";
 import { PlayerObject } from "./entity/playerObject";
+const mapData = require('../../data/mapData.json');
+
+const MOVE = Object.freeze({ 'KeyW': { x: 0, y: 1 }, 'KeyS': { x: 0, y: -1 }, 'KeyA': { x: -1, y: 0 }, 'KeyD': { x: 1, y: 0 } })
 
 class Game {
     constructor() {
-        var mapData = this.loadMapData();
         this.map = new MapObject(mapData);
-        this.showRange = {width:5, height:3};
+        this.showRange = { width: 5, height: 3 };
+        this.players = {}
+        this.joinedAA = [];
 
-
-        this.objectSystem = new GameObjectSystem();
-        this.objectSystem.extend([
-            new PlayerObject(400, 400, 30, this.keyboard, this.mouse),
-            new MapObject(300, 300, 100, 100, { healthChange: 5 }),
-            new MapObject(500, 500, 100, 100, { healthChange: -5 }),
-        ]);
-
-        this.players = {} //id : object
-
-        setInterval(this.objectSystem.update.bind(this, 1), Math.round(1000));
+        setInterval(this.update.bind(this, 1), 1000);
     }
 
-    loadMapData() {
-        // TODO load
-        return data
-    }
+    addPlayer(socket, AA, name) {
+        if (!AA in this.joinedAA) {
+            var socketID = socket.id;
 
-
-    appendPlayer(id, player) {
-        this.players[id] = player;
+            this.players[id] = new PlayerObject(socketID, AA, name, );
+        }
     }
 
     removePlayer(id) {
-        if (this.players.hasOwnProperty(id)) { delete this.players[id]; } else { console.log('Non-existing player id'); }
+        if (id in Object.keys(this.players)) {
+            delete this.players[id];
+        } else {
+            console.log('No player exists');
+        }
 
     }
 
-    directionToxy(dir, x, y) {
-        // TODO meaning?
-
-    }
-
-    movePlayer(id) {
-        var player = this.players[id];
-
+    movePlayer(player) {
+        var command = player.command.pop();
+        switch (command) {
+            case 'KeyW':
+            case 'KeyA':
+            case 'KeyS':
+            case 'KeyD':
+                var dir = MOVE[command]
+                player.dir = dir;
+                var newX = player.x + dir.x;
+                var newY = player.y + dir.y;
+                var block = this.map.getBlock(newX, newY);
+                if (block !== null && player.canPass(block)) {
+                    player.x = newX;
+                    player.y = newY;
+                }
+                break;
+            case 'KeyF':
+                var newX = player.x + dir.x;
+                var newY = player.y + dir.y;
+                var block = this.map.getBlock(newX, newY);
+                if (block !== null && block instanceof ProblemBlock) {
+                    block.show(player)
+                }
+        }
     }
 
     update() {
-        var inputList = { //player's input dictionary {id : (w,a,s,d)}
-            1: 'w',
-            2: 'a'
+        for (const [playerID, socket] of Object.entries(this.players)) {
+            var player = this.players[playerID];
+            this.movePlayer(player)
         }
 
-        Object.entries(inputList).forEach(([key, value]) => {
-            this.players[key].move(value);
-        });
+        for (const [playerID, socket] of Object.entries(this.players)) {
+            var player = this.players[playerID];
 
+            // socket emit 현재 상황 to each player
+            // 만약 문제 봐야 할 상황이면 문제도 띄워줌
+            this.movePlayer(player)
+        }
+    }
 
-
-
+    showAll() {
+        // 관리자 용
     }
 
     show() {
         this.players.forEach(player => {
-            var x = player.x;
-            var y = player.y;
-            this.map.show(x, y, this.showRange);
+            this.map.show(player, this.showRange);
         })
     }
 
+}
+
+window.onload = () => {
+    new Game();
 }

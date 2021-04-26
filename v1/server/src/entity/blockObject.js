@@ -2,72 +2,67 @@
 // this.pass는 True 타입일 때 지나갈(올라갈) 수 있고, False 타입일 때 지나갈(올라설) 수 없습니다
 
 var quiz_id = { 1: 'ocean', 2: 'fish' };
-var answer_id = {'ocean' : 'fish'};
+var answer_id = { 'ocean': 'fish' };
 
 quiz_id[''] = '(해당html)';
 
-export class BlockObject {
+const blockCOLOR = Object.freeze({
+    W: { r: 0, g: 0, b: 0 },
+    D: { r: 10, g: 0, b: 0 },
+    F: { r: 170, g: 100, b: 16 },
+    P: { r: 27, g: 254, b: 86 }
+})
+
+class BlockObject {
     constructor(type, x, y) {
-        this.type = type;
+        this.type = type; // W D F P
         this.x = x;
         this.y = y;
+        this.color = blockCOLOR[this.type]; // TODO 지우기 client에서 처리하기
+    }
+
+    show() {
+        return { type: this.type, color: this.color }
     }
 }
 
-export class WallObject extends BlockObject {
+export class WallBlock extends BlockObject {
     constructor(type, x, y) {
         super(type, x, y);
-        this.color = { r: 0, g: 0, b: 0 };
-    }
-
-    canPass(player) {
-        return false
     }
 }
 
-export class DoorObject extends BlockObject {
+export class DoorBlock extends BlockObject {
     constructor(type, x, y, problemIDs) {
         super(type, x, y);
         this.problemIDs = problemIDs;
-        this.color = { r: 10, g: 0, b: 0 };
-    }
-
-    canPass(player) {
-        return this.problemIDs.every(problem => player.isSolved(problem));
     }
 }
 
-export class FloorObject extends BlockObject {
+export class FloorBlock extends BlockObject {
     constructor(type, x, y) {
         super(type, x, y);
-        this.color = { r: 170, g: 100, b: 16 };
-    }
-
-    canPass(player) {
-        return true;
     }
 }
 
-export class ProblemObject extends BlockObject {
-    constructor(type, x, y, id) {
+export class ProblemBlock extends BlockObject {
+    constructor(type, x, y, id, reward) {
         super(type, x, y);
         this.id = id;
-        this.color = { r: 27, g: 254, b: 86 };
+        this.reward = []; // TODO set reward
+
     }
 
-    canPass(player) {
-        return true;
-    }
-
-    showProblem(player) {
-        if(player.keyInput == 'space')
-        {
+    show(player) {
+        if (player.keyInput == 'space') {
             //show quiz_id[this.id]
-            if(player.answerInput == answer_id['quiz_id'])//player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
-            {
-                return this.id;
-            }
-            else return False;
+            var playerAnswer = null; // TODO get answer
+            var problemAnswer = answer_id['quiz_id'];
+            if (playerAnswer === problemAnswer) {
+                player.solve(this.id);
+                player.getItems(this.reward);
+                //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
+            } else return False;
         }
         // TODO showProblem
         // quiz_id[this.id]
