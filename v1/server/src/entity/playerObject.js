@@ -19,24 +19,28 @@ export class PlayerObject extends MapObject {
                 this.x += 1
                 this.dir = 'right'
             }
+        }
         if (keyInput == 'KeyA') {
             var next = this.data[this.x-1][this.y];
             if (next.type == 'F') {
                 this.x += 1
                 this.dir = 'left'
             }
+        }
         if (keyInput == 'KeyW') {
             var next = this.data[this.x][this.y+1];
             if (next.type == 'F') {
                 this.x += 1
                 this.dir = 'up'
             }
+        }
         if (keyInput == 'KeyS') {
             var next = this.data[this.x][this.y-1];
             if (next.type == 'F') {
                 this.x += 1
                 this.dir = 'down'
             }
+        }
         if (keyInput == 'KeyF') {
             //var qid = next.id;
             // open question with qid
