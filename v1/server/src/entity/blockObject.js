@@ -2,6 +2,7 @@
 // this.pass는 True 타입일 때 지나갈(올라갈) 수 있고, False 타입일 때 지나갈(올라설) 수 없습니다
 
 var quiz_id = { 1: 'ocean', 2: 'fish' };
+var answer_id = {'ocean' : 'fish'};
 
 quiz_id[''] = '(해당html)';
 
@@ -43,7 +44,7 @@ export class FloorObject extends BlockObject {
     }
 
     canPass(player) {
-        return true
+        return true;
     }
 }
 
@@ -55,10 +56,19 @@ export class ProblemObject extends BlockObject {
     }
 
     canPass(player) {
-        return true
+        return true;
     }
 
-    showProblem() {
+    showProblem(player) {
+        if(player.keyInput == 'space')
+        {
+            //show quiz_id[this.id]
+            if(player.answerInput == answer_id['quiz_id'])//player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
+            {
+                return this.id;
+            }
+            else return False;
+        }
         // TODO showProblem
         // quiz_id[this.id]
     }
