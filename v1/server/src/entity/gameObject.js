@@ -40,16 +40,21 @@ class Game {
             case 'KeyA':
             case 'KeyS':
             case 'KeyD':
-                var dir = MOVE[command]
-                player.dir = dir;
-                var newX = player.x + dir.x;
-                var newY = player.y + dir.y;
-                var block = this.map.getBlock(newX, newY);
-                if (block !== null && player.canPass(block)) {
-                    player.x = newX;
-                    player.y = newY;
+                if (player.canmove) {
+                    var dir = MOVE[command]
+                    player.dir = dir;
+                    var newX = player.x + dir.x;
+                    var newY = player.y + dir.y;
+                    var block = this.map.getBlock(newX, newY);
+                    if (block !== null && player.canPass(block)) {
+                        player.x = newX;
+                        player.y = newY;
+                    }
+                    if (block instanceof FloorBlock && block.isTrapped()) {
+                        block.show(player)
+                    }
+                    break;
                 }
-                break;
             case 'KeyF':
                 var newX = player.x + dir.x;
                 var newY = player.y + dir.y;
@@ -57,7 +62,27 @@ class Game {
                 if (block !== null && block instanceof ProblemBlock) {
                     block.show(player)
                 }
+            case 'KeyR':
+                this.useItem(Player)
         }
+    }
+
+    useItem(player) {
+        var idx = player.command.pop();
+        while (typeof idx == 'number') {
+            var idx = player.command.pop();
+        }
+        var item = player.inventory[idx];
+        player.inventory.splice(idx, 1);
+        if (item instanceof KeyItem) {
+            item.use(player)
+        } else if (item instanceof FlashItem) {
+            item.use(player)
+        } else if (item instanceof TrapItem) {
+            var currentBlock = this.map.getBlock(player.x, player.y);
+            item.use(player, currentBlock)
+        }
+
     }
 
     update() {
