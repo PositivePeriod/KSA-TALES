@@ -15,10 +15,10 @@ const MSG = Object.freeze({
 })
 
 export class Network {
-    constructor() {
+    constructor(map) {
         const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
         this.socket = io(`${socketProtocol}://${window.location.host}`, { reconnection: false });
-
+        this.map = map
         window.addEventListener("beforeunload", this.disconnect.bind(this));
 
         this.commandQueue = new InputDeque();
@@ -28,9 +28,13 @@ export class Network {
 
     connect() {
         this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
-        this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
+        // this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
+        this.socket.on(MSG.UPDATE_GAME, () => { console.log('hhelo') });
         this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
+        this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
     }
+
+
 
     joinGame(AA, code, name) {
         var data = { 'AA': AA, 'code': code, 'name': name }
@@ -40,17 +44,23 @@ export class Network {
 
     updateGame(data) {
         console.log('updateGame', data);
+        this.map.updateData(data);
+        // this.map.data = data
+        this.map.draw()
     }
 
     tryToSendCommand(command) {
-        if (this.commandQueue.getSize() < 10) {
+        console.log('tryToSendCommand');
+        if (this.commandQueue.getSize() < 5) {
+            console.log('tryToSendCommand Success');
             this.commandQueue.push(command);
         }
     }
 
-    sendCommand(command) {
+    sendCommand() {
         var command = this.commandQueue.pop();
         if (command !== null) {
+            console.log('sendCommand');
             this.socket.emit(MSG.HANDLE_INPUT, command);
         }
     }

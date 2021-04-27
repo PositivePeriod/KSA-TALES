@@ -1,6 +1,4 @@
-import {
-    Block
-} from './block.js';
+import { Block } from './block.js';
 
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, data) {
@@ -9,7 +7,7 @@ export class MapObject {
 
         this.data = null;
         if (data !== undefined) {
-            data.then(function (resolvedData) {
+            data.then(function(resolvedData) {
                 this.initData(resolvedData);
             }.bind(this));
         } else {
@@ -41,7 +39,7 @@ export class MapObject {
                 }
             }
             this.data = data
-    
+
         } else {
             blueprint = blueprint.split('\n');
 
@@ -49,7 +47,7 @@ export class MapObject {
             this.y = blueprint.length;
             for (var i = 0; i < this.y; i++) {
                 blueprint[i] = blueprint[i].trim();
-                blueprint[i] += 'E'.repeat(this.x-blueprint[i].length);
+                blueprint[i] += 'E'.repeat(this.x - blueprint[i].length);
             }
 
             const data = new Array(this.x);
@@ -69,6 +67,23 @@ export class MapObject {
         }
 
     }
+    
+    updateData(blueprint){
+            const data = new Array(this.x);
+            for (var x = 0; x < this.x; x++) {
+                data[x] = new Array(this.y);
+                for (var y = 0; y < this.y; y++) {
+                    const block = new Block(
+                        blueprint[y][x]['type'],
+                        this.x + x * this.size,
+                        this.y + y * this.size,
+                        this.size
+                    );
+                    data[x][y] = block;
+                }
+            }
+            this.data = data
+    }
 
     resize(stageWidth, stageHeight) {
         this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio
@@ -85,6 +100,7 @@ export class MapObject {
     }
 
     draw(ctx) {
+        console.log('draw');
         if (this.data != null) {
             for (var x = 0; x < this.x; x++) {
                 for (var y = 0; y < this.y; y++) {

@@ -33,12 +33,11 @@ class MapObject {
                 this.blocks[x][y] = block;
             }
         }
-        this.blocks = data
     }
 
 
     getBlock(x, y) {
-        return (0 <= x < this.width && 0 <= y < this.height) ? this.blocks[x][y] : null
+        return (0 <= x && x < this.width && 0 <= y && y < this.height) ? this.blocks[x][y] : null;
     }
 
     show(player, range) {
@@ -52,7 +51,7 @@ class MapObject {
         for (var dx = -range.width; dx <= range.width; dx++) {
             for (var dy = -range.height; dy <= range.height; dy++) {
                 const block = this.getBlock(playerX + dx, playerY + dy);
-                data[x][y] = block !== null ? block.show() : null;
+                data[range.width+dx][range.height+dy] = block !== null ? block.show() : null;
             }
         }
         return data

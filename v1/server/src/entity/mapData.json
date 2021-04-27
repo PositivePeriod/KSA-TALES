@@ -1,6 +1,6 @@
 {
-    "width": 6,
-    "height": 5,
+    "width": 5,
+    "height": 4,
     "map": [
         ["W", "W", "W", "W", "W", "W"],
         ["W", "S", "F", "F", "F", "W"],

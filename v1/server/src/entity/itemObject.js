@@ -13,36 +13,43 @@ class ItemObject {
     use(id, player) {
         switch (this.type) {
             case 'K':
-                //blah blah
+                //blah blah??
         }
     }
 }
 
 class KeyItem extends ItemObject {
-    constructor(id) {}
+    constructor(id) {
 
-    use() {
+    }
+
+    use(id) {
 
     }
 }
 
-class FlashItem extends ItemObject {
-    constructor() {
-
+export class FlashItem extends ItemObject {
+    constructor(id, problemid, type) {
+        super(id,problemid,type)
     }
 
-    use() {
-
+    use(player) {
+        player.usingFlash = true;
     }
 }
 
-class TrapItem extends ItemObject {
-    constructor() {
-
+export class TrapItem extends ItemObject {
+    constructor(id, problemid, type) {
+        super(id,problemid,type)
     }
 
-    use() {
-
+    use(player, currentBlock) {
+        if(currentBlock.type == 'F') { // 바닥에만 트랩 깔 수 있음
+            currentBlock.addTrap(this.id)
+        }
+        else {
+            //'문, 문제상자, 벽에는 트랩을 놓을 수 없습니다.' 팝업
+        }
     }
 }
 

@@ -9,7 +9,7 @@ export class KeyboardManager {
     }
 
     handler(e) {
-        console.log(e.type, e.code);
+        // console.log(e.type, e.code);
         switch (e.type) {
             case 'keydown':
                 this.keyStatus[e.code] = true;

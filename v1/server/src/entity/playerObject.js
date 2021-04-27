@@ -20,6 +20,10 @@ class PlayerObject {
         return {'name': this.name, 'AA': this.AA, 'color': this.color, 'x': this.x, 'y': this.y, 'dir': this.dir}
     }
 
+    useItems(){
+        //
+    }
+
     getItems(items) {
         this.inventory = this.inventory.concat(items)
     }
@@ -33,6 +37,7 @@ class PlayerObject {
         if (problemID in this.solvedProblemIDs) {
             return true
         }
+        else return false
     }
 
     canPass(block) {

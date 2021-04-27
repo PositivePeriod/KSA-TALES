@@ -1,3 +1,6 @@
+//엥 이거 전에 바꿨던 거 같은데..
+// Blockobject.type : {'Floor' : 바닥, 'Wall' : 벽, '}
+import { Visualizer } from "./visualizer.js";
 export class BlockOjbect {
     constructor(type, x, y, size) {
         this.type = type;
@@ -5,7 +8,6 @@ export class BlockOjbect {
         this.y = y;
         this.size = size;
 
-        this.margin = 2;
         this.pass = true;
         this.color = 'rgba(0, 0, 0, 0.4)';
         this.init();
@@ -29,28 +31,20 @@ export class BlockOjbect {
 
     init() {
         switch (this.type){
-            case ' ':
-            case 'E':
-            case 'empty':
+            case 'Floor':
                 this.color = 'rgba(255, 255, 255, 0)';
                 this.pass = false;
                 break;
-            case 'W':
-            case 'water':
+            case 'Wall':
                 this.color = 'rgba(0, 120, 255, 0.6)';
                 break;
-            case 'B':
-            case 'barrier':
+            case 'Door':
                 this.color = 'rgba(0, 0, 0, 0.8)';
                 this.pass = false;
                 break;
-            case 'L':
-            case 'lava':
+            case 'Quiz':
                 this.color = 'rgba(255, 60, 0, 0.7)';
                 this.pass = false;
-                break;
-            case 'G':
-            case 'ground':
                 break;
             default:
                 alert('No matched block type for '+this.type.toString())

@@ -1,5 +1,2 @@
-export class Visualize {
-    constructor() {
-        
-    }
+export class Visualizer {
 }

@@ -2,10 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const socketio = require('socket.io');
-const {
-    MSG,
-    AAtoCODE
-} = require('./constant');
+const { MSG, AAtoCODE } = require('./constant');
 const Game = require('./entity/gameObject');
 // const mainRouter = require(`./${version}/src/mainRouter`);
 // const problemRouter = require(`./${version}/src/problemRouter`);
@@ -19,13 +16,18 @@ const version = 'v1';
 
 class ServerManager {
     constructor() {
-        this.game = new Game();
+        this.game = new Game(this);
 
         this.app = express();
         this.route();
-        this.start();
 
-        this.socketManager = new SocketManager(this.server, this.game);
+        const port = process.env.PORT || 8000;
+        this.server = this.app.listen(port, function() {
+            console.log(`KSA Labyrinth : UNDER THE KSA listening on port ${port}`);
+        }.bind(this));
+
+        this.socket();
+
     }
 
     route() {
@@ -65,56 +67,42 @@ class ServerManager {
 
     }
 
-    start() {
-        const port = process.env.PORT || 8000;
-        this.server = this.app.listen(port, function() {
-            console.log(`KSA-TALES listening on port ${port}`);
-        }.bind(this));
-    }
-}
-
-class SocketManager {
-    constructor(server, game) {
-        this.game = game;
-        this.io = socketio(server);
-
-        this.socketList = {};
-        this.playSocket = {}; // TODO
-        this.spectateSocket = {}; // TODO
-
+    socket() {
+        this.io = socketio(this.server);
         this.io.on(MSG.CONNECT_SERVER, socket => {
             console.log(`${socket.id} | Connect Server`);
-            this.socketList[socket.id] = socket;
+            this.game.sockets[socket.id] = socket;
 
             socket.on(MSG.JOIN_PLAY, this.joinPlay.bind(this, socket));
-            socket.on(MSG.UPDATE_GAME, this.updateGame);
-            socket.on(MSG.LEAVE_PLAY, this.leaveGame);
+            socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this, socket));
+            socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));
 
             // socket.on(MSG.JOIN_SPECTATE, ); // TODO
             // socket.on(MSG.LEAVE_SPECTATE, ); // TODO
 
-            socket.on(MSG.HANDLE_INPUT, this.handleInput)
+            socket.on(MSG.HANDLE_INPUT, () => { console.log('hhelo') });
+            // socket.on(MSG.HANDLE_INPUT, this.handleInput.bind(this, socket));
 
-            socket.on(MSG.DISCONNECT_SERVER, this.disconnect);
+            socket.on(MSG.DISCONNECT_SERVER, this.disconnect.bind(this, socket));
+
+
         });
     }
 
     joinPlay(socket, data) {
-        console.log('qwerty', socket.id, data);
         var AA = data.AA;
         var code = data.code;
         var playerName = data.name;
         console.log(AAtoCODE[AA], code);
         if (AAtoCODE[AA] === code) {
             console.log(`${socket.id} | Join Room Success`);
-            console.log(this.game.time, '?');
             this.game.addPlayer(socket, AA, playerName); // TODO 
         } else {
             console.log(`${socket.id} | Join Room Failure`);
         }
     }
 
-    updateGame() {
+    updateGame(socket) {
         // client가 server에 요청? // TODO
 
         // TODO 없애도 되나?
@@ -125,18 +113,16 @@ class SocketManager {
         this.game.removePlayer(socket);
     }
 
-    handleInput(data) {
-        // console.log(`Get command ; ${id}`);
-        var socket = this;
+    handleInput(socket, command) {
+        console.log(`${socket.id} | Handle Input`);
         var command = data.command;
-        thi.game.handleInput(socket, command);
+        this.game.handleInput(socket, command);
     }
 
     disconnect() {
         var socket = this;
-        delete this.socketList[socket.id];
+        delete this.game.sockets[socket.id];
     }
 }
-
 
 var server = new ServerManager();
