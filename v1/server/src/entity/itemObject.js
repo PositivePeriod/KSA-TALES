@@ -18,31 +18,32 @@ class ItemObject {
     }
 }
 
-export class KeyItem extends ItemObject {
-    constructor(id) {
-    }
+class KeyItem extends ItemObject {
+    constructor(id) {}
 
     use() {
 
     }
 }
 
-export class FlashItem extends ItemObject {
+class FlashItem extends ItemObject {
     constructor() {
 
     }
 
     use() {
-        
+
     }
 }
 
-export class TrapItem extends ItemObject {
+class TrapItem extends ItemObject {
     constructor() {
 
     }
 
     use() {
-        
+
     }
 }
+
+module.exports = { KeyItem, FlashItem, TrapItem };

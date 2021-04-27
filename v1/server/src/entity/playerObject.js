@@ -1,7 +1,7 @@
-import { InputDeque } from "../util/deque";
-import { WallBlock } from "./blockObject";
+const InputDeque = require("../util/deque");
+const WallBlock = require("./blockObject");
 
-export class PlayerObject {
+class PlayerObject {
     constructor(socketID, AA, name, x, y) {
         this.socketID = socketID;
         this.AA = AA;
@@ -28,6 +28,7 @@ export class PlayerObject {
     isSolved(problemID) {
         if (problemID in this.solvedProblemIDs) {
             return true
+        }
     }
 
     canPass(block) {
@@ -44,3 +45,5 @@ export class PlayerObject {
         }
     }
 }
+
+module.exports = PlayerObject;

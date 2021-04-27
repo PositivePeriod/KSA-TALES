@@ -2,7 +2,7 @@ import {
     Block
 } from './block.js';
 
-export class Map {
+export class MapObject {
     constructor(stageWidth, stageHeight, x, y, data) {
         this.x = x;
         this.y = y;

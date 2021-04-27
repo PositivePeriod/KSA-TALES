@@ -1,29 +1,35 @@
-import { BlockObject } from './blockObject.js';
+const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
-export class MapObject {
+class MapObject {
     constructor(data) {
         this.width = data.width;
         this.height = data.height;
 
         this.blocks = Array.from(Array(this.width), () => Array(this.height));
         for (var x = 0; x < this.width; x++) {
-            for (var y = 0; y < this.y; y++) {
-                var blockType = data.map[x][y].slice(0, 1);
+            for (var y = 0; y < this.height; y++) {
+                var blockData = data.map[y][x]
+                var blockType = blockData.slice(0, 1);
                 switch (blockType) {
                     case 'W':
+                        var block = new WallBlock('W', x, y);
+                        break;
                     case 'D':
+                        var problemIDs = data.door[blockData]
+                        var block = new DoorBlock('D', x, y, problemIDs);
+                        break;
                     case 'P':
+                        var problemData = data.problem[blockData];
+                        var id = problemData["id"];
+                        var reward = problemData["reward"];
+                        var block = new ProblemBlock('P', x, y, id, reward);
+                        break;
                     case 'S':
-                        this.startX = x;
-                        this.startY = y;
+                        this.startPos = { "x": x, "y": y };
                     case 'F':
+                        var block = new FloorBlock('F', x, y);
+                        break;
                 }
-                const block = new BlockObject(
-                    data.map[x][y],
-                    this.x + x * this.size,
-                    this.y + y * this.size,
-                    this.size
-                );
                 this.blocks[x][y] = block;
             }
         }
@@ -52,3 +58,5 @@ export class MapObject {
         return data
     }
 }
+
+module.exports = MapObject;

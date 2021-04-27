@@ -9,7 +9,7 @@
         ["W", "W", "W", "W", "W", "W"]
     ],
     "problem": {
-        "P1": ["K1", "Trap", "Flash"]
+        "P1": { "id": "ocean", "reward": ["K1", "Trap", "Flash"] }
     },
     "door": {
         "D1": ["K1"]

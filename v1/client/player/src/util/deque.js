@@ -1,4 +1,4 @@
-class InputDeque {
+export class InputDeque {
     constructor() {
         this.reset();
     }

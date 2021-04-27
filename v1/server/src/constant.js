@@ -1,9 +1,9 @@
-export const MSG = Object.freeze({
+const MSG = Object.freeze({
     CONNECT_SERVER: 'connectServer',
 
-    JOIN_GAME: 'joinGame',
+    JOIN_PLAY: 'joinPlay',
     HANDLE_INPUT: 'handleInput',
-    LEAVE_GAME: 'leaveGame',
+    LEAVE_PLAY: 'leavePlay',
 
     JOIN_SPECTATE: 'joinSpectate',
     LEAVE_SPECTATE: 'joinSpectate',
@@ -13,14 +13,16 @@ export const MSG = Object.freeze({
     DISCONNECT_SERVER: 'disconnectServer',
 })
 
-export const AAtoCODE = Object.freeze({
+const AAtoCODE = Object.freeze({
     'AA1_1': 'CDQE',
     'AA1_2': 'DKRO',
     'AA2_1': 'CVPF'
 })
 
-export const CODEtoAA = Object.freeze({
+const CODEtoAA = Object.freeze({
     'CDQE': 'AA1_1',
     'DKRO': 'AA1_2',
     'CVPF': 'AA2_1',
 })
+
+module.exports = {MSG, AAtoCODE, CODEtoAA}

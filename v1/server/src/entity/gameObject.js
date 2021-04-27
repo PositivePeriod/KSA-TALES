@@ -1,19 +1,20 @@
-import { AAtoCODE } from "../constant.js";
-import { ProblemBlock } from "./blockObject.js";
-import { MapObject } from "./entity/mapObject.js";
-import { PlayerObject } from "./entity/playerObject";
-const mapData = require('../../data/mapData.json');
+const ProblemBlock = require("./blockObject");
+const MapObject = require("./mapObject");
+const PlayerObject = require("./playerObject");
+const mapData = require('./mapData.json');
 
 const MOVE = Object.freeze({ 'KeyW': { x: 0, y: 1 }, 'KeyS': { x: 0, y: -1 }, 'KeyA': { x: -1, y: 0 }, 'KeyD': { x: 1, y: 0 } })
 
 class Game {
     constructor() {
+        this.time = 1000;
+        
         this.map = new MapObject(mapData);
         this.showRange = { width: 5, height: 3 };
         this.players = {}
         this.joinedAA = [];
 
-        setInterval(this.update.bind(this, 1), 1000);
+        setInterval(this.update.bind(this, 1), this.time);
     }
 
     addPlayer(socket, AA, name) {
@@ -87,6 +88,4 @@ class Game {
 
 }
 
-window.onload = () => {
-    new Game();
-}
+module.exports = Game;

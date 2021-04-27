@@ -15,7 +15,7 @@ const blockCOLOR = Object.freeze({
 
 class BlockObject {
     constructor(type, x, y) {
-        this.type = type; // W D F P
+        this.type = type; // W D F P // TODO Ex) this.type = 'W'; WallBlock 은 duplicate한 정보를 가지지만 일단은 편의를 위해 남길 것
         this.x = x;
         this.y = y;
         this.color = blockCOLOR[this.type]; // TODO 지우기 client에서 처리하기
@@ -26,26 +26,26 @@ class BlockObject {
     }
 }
 
-export class WallBlock extends BlockObject {
+class WallBlock extends BlockObject {
     constructor(type, x, y) {
         super(type, x, y);
     }
 }
 
-export class DoorBlock extends BlockObject {
+class DoorBlock extends BlockObject {
     constructor(type, x, y, problemIDs) {
         super(type, x, y);
         this.problemIDs = problemIDs;
     }
 }
 
-export class FloorBlock extends BlockObject {
+class FloorBlock extends BlockObject {
     constructor(type, x, y) {
         super(type, x, y);
     }
 }
 
-export class ProblemBlock extends BlockObject {
+class ProblemBlock extends BlockObject {
     constructor(type, x, y, id, reward) {
         super(type, x, y);
         this.id = id;
@@ -53,7 +53,11 @@ export class ProblemBlock extends BlockObject {
 
     }
 
-    show(player) {
+    show() {
+
+    }
+
+    showProblem(player) {
         if (player.keyInput == 'space') {
             //show quiz_id[this.id]
             var playerAnswer = null; // TODO get answer
@@ -68,3 +72,5 @@ export class ProblemBlock extends BlockObject {
         // quiz_id[this.id]
     }
 }
+
+module.exports = { WallBlock, DoorBlock, FloorBlock, ProblemBlock };
