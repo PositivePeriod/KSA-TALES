@@ -76,9 +76,9 @@ export class MapObject {
                 if (newData[x][y] !== null) {
                     const block = new BlockObject(
                         newData[x][y]['type'],
-                        this.x + x * this.size,
-                        this.y + y * this.size,
-                        this.size
+                        this.x + x * this.grid,
+                        this.y + y * this.grid,
+                        this.grid
                     );
                     data[x][y] = block;
                 }
