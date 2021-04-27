@@ -14,8 +14,8 @@ export class KeyItem extends ItemObject {
         super(id,problemid,type)
     }
 
-    use() {
-
+    use(player, door) {
+        door.putkey(player, this)
     }
 }
 
@@ -25,7 +25,7 @@ export class FlashItem extends ItemObject {
     }
 
     use(player) {
-        
+        player.usingFlash = true;
     }
 }
 

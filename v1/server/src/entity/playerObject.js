@@ -12,6 +12,7 @@ export class PlayerObject {
         this.x = x;
         this.y = y;
         this.solvedProblemIDs = []; // TODO problemIDS 다 없애고 키로 만들기
+        this.passedSpecialDoors = [];
         this.inventory = [];
         this.command = new InputDeque();
 
@@ -28,6 +29,10 @@ export class PlayerObject {
     solve(problemID) {
         this.solvedProblemIDs.push(problemID)
         // TODO notice to others, 업적?
+    }
+
+    passSpecialDoor(doorID) {
+        this.passedSpecialDoors.push(doorID)
     }
 
     isSolved(problemID) {

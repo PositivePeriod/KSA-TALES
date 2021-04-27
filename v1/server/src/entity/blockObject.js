@@ -33,9 +33,31 @@ export class WallBlock extends BlockObject {
 }
 
 export class DoorBlock extends BlockObject {
-    constructor(type, x, y, problemIDs) {
+    constructor(type, x, y, problemID) {
         super(type, x, y);
-        this.problemIDs = problemIDs;
+        this.problemID = problemID;
+    }
+}
+
+export class SpecialDoorBlock extends DoorBlock {
+    constructor(type, x, y, id, problemID, keyids) {
+        super(type, x, y);
+        this.id = id;
+        this.problemID = problemID;
+        this.keyids = keyids;
+    }
+
+    showkeyholes() {
+        // TODO
+    }
+
+    putkey(player, key) {
+        if (key.id in this.keyids) {
+            // success
+            player.passSpecialDoor(this.id)
+        } else {
+            console.log('Not Correct Key!')
+        }
     }
 }
 
