@@ -1,5 +1,5 @@
 const InputDeque = require("../util/deque");
-const WallBlock = require("./blockObject");
+const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObject");
 
 class PlayerObject {
     constructor(socketID, AA, name, x, y) {
@@ -11,17 +11,17 @@ class PlayerObject {
         this.solvedProblemIDs = []; // TODO problemIDS 다 없애고 키로 만들기
         this.inventory = [];
         this.num_hint = 0;
-        this.command = new InputDeque();
+        this.commandQueue = new InputDeque();
 
         this.dir = { x: 0, y: -1 };
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
     }
 
     show() {
-        return {'name': this.name, 'AA': this.AA, 'color': this.color, 'x': this.x, 'y': this.y, 'dir': this.dir}
+        return { 'name': this.name, 'AA': this.AA, 'color': this.color, 'x': this.x, 'y': this.y, 'dir': this.dir }
     }
 
-    useItems(){
+    useItems() {
         //
     }
 
@@ -37,8 +37,7 @@ class PlayerObject {
     isSolved(problemID) {
         if (problemID in this.solvedProblemIDs) {
             return true
-        }
-        else return false
+        } else return false
     }
 
     canPass(block) {

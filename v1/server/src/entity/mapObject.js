@@ -5,7 +5,7 @@ class MapObject {
         this.width = data.width;
         this.height = data.height;
 
-        this.blocks = Array.from(Array(this.width), () => Array(this.height));
+        this.blocks = Array.from(Array(this.width), () => Array(this.height).fill(null));
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var blockData = data.map[y][x]

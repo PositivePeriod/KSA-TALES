@@ -44,7 +44,6 @@ export class Network {
     updateGame(data) {
         console.log('updateGame', data);
         this.map.updateData(data);
-        // this.map.data = data
         this.map.draw();
     }
 

@@ -107,7 +107,7 @@ class ServerManager {
 
     handleInput(socket, command) {
         console.log(`${socket.id} | Handle Input`);
-        // this.game.handleInput(socket, command);
+        this.game.players[socket.id].commandQueue.push(command);
     }
 
     disconnect(socket) {

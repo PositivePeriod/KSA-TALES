@@ -47,8 +47,8 @@ class Game {
 
     }
 
-    movePlayer(player) {
-        var command = player.command.pop();
+    updatePlayer(player) {
+        var command = player.commandQueue.pop();
         switch (command) {
             case 'KeyW':
             case 'KeyA':
@@ -79,7 +79,7 @@ class Game {
         Object.entries(this.sockets).forEach(([key, value]) => { console.log(key); });
 
         for (let [socketID, player] of Object.entries(this.players)) {
-            this.movePlayer(player);
+            this.updatePlayer(player);
         }
 
         for (let [socketID, player] of Object.entries(this.sockets)) {

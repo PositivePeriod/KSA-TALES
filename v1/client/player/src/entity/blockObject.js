@@ -1,11 +1,11 @@
-//엥 이거 전에 바꿨던 거 같은데..
-// Blockobject.type : {'Floor' : 바닥, 'Wall' : 벽, '}
 export class BlockObject {
     constructor(type, x, y, size) {
         this.type = type;
         this.x = x;
         this.y = y;
         this.size = size;
+        
+        this.margin = 0;
 
         this.pass = true;
         this.color = 'rgba(0, 0, 0, 0.4)';
@@ -30,21 +30,18 @@ export class BlockObject {
 
     init() {
         switch (this.type){
-            case 'Floor':
             case 'F':
                 this.color = 'rgba(255, 255, 255, 0)';
                 this.pass = false;
                 break;
-            case 'Wall':
             case 'W':
                 this.color = 'rgba(0, 120, 255, 0.6)';
                 break;
-            case 'Door':
             case 'D':
                 this.color = 'rgba(0, 0, 0, 0.8)';
                 this.pass = false;
                 break;
-            case 'Q':
+            case 'P':
                 this.color = 'rgba(255, 60, 0, 0.7)';
                 this.pass = false;
                 break;
