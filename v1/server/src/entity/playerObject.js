@@ -50,7 +50,7 @@ class PlayerObject {
         } else if (block instanceof ProblemBlock) {
             return false // problem is kind of box so player can't go through
         } else {
-            console.log('Block type error')
+            console.log('Error | Block type')
         }
     }
 }

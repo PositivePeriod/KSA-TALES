@@ -1,28 +1,32 @@
 const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
+const mapNumber = 2;
+const mapData = require(`../../data/mapData${mapNumber}.json`);
+
 class MapObject {
-    constructor(data) {
-        this.width = data.width;
-        this.height = data.height;
+    constructor() {
+        this.width = mapData.width;
+        this.height = mapData.height;
 
         this.blocks = Array.from(Array(this.width), () => Array(this.height).fill(null));
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
-                var blockData = data.map[y][x]
+                var blockData = mapData.map[y][x];
                 var blockType = blockData.slice(0, 1);
                 switch (blockType) {
                     case 'W':
                         var block = new WallBlock('W', x, y);
                         break;
                     case 'D':
-                        var problemIDs = data.door[blockData]
+                        var problemIDs = mapData.door[blockData]
                         var block = new DoorBlock('D', x, y, problemIDs);
                         break;
                     case 'P':
-                        var problemData = data.problem[blockData];
+                        var problemData = mapData.problem[blockData];
                         var id = problemData["id"];
+                        var answer = problemData["answer"];
                         var reward = problemData["reward"];
-                        var block = new ProblemBlock('P', x, y, id, reward);
+                        var block = new ProblemBlock('P', x, y, id, answer, reward); // TODO
                         break;
                     case 'S':
                         this.startPos = { "x": x, "y": y };
@@ -34,7 +38,6 @@ class MapObject {
             }
         }
     }
-
 
     getBlock(x, y) {
         return (0 <= x && x < this.width && 0 <= y && y < this.height) ? this.blocks[x][y] : null;

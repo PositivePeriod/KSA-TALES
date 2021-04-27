@@ -14,8 +14,8 @@ export class KeyboardManager {
             case 'keydown':
                 this.keyStatus[e.code] = true;
                 if (e.code in this.keyCallback) {
-                    console.log('listen', e.code)
-                    this.keyCallback[e.code](e.code);
+                    // console.log('listen', e.code)
+                    this.keyCallback[e.code]();
                 }
                 break;
             case 'keyup':

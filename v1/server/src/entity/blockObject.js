@@ -1,25 +1,8 @@
-// this.type은 W(벽), F(바닥), P( 문제가 있는 지역), D(문)의 대문자 알파벳으로 읽어들입니다
-// this.pass는 True 타입일 때 지나갈(올라갈) 수 있고, False 타입일 때 지나갈(올라설) 수 없습니다
-//
-
-var quiz_id = { 1: 'ocean', 2: 'fish' };
-var answer_id = { 'ocean': 'fish' };
-
-quiz_id[''] = '(해당html)';
-
-const blockCOLOR = Object.freeze({
-    W: { r: 0, g: 0, b: 0 },
-    D: { r: 10, g: 0, b: 0 },
-    F: { r: 170, g: 100, b: 16 },
-    P: { r: 27, g: 254, b: 86 }
-})
-
 class BlockObject {
     constructor(type, x, y) {
         this.type = type; // W D F P // TODO Ex) this.type = 'W'; WallBlock 은 duplicate한 정보를 가지지만 일단은 편의를 위해 남길 것
         this.x = x;
         this.y = y;
-        this.color = blockCOLOR[this.type]; // TODO 지우기 client에서 처리하기
     }
 
     show() {
@@ -71,26 +54,21 @@ class FloorBlock extends BlockObject {
 }
 
 class ProblemBlock extends BlockObject {
-    constructor(type, x, y, id, reward) {
+    constructor(type, x, y, id, answer, reward) {
         super(type, x, y);
         this.id = id;
+        this.answer = answer;
         this.reward = reward;// TODO set reward
-        this.flag=0; //열린 문제인지 아닌지 
     }
 
-
     showProblem(player) {
-        if(player.keyInput == 'space') {
-            //show quiz_id[th=is.id]
-            var playerAnswer = null; // TODO get answer
-            var problemAnswer = answer_id['quiz_id'];
-            if (playerAnswer === problemAnswer && player.isSolved(this.id) === false) {
-                player.solve(this.id);
-                player.getItems(this.reward);
-                //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
-            } 
-            else return False;
-        }
+        var playerAnswer = null; // TODO get answer
+        if (playerAnswer === this.answer && !(player.isSolved(this.id))) {
+            player.solve(this.id);
+            player.getItems(this.reward);
+            //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
+        } 
+        else return False;
         //if(player.keyInput == 'h'){
         //  
         //}

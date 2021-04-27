@@ -84,6 +84,8 @@ class ServerManager {
 
             socket.on(MSG.HANDLE_INPUT, this.handleInput.bind(this, socket));
 
+            // socket.on(MSG.SEND_ANSWER, this.getAnswer.bind(this, socket));
+
             socket.on(MSG.DISCONNECT_SERVER, this.disconnect.bind(this, socket));
         });
     }
@@ -92,7 +94,6 @@ class ServerManager {
         var AA = data.AA;
         var code = data.code;
         var playerName = data.name;
-        console.log(AAtoCODE[AA], code);
         if (AAtoCODE[AA] === code) {
             console.log(`${socket.id} | Join Room Success`);
             this.game.addPlayer(socket, AA, playerName); // TODO 한 반 당 한 명만

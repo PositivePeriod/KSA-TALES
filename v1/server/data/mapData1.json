@@ -1,6 +1,6 @@
 {
-    "width": 5,
-    "height": 4,
+    "width": 6,
+    "height": 5,
     "map": [
         ["W", "W", "W", "W", "W", "W"],
         ["W", "S", "F", "F", "F", "W"],
@@ -9,7 +9,7 @@
         ["W", "W", "W", "W", "W", "W"]
     ],
     "problem": {
-        "P1": { "id": "ocean", "reward": ["K1", "Trap", "Flash"] }
+        "P1": { "id": "ocean", "answer": "tuna", "reward": ["K1", "Trap", "Flash"] }
     },
     "door": {
         "D1": ["K1"]

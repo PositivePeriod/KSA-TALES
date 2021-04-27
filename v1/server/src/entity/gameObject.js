@@ -1,15 +1,16 @@
-const ProblemBlock = require("./blockObject");
+const { ProblemBlock } = require("./blockObject");
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
-const mapData = require('./mapData.json');
+
 const { MSG } = require('../constant');
 
 const MOVE = Object.freeze({
-    'KeyW': { x: 0, y: 1 },
-    'KeyS': { x: 0, y: -1 },
-    'KeyA': { x: -1, y: 0 },
-    'KeyD': { x: 1, y: 0 }
+    'KeyUp': { x: 0, y: -1 },
+    'KeyDown': { x: 0, y: 1 },
+    'KeyLeft': { x: -1, y: 0 },
+    'KeyRight': { x: 1, y: 0 }
 })
+
 
 class Game {
     constructor() {
@@ -17,12 +18,9 @@ class Game {
         // this.playSocket = {}; // TODO
         // this.spectateSocket = {}; // TODO
 
-        this.time = 3000;
-        this.map = new MapObject(mapData);
-        this.showRange = {
-            width: 5,
-            height: 3
-        };
+        this.time = 300;
+        this.map = new MapObject();
+        this.showRange = { width: 5, height: 3 };
         this.io = null;
         this.players = {}
         this.joinedAA = [];
@@ -42,7 +40,7 @@ class Game {
         if (id in Object.keys(this.players)) {
             delete this.players[id];
         } else {
-            console.log('No player exists');
+            console.log('Error | No such player exists');
         }
 
     }
@@ -50,11 +48,13 @@ class Game {
     updatePlayer(player) {
         var command = player.commandQueue.pop();
         switch (command) {
-            case 'KeyW':
-            case 'KeyA':
-            case 'KeyS':
-            case 'KeyD':
-                var dir = MOVE[command]
+            case null:
+                break;
+            case 'KeyUp':
+            case 'KeyDown':
+            case 'KeyLeft':
+            case 'KeyRight':
+                var dir = MOVE[command];
                 player.dir = dir;
                 var newX = player.x + dir.x;
                 var newY = player.y + dir.y;
@@ -64,20 +64,26 @@ class Game {
                     player.y = newY;
                 }
                 break;
-            case 'KeyF':
+            case 'KeyInteract':
+                var dir = player.dir;
                 var newX = player.x + dir.x;
                 var newY = player.y + dir.y;
                 var block = this.map.getBlock(newX, newY);
                 if (block !== null && block instanceof ProblemBlock) {
-                    block.show(player)
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "id": this.id, "playerID": player.socketID });
+                    block.showProblem(player)
                 }
+                break;
+            case 'KeyAnswer':
+                console.log('Error | No need key')
+                break;
+            default:
+                console.log('Error | Impossible key')
         }
     }
 
     update() {
-        console.log('Turn change')
-        Object.entries(this.sockets).forEach(([key, value]) => { console.log(key); });
-
+        console.log('Game | Turn Change')
         for (let [socketID, player] of Object.entries(this.players)) {
             this.updatePlayer(player);
         }
@@ -96,12 +102,10 @@ class Game {
     show() {
         for (let [socketID, player] of Object.entries(this.players)) {
             var socket = this.sockets[socketID];
-
-            var visibleMap = this.map.show(player, this.showRange); //DATA
+            var visibleMap = this.map.show(player, this.showRange);
             socket.emit(MSG.UPDATE_GAME, visibleMap);
         }
     }
-
 }
 
 module.exports = Game;

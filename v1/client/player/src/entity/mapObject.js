@@ -2,6 +2,8 @@ import { BlockObject } from './blockObject.js';
 
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, ctx) {
+        this.stageWidth = stageWidth;
+        this.stageHeight = stageHeight;
         this.x = x; // 가로 칸 개수
         this.y = y; // 세로 칸 개수
         this.ctx = ctx;
@@ -15,8 +17,8 @@ export class MapObject {
         //     this.initData(null);
         // }
 
-        this.ratio = 0.8
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio
+        this.ratio = 0.8;
+        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
         this.pos = {
             'x': stageWidth / 2 - this.grid * this.x / 2,
             'y': stageHeight / 2 - this.grid * this.y / 2
@@ -69,52 +71,45 @@ export class MapObject {
     }
 
     updateData(newData) {
+        console.log(newData);
         const data = Array.from(Array(this.x), () => Array(this.y).fill(null));
-
         for (var x = 0; x < this.x; x++) {
             for (var y = 0; y < this.y; y++) {
-                if (newData[x][y] !== null) {
-                    const block = new BlockObject(
-                        newData[x][y]['type'],
-                        this.x + x * this.grid,
-                        this.y + y * this.grid,
-                        this.grid
-                    );
-                    data[x][y] = block;
-                }
+                var blockType = (newData[x][y] !== null) ? newData[x][y]['type'] : 'N';
+                const block = new BlockObject(blockType, this.x + x * this.grid, this.y + y * this.grid, this.grid);
+                data[x][y] = block;
             }
         }
         this.data = data
     }
 
     resize(stageWidth, stageHeight) {
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio
+        this.stageWidth = stageWidth;
+        this.stageHeight = stageHeight;
+        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
         this.pos.x = stageWidth / 2 - this.grid * this.x / 2;
         this.pos.y = stageHeight / 2 - this.grid * this.y / 2;
 
         if (this.data !== null) {
             for (var x = 0; x < this.x; x++) {
                 for (var y = 0; y < this.y; y++) {
-                    if (this.data[x][y] !== null) {
-                        this.data[x][y].resize(this.pos.x + x * this.grid, this.pos.y + y * this.grid, this.grid);
-                    }
+                    this.data[x][y].resize(this.pos.x + x * this.grid, this.pos.y + y * this.grid, this.grid);
                 }
             }
         }
     }
 
     draw() {
-        console.log('draw');
+        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
         if (this.data !== null) {
             for (var x = 0; x < this.x; x++) {
                 for (var y = 0; y < this.y; y++) {
-                    if (this.data[x][y] !== null) {
-                        console.log(this.data, x, y, this.data[x][y]);
-                        this.data[x][y].draw(this.ctx);
-                    }
+                    this.data[x][y].draw(this.ctx);
                 }
             }
+            this.data[(this.x - 1) / 2][(this.y - 1) / 2].drawPlayer(this.ctx);
         }
+
     }
 
     coordinate(x, y) { // TODO ????? 왜 만듬

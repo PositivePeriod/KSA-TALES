@@ -5,6 +5,9 @@ const MSG = Object.freeze({
     HANDLE_INPUT: 'handleInput',
     LEAVE_PLAY: 'leavePlay',
 
+    SEND_PROBLEM: 'sendProblem',
+    SEND_ANSWER: 'sendAnswer',
+
     JOIN_SPECTATE: 'joinSpectate',
     LEAVE_SPECTATE: 'joinSpectate',
 

@@ -11,7 +11,8 @@ class App {
         this.stageWidth = document.body.clientWidth;
         this.stageHeight = document.body.clientHeight;
 
-        this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
+        this.pixelRatio = 1;
+        // this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
         this.ctx.scale(this.pixelRatio, this.pixelRatio);
@@ -33,12 +34,12 @@ class App {
         this.network.connect();
 
         this.keyboard = new KeyboardManager();
-        this.keyboard.listen(this.commandKey['KeyUp'], this.network.tryToSendCommand.bind(this.network));
-        this.keyboard.listen(this.commandKey['KeyLeft'], this.network.tryToSendCommand.bind(this.network));
-        this.keyboard.listen(this.commandKey['KeyDown'], this.network.tryToSendCommand.bind(this.network));
-        this.keyboard.listen(this.commandKey['KeyRight'], this.network.tryToSendCommand.bind(this.network));
-        this.keyboard.listen(this.commandKey['KeyInteract'], this.network.tryToSendCommand.bind(this.network));
-        this.keyboard.listen(this.commandKey['KeyAnswer'], this.network.tryToSendCommand.bind(this.network));
+        this.keyboard.listen(this.commandKey['KeyUp'], this.network.tryToSendCommand.bind(this.network, "KeyUp"));
+        this.keyboard.listen(this.commandKey['KeyLeft'], this.network.tryToSendCommand.bind(this.network, "KeyLeft"));
+        this.keyboard.listen(this.commandKey['KeyDown'], this.network.tryToSendCommand.bind(this.network, "KeyDown"));
+        this.keyboard.listen(this.commandKey['KeyRight'], this.network.tryToSendCommand.bind(this.network, "KeyRight"));
+        this.keyboard.listen(this.commandKey['KeyInteract'], this.network.tryToSendCommand.bind(this.network, "KeyInteract"));
+        this.keyboard.listen(this.commandKey['KeyAnswer'], this.network.tryToSendCommand.bind(this.network, "KeyAnswer"));
         this.keyboard.activate();
 
         window.addEventListener('resize', this.resize.bind(this), false);
@@ -62,11 +63,11 @@ class App {
         // draw?
     }
 
-    draw() {
-        this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
-        this.map.draw();
-        this.player.draw(this.ctx);
-    }
+    // draw() {
+    //     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
+    //     this.map.draw();
+    //     this.player.draw(this.ctx);
+    // }
 }
 
 window.onload = () => { new App(); }
