@@ -8,7 +8,7 @@ const MOVE = Object.freeze({ 'KeyW': { x: 0, y: 1 }, 'KeyS': { x: 0, y: -1 }, 'K
 class Game {
     constructor() {
         this.time = 1000;
-        
+
         this.map = new MapObject(mapData);
         this.showRange = { width: 5, height: 3 };
         this.players = {}
@@ -18,10 +18,12 @@ class Game {
     }
 
     addPlayer(socket, AA, name) {
-        if (!AA in this.joinedAA) {
+        console.log('call add');
+        if (!(AA in this.joinedAA)) {
+            console.log('success add player');
             var socketID = socket.id;
-
-            this.players[id] = new PlayerObject(socketID, AA, name, );
+            var pos = this.map.startPos;
+            this.players[socketID] = new PlayerObject(socketID, AA, name, pos.x, pos.y);
         }
     }
 
@@ -62,6 +64,8 @@ class Game {
     }
 
     update() {
+        
+        console.log(this.players);
         for (const [playerID, socket] of Object.entries(this.players)) {
             var player = this.players[playerID];
             this.movePlayer(player)

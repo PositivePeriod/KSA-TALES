@@ -16,6 +16,10 @@ class PlayerObject {
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
     }
 
+    show() {
+        return {'name': this.name, 'AA': this.AA, 'color': this.color, 'x': this.x, 'y': this.y, 'dir': this.dir}
+    }
+
     getItems(items) {
         this.inventory = this.inventory.concat(items)
     }

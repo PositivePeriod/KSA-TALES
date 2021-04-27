@@ -1,6 +1,6 @@
 import { InputDeque } from './deque.js';
 const MSG = Object.freeze({
-    CONNECT_SERVER: 'connectServer',
+    CONNECT_SERVER: 'connection', // no need
 
     JOIN_PLAY: 'joinPlay',
     HANDLE_INPUT: 'handleInput',
@@ -11,7 +11,7 @@ const MSG = Object.freeze({
 
     UPDATE_GAME: 'updateGame',
 
-    DISCONNECT_SERVER: 'disconnectServer',
+    DISCONNECT_SERVER: 'disconnect',
 })
 
 export class Network {
@@ -27,12 +27,9 @@ export class Network {
     }
 
     connect() {
-        io.on(MSG.CONNECT_SERVER, () => {
-            console.log('Connected to server');
-            this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
-            this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-            this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
-        });
+        this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
+        this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
+        this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
     }
 
     joinGame(AA, code, name) {

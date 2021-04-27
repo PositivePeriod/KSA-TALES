@@ -1,5 +1,5 @@
 const MSG = Object.freeze({
-    CONNECT_SERVER: 'connectServer',
+    CONNECT_SERVER: 'connection',
 
     JOIN_PLAY: 'joinPlay',
     HANDLE_INPUT: 'handleInput',
@@ -10,7 +10,7 @@ const MSG = Object.freeze({
 
     UPDATE_GAME: 'updateGame',
 
-    DISCONNECT_SERVER: 'disconnectServer',
+    DISCONNECT_SERVER: 'disconnect',
 })
 
 const AAtoCODE = Object.freeze({

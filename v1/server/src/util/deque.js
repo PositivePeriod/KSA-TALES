@@ -27,3 +27,5 @@ class InputDeque {
         return this.getSize() === 0;
     }
 }
+
+module.exports = InputDeque;
