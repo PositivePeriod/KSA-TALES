@@ -1,25 +1,17 @@
-// item의 type는 Key(K), Trap(T), Light(L), Attack(A) 네 종류가 있습니다(추가 가능)
+// item의 type는 Key(K), Trap(T), Flash(F) 세 종류가 있습니다(추가 가능)
 
 
 class ItemObject {
-    constrctor(x, y, id, type, map) {
-        this.x = x;
-        this.y = y;
+    constructor(id, problemid, type) {
         this.id = id;
+        this.problemid = problemid;
         this.type = type;
-        this.map = map;
-    }
-
-    use(id, player) {
-        switch (this.type) {
-            case 'K':
-                //blah blah
-        }
     }
 }
 
 export class KeyItem extends ItemObject {
-    constructor(id) {
+    constructor(id, problemid, type) {
+        super(id,problemid,type)
     }
 
     use() {
@@ -28,21 +20,21 @@ export class KeyItem extends ItemObject {
 }
 
 export class FlashItem extends ItemObject {
-    constructor() {
-
+    constructor(id, problemid, type) {
+        super(id,problemid,type)
     }
 
-    use() {
+    use(player) {
         
     }
 }
 
 export class TrapItem extends ItemObject {
-    constructor() {
-
+    constructor(id, problemid, type) {
+        super(id,problemid,type)
     }
 
-    use() {
-        
+    use(player, currentBlock) {
+        currentBlock.addTrap(this.id)
     }
 }
