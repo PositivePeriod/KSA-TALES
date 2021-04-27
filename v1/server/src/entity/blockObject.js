@@ -40,8 +40,37 @@ export class DoorBlock extends BlockObject {
 }
 
 export class FloorBlock extends BlockObject {
-    constructor(type, x, y) {
+    constructor(type, x, y, trapnum) {
         super(type, x, y);
+        this.traps = [];
+    }
+
+    isTrapped() {
+        return len(this.traps) > 0
+    }
+
+    addTrap(id) {
+        this.traps.push(id)
+    }
+
+    show(player) {
+        if (player.usingFlash && player.inFlashArea(this)) {
+            return {type: this.type, traps: this.traps}
+        } else {
+            return {type: this.type, traps: null}
+        }
+    }
+
+    getTrapped(player) {
+        // 이거는 아래쪽에 ProblemBlcok에 있는 거랑 비슷하게 하면 될듯
+        player.canmove = false;
+        // TODO show trap[trap.id]
+        trap = this.traps.pop()
+        var playerAnswer = null; // TODO get answer
+        var trapAnswer = trapAnswers[trap.id];
+        if (trapAnswer == playerAnswer) {
+            player.canmove = true;
+        } else return false;
     }
 }
 
