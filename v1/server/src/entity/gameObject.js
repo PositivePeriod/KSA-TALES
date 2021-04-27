@@ -2,25 +2,13 @@ const ProblemBlock = require("./blockObject");
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
 const mapData = require('./mapData.json');
-const MSG = require('../constant');
+const { MSG } = require('../constant');
 
 const MOVE = Object.freeze({
-    'KeyW': {
-        x: 0,
-        y: 1
-    },
-    'KeyS': {
-        x: 0,
-        y: -1
-    },
-    'KeyA': {
-        x: -1,
-        y: 0
-    },
-    'KeyD': {
-        x: 1,
-        y: 0
-    }
+    'KeyW': { x: 0, y: 1 },
+    'KeyS': { x: 0, y: -1 },
+    'KeyA': { x: -1, y: 0 },
+    'KeyD': { x: 1, y: 0 }
 })
 
 class Game {
@@ -29,13 +17,13 @@ class Game {
         // this.playSocket = {}; // TODO
         // this.spectateSocket = {}; // TODO
 
-        this.time = 1000;
-
+        this.time = 3000;
         this.map = new MapObject(mapData);
         this.showRange = {
             width: 5,
             height: 3
         };
+        this.io = null;
         this.players = {}
         this.joinedAA = [];
 
@@ -87,14 +75,14 @@ class Game {
     }
 
     update() {
-        console.log('Turn change - Player')
-        Object.entries(this.players).forEach(([key, value]) => { console.log(key); });
+        console.log('Turn change')
+        Object.entries(this.sockets).forEach(([key, value]) => { console.log(key); });
 
         for (let [socketID, player] of Object.entries(this.players)) {
-            this.movePlayer(player)
+            this.movePlayer(player);
         }
 
-        for (let [socketID, player] of Object.entries(this.players)) {
+        for (let [socketID, player] of Object.entries(this.sockets)) {
             // flashlight, trap
             // 만약 문제 봐야 할 상황이면 문제도 띄워줌
         }
@@ -108,8 +96,8 @@ class Game {
     show() {
         for (let [socketID, player] of Object.entries(this.players)) {
             var socket = this.sockets[socketID];
+
             var visibleMap = this.map.show(player, this.showRange); //DATA
-            console.log('??!?')
             socket.emit(MSG.UPDATE_GAME, visibleMap);
         }
     }

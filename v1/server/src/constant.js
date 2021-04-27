@@ -25,4 +25,4 @@ for (let [key, value] of Object.entries(AAtoCODE)) {
 }
 const CODEtoAA = Object.freeze(reverse);
 
-module.exports = { MSG, AAtoCODE, CODEtoAA }
+module.exports = { MSG, AAtoCODE, CODEtoAA };

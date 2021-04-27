@@ -4,6 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const { MSG, AAtoCODE } = require('./constant');
 const Game = require('./entity/gameObject');
+
 // const mainRouter = require(`./${version}/src/mainRouter`);
 // const problemRouter = require(`./${version}/src/problemRouter`);
 
@@ -12,6 +13,7 @@ const Game = require('./entity/gameObject');
 
 // app.use('/problem', problemRouter);
 // app.use('/', mainRouter)
+
 const version = 'v1';
 
 class ServerManager {
@@ -26,8 +28,7 @@ class ServerManager {
             console.log(`KSA Labyrinth : UNDER THE KSA listening on port ${port}`);
         }.bind(this));
 
-        this.socket();
-
+        this.makeSocket();
     }
 
     route() {
@@ -67,25 +68,23 @@ class ServerManager {
 
     }
 
-    socket() {
+    makeSocket() {
         this.io = socketio(this.server);
-        this.io.on(MSG.CONNECT_SERVER, socket => {
+        this.game.io = this.io;
+        this.io.on(MSG.CONNECT_SERVER, (socket) => {
             console.log(`${socket.id} | Connect Server`);
             this.game.sockets[socket.id] = socket;
 
             socket.on(MSG.JOIN_PLAY, this.joinPlay.bind(this, socket));
-            socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this, socket));
+
             socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));
 
             // socket.on(MSG.JOIN_SPECTATE, ); // TODO
             // socket.on(MSG.LEAVE_SPECTATE, ); // TODO
 
-            socket.on(MSG.HANDLE_INPUT, () => { console.log('hhelo') });
-            // socket.on(MSG.HANDLE_INPUT, this.handleInput.bind(this, socket));
+            socket.on(MSG.HANDLE_INPUT, this.handleInput.bind(this, socket));
 
             socket.on(MSG.DISCONNECT_SERVER, this.disconnect.bind(this, socket));
-
-
         });
     }
 
@@ -96,31 +95,23 @@ class ServerManager {
         console.log(AAtoCODE[AA], code);
         if (AAtoCODE[AA] === code) {
             console.log(`${socket.id} | Join Room Success`);
-            this.game.addPlayer(socket, AA, playerName); // TODO 
+            this.game.addPlayer(socket, AA, playerName); // TODO 한 반 당 한 명만
         } else {
             console.log(`${socket.id} | Join Room Failure`);
         }
     }
 
-    updateGame(socket) {
-        // client가 server에 요청? // TODO
-
-        // TODO 없애도 되나?
-    }
-
     leaveGame() {
-        var socket = this;
         this.game.removePlayer(socket);
     }
 
     handleInput(socket, command) {
         console.log(`${socket.id} | Handle Input`);
-        var command = data.command;
-        this.game.handleInput(socket, command);
+        // this.game.handleInput(socket, command);
     }
 
-    disconnect() {
-        var socket = this;
+    disconnect(socket) {
+        console.log(`${socket.id} | Disconnect`);
         delete this.game.sockets[socket.id];
     }
 }

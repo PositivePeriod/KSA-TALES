@@ -16,25 +16,24 @@ const MSG = Object.freeze({
 
 export class Network {
     constructor(map) {
-        const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
-        this.socket = io(`${socketProtocol}://${window.location.host}`, { reconnection: false });
-        this.map = map
-        window.addEventListener("beforeunload", this.disconnect.bind(this));
+        this.map = map;
 
-        this.commandQueue = new InputDeque();
+        const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
+        this.socket = io(`${socketProtocol}://${window.location.host}`);
+
         this.time = 1000;
+        this.commandQueue = new InputDeque();
         setInterval(this.sendCommand.bind(this), this.time);
+
+        window.addEventListener("beforeunload", this.disconnect.bind(this));
     }
 
     connect() {
         this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
-        // this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.UPDATE_GAME, () => { console.log('hhelo') });
+        this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
         this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
     }
-
-
 
     joinGame(AA, code, name) {
         var data = { 'AA': AA, 'code': code, 'name': name }
@@ -46,11 +45,11 @@ export class Network {
         console.log('updateGame', data);
         this.map.updateData(data);
         // this.map.data = data
-        this.map.draw()
+        this.map.draw();
     }
 
     tryToSendCommand(command) {
-        console.log('tryToSendCommand');
+        console.log('trytosend command is here', command);
         if (this.commandQueue.getSize() < 5) {
             console.log('tryToSendCommand Success');
             this.commandQueue.push(command);
@@ -58,15 +57,17 @@ export class Network {
     }
 
     sendCommand() {
+        console.log('sendCommand');
         var command = this.commandQueue.pop();
+        console.log('command here', command);
         if (command !== null) {
-            console.log('sendCommand');
+            console.log('sendCommand Success');
             this.socket.emit(MSG.HANDLE_INPUT, command);
         }
     }
 
     disconnect() {
-        this.socket.emit(MSG.DISCONNECT_SERVER);
+        this.socket.emit(MSG.DISCONNECT_SERVER, null);
     }
 
     disconnectFromServer() {

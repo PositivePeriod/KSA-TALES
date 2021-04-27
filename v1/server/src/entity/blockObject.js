@@ -64,28 +64,36 @@ class FloorBlock extends BlockObject {
     //addTrap(id){
     //  this.isTrap = True;
     //}
+    //canpass(){
+    //  if(this.isTrap) return False;
+    //  else return True;
+    //}
 }
 
 class ProblemBlock extends BlockObject {
     constructor(type, x, y, id, reward) {
         super(type, x, y);
         this.id = id;
-        this.reward = reward; // TODO set reward
+        this.reward = reward;// TODO set reward
+        this.flag=0; //열린 문제인지 아닌지 
     }
 
 
     showProblem(player) {
-        if (player.keyInput == 'space') {
-            //show quiz_id[this.id]
+        if(player.keyInput == 'space') {
+            //show quiz_id[th=is.id]
             var playerAnswer = null; // TODO get answer
             var problemAnswer = answer_id['quiz_id'];
-            if (playerAnswer == problemAnswer && player.isSolved(this.id) == false) {
+            if (playerAnswer === problemAnswer && player.isSolved(this.id) === false) {
                 player.solve(this.id);
                 player.getItems(this.reward);
                 //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
             } 
             else return False;
         }
+        //if(player.keyInput == 'h'){
+        //  
+        //}
         // TODO showProblem
         // quiz_id[this.id]
     }

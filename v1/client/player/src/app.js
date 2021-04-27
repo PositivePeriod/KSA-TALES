@@ -19,7 +19,7 @@ class App {
         this.showRange = { width: 5, height: 3 };
         var m = 2 * this.showRange.width + 1;
         var n = 2 * this.showRange.height + 1;
-        this.map = new MapObject(this.stageWidth, this.stageHeight, m, n);
+        this.map = new MapObject(this.stageWidth, this.stageHeight, m, n,this.ctx);
 
         this.commandKey = {
             'KeyUp': 'KeyW',
@@ -33,7 +33,6 @@ class App {
         this.network.connect();
         
         this.keyboard = new KeyboardManager();
-        console.log('this.commandKey', this.commandKey['KeyUp']);
         this.keyboard.listen(this.commandKey['KeyUp'], this.network.tryToSendCommand.bind(this.network));
         this.keyboard.listen(this.commandKey['KeyLeft'], this.network.tryToSendCommand.bind(this.network));
         this.keyboard.listen(this.commandKey['KeyDown'], this.network.tryToSendCommand.bind(this.network));
@@ -65,7 +64,7 @@ class App {
 
     draw() {
         this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
-        this.map.draw(this.ctx);
+        this.map.draw();
         this.player.draw(this.ctx);
     }
 }

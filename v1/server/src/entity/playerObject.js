@@ -10,6 +10,7 @@ class PlayerObject {
         this.y = y;
         this.solvedProblemIDs = []; // TODO problemIDS 다 없애고 키로 만들기
         this.inventory = [];
+        this.num_hint = 0;
         this.command = new InputDeque();
 
         this.dir = { x: 0, y: -1 };

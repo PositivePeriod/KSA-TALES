@@ -1,8 +1,9 @@
 // item의 type는 Key(K), Trap(T), Light(L), Attack(A) 네 종류가 있습니다(추가 가능)
-
+// 힌트 아이템 -> 모르는 문제가 있을 때 힌트 사용 
+// trap : 걸리면 어디 다녀와야 함
 
 class ItemObject {
-    constrctor(x, y, id, type, map) {
+    constructor(x, y, id, type, map) {
         this.x = x;
         this.y = y;
         this.id = id;
@@ -13,20 +14,27 @@ class ItemObject {
     use(id, player) {
         switch (this.type) {
             case 'K':
-                //blah blah??
+                //blah blah
         }
     }
 }
 
 class KeyItem extends ItemObject {
     constructor(id) {
-
+        this.id = id;
     }
 
     use(id) {
 
     }
 }
+
+//export class HintItem extends ItemObject {
+//  constructor(id, type){
+//      super(id, type)
+//  }
+//  
+//}
 
 export class FlashItem extends ItemObject {
     constructor(id, problemid, type) {
