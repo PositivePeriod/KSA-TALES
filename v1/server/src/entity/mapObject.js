@@ -49,6 +49,7 @@ export class MapObject {
                 data[x][y] = block !== null ? block.show() : null;
             }
         }
+        player.usingFlash = false
         return data
     }
 }
