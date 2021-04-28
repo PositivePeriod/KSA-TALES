@@ -1,5 +1,7 @@
 import { BlockObject } from './blockObject.js';
-
+const COLOR = {
+    'PLAYER': 'rgba(246, 213, 92, 1)'
+};
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, ctx) {
         this.stageWidth = stageWidth;
@@ -28,9 +30,9 @@ export class MapObject {
     initData(blueprint) {
         // if (blueprint === null || blueprint === '') {
         //     const data = new Array(this.x);
-        //     for (var x = 0; x < this.x; x++) {
+        //     for (let x = 0; x < this.x; x++) {
         //         data[x] = new Array(this.y);
-        //         for (var y = 0; y < this.y; y++) {
+        //         for (let y = 0; y < this.y; y++) {
         //             const block = new Block(
         //                 'ground',
         //                 this.x + x * this.size,
@@ -47,15 +49,15 @@ export class MapObject {
 
         //     this.x = Math.max(...blueprint.map(el => el.trim().length));
         //     this.y = blueprint.length;
-        //     for (var i = 0; i < this.y; i++) {
+        //     for (let i = 0; i < this.y; i++) {
         //         blueprint[i] = blueprint[i].trim();
         //         blueprint[i] += 'E'.repeat(this.x - blueprint[i].length);
         //     }
 
         //     const data = new Array(this.x);
-        //     for (var x = 0; x < this.x; x++) {
+        //     for (let x = 0; x < this.x; x++) {
         //         data[x] = new Array(this.y);
-        //         for (var y = 0; y < this.y; y++) {
+        //         for (let y = 0; y < this.y; y++) {
         //             const block = new Block(
         //                 blueprint[y][x],
         //                 this.x + x * this.size,
@@ -70,17 +72,16 @@ export class MapObject {
 
     }
 
-    updateData(newData) {
-        console.log(newData);
-        const data = Array.from(Array(this.x), () => Array(this.y).fill(null));
-        for (var x = 0; x < this.x; x++) {
-            for (var y = 0; y < this.y; y++) {
-                var blockType = (newData[x][y] !== null) ? newData[x][y]['type'] : 'N';
+    updateData(data) {
+        this.players = data.players;
+        this.mapData = Array.from(Array(this.x), () => Array(this.y).fill(null));
+        for (let x = 0; x < this.x; x++) {
+            for (let y = 0; y < this.y; y++) {
+                var blockType = (data.map[x][y] !== null) ? data.map[x][y]['type'] : 'N';
                 const block = new BlockObject(blockType, this.x + x * this.grid, this.y + y * this.grid, this.grid);
-                data[x][y] = block;
+                this.mapData[x][y] = block;
             }
         }
-        this.data = data
     }
 
     resize(stageWidth, stageHeight) {
@@ -91,8 +92,8 @@ export class MapObject {
         this.pos.y = stageHeight / 2 - this.grid * this.y / 2;
 
         if (this.data !== null) {
-            for (var x = 0; x < this.x; x++) {
-                for (var y = 0; y < this.y; y++) {
+            for (let x = 0; x < this.x; x++) {
+                for (let y = 0; y < this.y; y++) {
                     this.data[x][y].resize(this.pos.x + x * this.grid, this.pos.y + y * this.grid, this.grid);
                 }
             }
@@ -101,15 +102,24 @@ export class MapObject {
 
     draw() {
         this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
-        if (this.data !== null) {
-            for (var x = 0; x < this.x; x++) {
-                for (var y = 0; y < this.y; y++) {
-                    this.data[x][y].draw(this.ctx);
+        if (this.mapData !== null) {
+            for (let x = 0; x < this.x; x++) {
+                for (let y = 0; y < this.y; y++) {
+                    this.mapData[x][y].draw(this.ctx);
                 }
             }
-            this.data[(this.x - 1) / 2][(this.y - 1) / 2].drawPlayer(this.ctx);
-        }
 
+        }
+        this.players.forEach(player => {
+            this.ctx.strokeStyle = 'transparent';
+            this.ctx.fillStyle = COLOR['PLAYER'];
+            var radius = this.grid * 0.4;
+            var centerX = this.x + this.grid * player.x + this.grid * 0.5;
+            var centerY = this.y + this.grid * player.y + this.grid * 0.5;
+            this.ctx.beginPath()
+            this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            this.ctx.fill();
+        });
     }
 
     coordinate(x, y) { // TODO ????? 왜 만듬

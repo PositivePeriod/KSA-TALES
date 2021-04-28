@@ -3,62 +3,75 @@
 // trap : 걸리면 어디 다녀와야 함
 
 class ItemObject {
-    constructor(x, y, id, type, map) {
-        this.x = x;
-        this.y = y;
-        this.id = id;
+    constructor(type) {
         this.type = type;
-        this.map = map;
+        this.number = 0;
     }
 
-    use(id, player) {
-        switch (this.type) {
-            case 'K':
-                //blah blah
-        }
+    doesExist() {
+        return this.number !== 0;
+    }
+
+    add() {
+        this.number += 1;
+    }
+
+    use() {
+        this.number -= 1;
+        // TODO add logic
+    }
+
+    show() {
+        return { 'type': this.type, 'number': this.number }
     }
 }
 
 class KeyItem extends ItemObject {
-    constructor(id) {
-        this.id = id;
+    constructor(keyID) {
+        super('K');
+        this.keyID = keyID;
     }
 
-    use(id) {
+    use() {
 
     }
 }
 
-//export class HintItem extends ItemObject {
-//  constructor(id, type){
-//      super(id, type)
-//  }
-//  
-//}
+class HintItem extends ItemObject {
+    constructor() {
+        super('H');
+    }
 
-export class FlashItem extends ItemObject {
-    constructor(id, problemid, type) {
-        super(id,problemid,type)
+    use() {
+
+    }
+}
+
+class FlashItem extends ItemObject {
+    constructor() {
+        super('F');
     }
 
     use(player) {
         player.usingFlash = true;
+        
     }
 }
 
-export class TrapItem extends ItemObject {
-    constructor(id, problemid, type) {
-        super(id,problemid,type)
+class TrapItem extends ItemObject {
+    constructor() {
+        super('T');
     }
 
     use(player, currentBlock) {
-        if(currentBlock.type == 'F') { // 바닥에만 트랩 깔 수 있음
+        if (currentBlock.type == 'F') { // 바닥에만 트랩 깔 수 있음
             currentBlock.addTrap(this.id)
-        }
-        else {
+        } else {
             //'문, 문제상자, 벽에는 트랩을 놓을 수 없습니다.' 팝업
         }
+
+        // 어떤 칸에서 나갈 때 감지하기
     }
 }
 
-module.exports = { KeyItem, FlashItem, TrapItem };
+module.exports = { KeyItem, HintItem, FlashItem, TrapItem };

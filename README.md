@@ -13,5 +13,6 @@
 9. 사용자간 업적 공유 및 리더보드 제작
 10. 관리자용 관전 페이지
 11. 소리 넣기
+12. dictionary 용도는 initialize Map으로 바꾸기
 
 this.showRange, this.time의 경우 server와 client 수동 동기화 필요

@@ -33,7 +33,7 @@ export class Network {
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
         this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
-        // this.socket.on(MSG.SEND_PROBLEM, this.getProblemFromServer.bind(this))
+        this.socket.on(MSG.SEND_PROBLEM, this.getProblemFromServer.bind(this))
     }
 
     joinGame(AA, code, name) {
@@ -42,6 +42,7 @@ export class Network {
     }
 
     updateGame(data) {
+        console.log(data)
         this.map.updateData(data);
         this.map.draw();
     }
@@ -59,8 +60,8 @@ export class Network {
         }
     }
 
-    getProblemFromServer(problemdata) {
-        // TODO
+    getProblemFromServer(problemID) {
+        console.log(problemID);
     }
 
     disconnect() {

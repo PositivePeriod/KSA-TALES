@@ -10,8 +10,8 @@ const COLOR = {
 export class BlockObject {
     constructor(type, x, y, size) {
         this.type = type;
-        this.x = x;
-        this.y = y;
+        this.x = x; // pixelX
+        this.y = y; // pixelY
         this.size = size;
         this.margin = 0.5;
         this.color = COLOR[this.type];
@@ -27,17 +27,6 @@ export class BlockObject {
         ctx.strokeStyle = 'transparent';
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
-    }
-
-    drawPlayer(ctx) {
-        ctx.strokeStyle = 'transparent';
-        ctx.fillStyle = COLOR['PLAYER'];
-        var radius = this.size * 0.4;
-        var centerX = this.x + this.size * 0.5;
-        var centerY = this.y + this.size * 0.5;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.fill();
     }
 
     change(type) { // TODO 왜 만듬 

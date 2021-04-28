@@ -1,24 +1,25 @@
 class BlockObject {
-    constructor(type, x, y) {
+    constructor(type, x, y, roomIDs) {
         this.type = type; // W D F P // TODO Ex) this.type = 'W'; WallBlock 은 duplicate한 정보를 가지지만 일단은 편의를 위해 남길 것
-        this.x = x;
-        this.y = y;
+        this.x = x; // posX
+        this.y = y; // posY
+        this.roomIDs = roomIDs;
     }
 
     show() {
-        return { type: this.type, color: this.color }
+        return { type: this.type }
     }
 }
 
 class WallBlock extends BlockObject {
-    constructor(type, x, y) {
-        super(type, x, y);
+    constructor(x, y, roomIDs) {
+        super('W', x, y, roomIDs);
     }
 }
 
 class DoorBlock extends BlockObject {
-    constructor(type, x, y, problemIDs) {
-        super(type, x, y);
+    constructor(x, y, roomIDs, problemIDs) {
+        super('D', x, y, roomIDs);
         this.problemIDs = problemIDs;
     }
 }
@@ -40,8 +41,8 @@ class DoorBlock extends BlockObject {
 // }
 
 class FloorBlock extends BlockObject {
-    constructor(type, x, y) {
-        super(type, x, y);
+    constructor(x, y, roomIDs) {
+        super('F', x, y, roomIDs);
         //this.isTrap = false;
     }
     //addTrap(id){
@@ -54,26 +55,23 @@ class FloorBlock extends BlockObject {
 }
 
 class ProblemBlock extends BlockObject {
-    constructor(type, x, y, id, answer, reward) {
-        super(type, x, y);
+    constructor(x, y, roomIDs, id, answer, reward) {
+        super('P', x, y, roomIDs);
         this.id = id;
         this.answer = answer;
-        this.reward = reward;// TODO set reward
+        this.reward = reward; // TODO set reward
     }
 
-    showProblem(player) {
-        var playerAnswer = null; // TODO get answer
-        if (playerAnswer === this.answer && !(player.isSolved(this.id))) {
-            player.solve(this.id);
-            player.getItems(this.reward);
-            //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
-        } 
-        else return False;
-        //if(player.keyInput == 'h'){
-        //  
-        //}
-        // TODO showProblem
-        // quiz_id[this.id]
+    getProblem(player) {
+        console.log(player.AA);
+        // var playerAnswer = null; // TODO get answer
+        // if (playerAnswer === this.answer && !(player.isSolved(this.id))) {
+        //     player.solve(this.id);
+        //     player.getItems(his.reward);
+        //     //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
+        // } else {
+        //     return false;
+        // }
     }
 }
 

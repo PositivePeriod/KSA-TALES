@@ -12,7 +12,7 @@ const MSG = Object.freeze({
     LEAVE_SPECTATE: 'joinSpectate',
 
     UPDATE_GAME: 'updateGame',
-    DRAW: 'draw',
+    
     DISCONNECT_SERVER: 'disconnect',
 });
 

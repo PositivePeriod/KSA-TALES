@@ -70,8 +70,7 @@ class Game {
                 var newY = player.y + dir.y;
                 var block = this.map.getBlock(newX, newY);
                 if (block !== null && block instanceof ProblemBlock) {
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "id": this.id, "playerID": player.socketID });
-                    block.showProblem(player)
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "problemID": block.id });
                 }
                 break;
             case 'KeyAnswer':
@@ -83,7 +82,7 @@ class Game {
     }
 
     update() {
-        console.log('Game | Turn Change')
+        console.log(`Game | Turn Change | ${this.players.length}`)
         for (let [socketID, player] of Object.entries(this.players)) {
             this.updatePlayer(player);
         }
@@ -100,9 +99,18 @@ class Game {
     }
 
     show() {
+        var playerCoordList = [];
+        for (let [socketID, player] of Object.entries(this.players)) {
+            playerCoordList.push({
+                x: player.x,
+                y: player.y,
+                socketID: player.socketID,
+                AA: player.AA
+            })
+        }
         for (let [socketID, player] of Object.entries(this.players)) {
             var socket = this.sockets[socketID];
-            var visibleMap = this.map.show(player, this.showRange);
+            var visibleMap = this.map.show(player, this.showRange, playerCoordList);
             socket.emit(MSG.UPDATE_GAME, visibleMap);
         }
     }
