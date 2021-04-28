@@ -1,6 +1,6 @@
 const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
-const mapNumber = 1;
+const mapNumber = 2;
 const mapData = require(`../../data/mapData${mapNumber}.json`);
 
 class MapObject {

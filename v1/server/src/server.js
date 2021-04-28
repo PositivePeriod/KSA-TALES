@@ -60,7 +60,9 @@ class ServerManager {
         });
 
         this.app.use('/play', express.static(path.join(__dirname, `../../../${version}/client/player`)));
+        // this.app.use('/spectate', express.static(path.join(__dirname, `../../../${version}/client/spectator`)));
         this.app.use('/assets', express.static(path.join(__dirname, `../assets`)));
+        this.app.use('/play/assets', express.static(path.join(__dirname, `../problems`)));
 
         this.app.use(function(req, res, next) {
             res.status(404).send('Sorry cant find that!');

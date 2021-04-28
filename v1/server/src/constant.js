@@ -6,13 +6,12 @@ const MSG = Object.freeze({
     LEAVE_PLAY: 'leavePlay',
 
     SEND_PROBLEM: 'sendProblem',
-    SEND_ANSWER: 'sendAnswer',
 
     JOIN_SPECTATE: 'joinSpectate',
     LEAVE_SPECTATE: 'joinSpectate',
 
     UPDATE_GAME: 'updateGame',
-    
+
     DISCONNECT_SERVER: 'disconnect',
 });
 

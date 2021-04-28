@@ -47,8 +47,6 @@ class App {
 
         var pseudoInput = { 'AA': 'AA1_1', 'code': 'CDQE', 'name': 'Lets go' } // TODO
         this.network.joinGame(pseudoInput.AA, pseudoInput.code, pseudoInput.name);
-
-
     }
 
     resize() {
@@ -59,15 +57,7 @@ class App {
         this.ctx.scale(this.pixelRatio, this.pixelRatio);
 
         this.map.resize(this.stageWidth, this.stageHeight);
-
-        // draw?
     }
-
-    // draw() {
-    //     this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
-    //     this.map.draw();
-    //     this.player.draw(this.ctx);
-    // }
 }
 
 window.onload = () => { new App(); }

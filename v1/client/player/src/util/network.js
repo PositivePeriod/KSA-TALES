@@ -1,18 +1,5 @@
 import { InputDeque } from './deque.js';
-const MSG = Object.freeze({
-    CONNECT_SERVER: 'connection', // no need
-
-    JOIN_PLAY: 'joinPlay',
-    HANDLE_INPUT: 'handleInput',
-    LEAVE_PLAY: 'leavePlay',
-
-    JOIN_SPECTATE: 'joinSpectate',
-    LEAVE_SPECTATE: 'joinSpectate',
-
-    UPDATE_GAME: 'updateGame',
-
-    DISCONNECT_SERVER: 'disconnect',
-})
+import { MSG } from '../constant.js';
 
 export class Network {
     constructor(map) {
@@ -30,10 +17,10 @@ export class Network {
 
     connect() {
         this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
-        this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
-        this.socket.on(MSG.SEND_PROBLEM, this.getProblemFromServer.bind(this))
+        this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
+        this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
+        this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this))
     }
 
     joinGame(AA, code, name) {
@@ -42,7 +29,6 @@ export class Network {
     }
 
     updateGame(data) {
-        console.log(data)
         this.map.updateData(data);
         this.map.draw();
     }
@@ -60,8 +46,21 @@ export class Network {
         }
     }
 
-    getProblemFromServer(problemID) {
+    getProblem(problemID) {
         console.log(problemID);
+        const asset = new Image();
+        asset.src = `assets/${problemID}.png`;
+        asset.onload = () => {
+            var problem = document.getElementById('problem');
+            while (problem.firstChild) {
+                problem.removeChild(problem.lastChild);
+            }
+            problem.appendChild(asset);
+            problem.classList.remove('invisible');
+            problem.classList.add('visible');
+            // this.socket.emit(MSG.SEND_PROBLEM, data);
+        };
+
     }
 
     disconnect() {

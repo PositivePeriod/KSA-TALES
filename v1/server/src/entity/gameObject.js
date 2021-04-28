@@ -11,7 +11,6 @@ const MOVE = Object.freeze({
     'KeyRight': { x: 1, y: 0 }
 })
 
-
 class Game {
     constructor() {
         this.sockets = {};
@@ -70,7 +69,8 @@ class Game {
                 var newY = player.y + dir.y;
                 var block = this.map.getBlock(newX, newY);
                 if (block !== null && block instanceof ProblemBlock) {
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "problemID": block.id });
+                    console.log("interact observed");
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, block.id);
                 }
                 break;
             case 'KeyAnswer':
