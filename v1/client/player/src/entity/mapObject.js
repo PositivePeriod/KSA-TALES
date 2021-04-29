@@ -78,7 +78,9 @@ export class MapObject {
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
                 var blockType = (data.map[x][y] !== null) ? data.map[x][y]['type'] : 'N';
-                const block = new BlockObject(blockType, this.x + x * this.grid, this.y + y * this.grid, this.grid);
+                var light = (data.map[x][y] !== null) ? data.map[x][y]['light'] : false;
+                var showTrap = (data.map[x][y] !== null) ? data.map[x][y]['showTrap'] : false;
+                const block = new BlockObject(blockType, light, showTrap, this.x + x * this.grid, this.y + y * this.grid, this.grid);
                 this.mapData[x][y] = block;
             }
         }

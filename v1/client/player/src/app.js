@@ -28,7 +28,10 @@ class App {
             'KeyDown': 'KeyS',
             'KeyRight': 'KeyD',
             'KeyInteract': 'Space',
-            'KeyAnswer': 'Enter'
+            'KeyAnswer': 'Enter',
+            'KeyTrap' : 'Digit1',
+            'KeyFlash' : 'Digit2',
+            'KeyHint' : 'Digit3'
         }
         this.network = new Network(this.map);
         this.network.connect();
@@ -40,6 +43,9 @@ class App {
         this.keyboard.listen(this.commandKey['KeyRight'], this.network.tryToSendCommand.bind(this.network, "KeyRight"));
         this.keyboard.listen(this.commandKey['KeyInteract'], this.network.tryToSendCommand.bind(this.network, "KeyInteract"));
         this.keyboard.listen(this.commandKey['KeyAnswer'], this.network.tryToSendCommand.bind(this.network, "KeyAnswer"));
+        this.keyboard.listen(this.commandKey['KeyTrap'], this.network.tryToSendCommand.bind(this.network, "KeyTrap"));
+        this.keyboard.listen(this.commandKey['KeyFlash'], this.network.tryToSendCommand.bind(this.network, "KeyFlash"));
+        this.keyboard.listen(this.commandKey['KeyHint'], this.network.tryToSendCommand.bind(this.network, "KeyHint"));
         this.keyboard.activate();
 
         window.addEventListener('resize', this.resize.bind(this), false);

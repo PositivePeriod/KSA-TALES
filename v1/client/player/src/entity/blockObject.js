@@ -4,17 +4,24 @@ const COLOR = {
     'D': 'rgba(237, 85, 59, 1)',
     'P': 'rgba(60, 174, 121, 1)',
     'N': 'rgba(0, 0, 0, 1)',
-    'PLAYER': 'rgba(246, 213, 92, 1)'
+    'TRAP': 'rgba(100, 100, 100, 1)',
+    'LIGHT': 'rgba(200, 200, 100, 1)'
 };
 
 export class BlockObject {
-    constructor(type, x, y, size) {
+    constructor(type, light, showTrap, x, y, size) {
         this.type = type;
+        this.light = light;
+        this.showTrap = showTrap
         this.x = x; // pixelX
         this.y = y; // pixelY
         this.size = size;
         this.margin = 0.5;
-        this.color = COLOR[this.type];
+        if (this.light) {
+            this.color = COLOR['LIGHT']
+        } else {
+            this.color = COLOR[this.type];
+        }
     }
 
     resize(x, y, size) {
@@ -27,6 +34,16 @@ export class BlockObject {
         ctx.strokeStyle = 'transparent';
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+        if (this.showTrap) {
+            ctx.strokeStyle = 'transparent';
+            ctx.fillStyle = COLOR['TRAP'];
+            var radius = this.size * 0.4;
+            var centerX = this.x + this.size * 0.5;
+            var centerY = this.y + this.size * 0.5;
+            ctx.beginPath()
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fill();
+        }
     }
 
     change(type) { // TODO 왜 만듬 

@@ -20,7 +20,8 @@ export class Network {
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this))
+        this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this));
+        this.socket.on(MSG.SEND_HINT, this.getHint.bind(this));
     }
 
     joinGame(AA, code, name) {
@@ -61,6 +62,23 @@ export class Network {
             // this.socket.emit(MSG.SEND_PROBLEM, data);
         };
 
+    }
+
+    getHint(problemID) {
+        // TODO / should be changed to load hint image
+        console.log(problemID);
+        const asset = new Image();
+        asset.src = `assets/${problemID}.png`;
+        asset.onload = () => {
+            var problem = document.getElementById('problem');
+            while (problem.firstChild) {
+                problem.removeChild(problem.lastChild);
+            }
+            problem.appendChild(asset);
+            problem.classList.remove('invisible');
+            problem.classList.add('visible');
+            // this.socket.emit(MSG.SEND_PROBLEM, data);
+        };
     }
 
     disconnect() {

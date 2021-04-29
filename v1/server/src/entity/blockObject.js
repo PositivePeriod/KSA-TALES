@@ -6,8 +6,8 @@ class BlockObject {
         this.roomIDs = roomIDs;
     }
 
-    show() {
-        return { type: this.type }
+    show(player) {
+        return { type: this.type, light: false, showTrap: false }
     }
 }
 
@@ -18,9 +18,9 @@ class WallBlock extends BlockObject {
 }
 
 class DoorBlock extends BlockObject {
-    constructor(x, y, roomIDs, problemIDs) {
+    constructor(x, y, roomIDs, keyIDs) {
         super('D', x, y, roomIDs);
-        this.problemIDs = problemIDs;
+        this.keyIDs = keyIDs;
     }
 }
 
@@ -43,15 +43,30 @@ class DoorBlock extends BlockObject {
 class FloorBlock extends BlockObject {
     constructor(x, y, roomIDs) {
         super('F', x, y, roomIDs);
-        //this.isTrap = false;
+        this.trapnum = 0;
     }
-    //addTrap(id){
-    //  this.isTrap = True;
-    //}
-    //canpass(){
-    //  if(this.isTrap) return False;
-    //  else return True;
-    //}
+
+    existTrap() {
+        return this.trapnum > 0
+    }
+
+    addTrap() {
+        this.trapnum++;
+    }
+
+    deleteTrap() {
+        this.trapnum--;
+    }
+
+    show(player) {
+        if (player.usingFlash && player.inFlashArea(this)) {
+            console.log("Trap detected");
+            return {type: this.type, light: true, showTrap: this.existTrap()}
+        } else {
+            return {type: this.type, light: false, showTrap: false}
+        }
+    }
+    
 }
 
 class ProblemBlock extends BlockObject {
@@ -62,8 +77,8 @@ class ProblemBlock extends BlockObject {
         this.reward = reward; // TODO set reward
     }
 
-    getProblem(player) {
-        console.log(player.AA);
+    //getProblem(player) {
+      //  console.log(player.AA);
         // var playerAnswer = null; // TODO get answer
         // if (playerAnswer === this.answer && !(player.isSolved(this.id))) {
         //     player.solve(this.id);
@@ -72,7 +87,7 @@ class ProblemBlock extends BlockObject {
         // } else {
         //     return false;
         // }
-    }
+    //}
 }
 
 module.exports = { WallBlock, DoorBlock, FloorBlock, ProblemBlock };

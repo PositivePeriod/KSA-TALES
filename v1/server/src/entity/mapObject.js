@@ -57,7 +57,7 @@ class MapObject {
             for (let dy = -range.height; dy <= range.height; dy++) {
                 var block = this.getBlock(playerX + dx, playerY + dy);
                 var isVisible = (block !== null) && ((roomIDs.filter(roomID => block.roomIDs.includes(roomID)).length > 0));
-                data[range.width + dx][range.height + dy] = (isVisible) ? block.show() : null;
+                data[range.width + dx][range.height + dy] = (isVisible) ? block.show(player) : null;
             }
         }
         const visiblePlayer = [];

@@ -27,7 +27,7 @@
     ],
     "problem": {
         "P1": { "id": "ocean", "answer": "tuna", "reward": ["K1", "Trap", "Flash"] },
-        "P2": { "id": "mountain", "answer": "KSA", "reward": ["K2", "Trap", "Trap"] },
+        "P2": { "id": "mountain", "answer": "KSA", "reward": ["K2", "Trap", "Trap", "Hint"] },
         "P3": { "id": "sky", "answer": "zeus", "reward": ["K3", "Flash"] }
     },
     "door": {

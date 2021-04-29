@@ -1,4 +1,4 @@
-const { ProblemBlock } = require("./blockObject");
+const { FloorBlock, ProblemBlock } = require("./blockObject");
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
 
@@ -45,6 +45,9 @@ class Game {
     }
 
     updatePlayer(player) {
+        player.usingFlash = false;
+        var nextX = player.x + player.dir.x;
+        var nextY = player.y + player.dir.y;
         var command = player.commandQueue.pop();
         switch (command) {
             case null:
@@ -53,44 +56,72 @@ class Game {
             case 'KeyDown':
             case 'KeyLeft':
             case 'KeyRight':
-                var dir = MOVE[command];
-                player.dir = dir;
-                var newX = player.x + dir.x;
-                var newY = player.y + dir.y;
-                var block = this.map.getBlock(newX, newY);
-                if (block !== null && player.canPass(block)) {
-                    player.x = newX;
-                    player.y = newY;
+                if (player.canMove) {
+                    var dir = MOVE[command];
+                    player.dir = dir;
+                    var newX = player.x + dir.x;
+                    var newY = player.y + dir.y;
+                    var block = this.map.getBlock(newX, newY);
+                    if (block !== null && player.canPass(block)) {
+                        player.x = newX;
+                        player.y = newY;
+                        if (block instanceof FloorBlock && block.existTrap()) {
+                            player.canMove = false;
+                            block.deleteTrap();
+                            this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap");
+                        }
+                    }
                 }
                 break;
             case 'KeyInteract':
                 var dir = player.dir;
-                var newX = player.x + dir.x;
-                var newY = player.y + dir.y;
-                var block = this.map.getBlock(newX, newY);
+                var block = this.map.getBlock(nextX, nextY);
                 if (block !== null && block instanceof ProblemBlock) {
-                    console.log("interact observed");
+                    player.canMove = false;
                     this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, block.id);
                 }
                 break;
             case 'KeyAnswer':
-                console.log('Error | No need key')
+                console.log('Error | No need key');
+                break;
+            case 'KeyTrap':
+                if (player.trap > 0) {
+                    var block = this.map.getBlock(nextX, nextY);
+                    if (block !== null && block instanceof FloorBlock) {
+                        player.useTrap(block);
+                    }
+                }
+                break;
+            case 'KeyFlash':
+                if (player.flash > 0) {
+                    player.useFlash();
+                    console.log("Used Flash");
+                }
+                break;
+            case 'KeyHint':
+                if (player.hint > 0) {
+                    var block = this.map.getBlock(nextX, nextY);
+                    if (block !== null && block instanceof ProblemBlock) {
+                        player.useHint();
+                        this.sockets[player.socketID].emit(MSG.SEND_HINT, block.id);
+                    }
+                }
                 break;
             default:
-                console.log('Error | Impossible key')
+                console.log('Error | Impossible key');
         }
     }
 
     update() {
-        console.log(`Game | Turn Change | ${this.players.length}`)
+        console.log(`Game | Turn Change | ${Object.keys(this.players).length} Players`)
         for (let [socketID, player] of Object.entries(this.players)) {
             this.updatePlayer(player);
         }
 
-        for (let [socketID, player] of Object.entries(this.sockets)) {
+        // for (let [socketID, player] of Object.entries(this.sockets)) {
             // flashlight, trap
             // 만약 문제 봐야 할 상황이면 문제도 띄워줌
-        }
+        // }
         this.show();
     }
 
