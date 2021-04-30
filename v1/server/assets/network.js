@@ -1,5 +1,5 @@
-import { InputDeque } from './deque.js';
-import { MSG } from '../constant.js';
+import { InputDeque } from '../../client/player/src/util/deque.js';
+import { MSG } from '../../client/player/src/constant.js';
 
 export class Network {
     constructor(map) {
@@ -48,6 +48,9 @@ export class Network {
         }
     }
 
+    getAssets(){
+        
+    }
 
     getProblem(problemID) {
         console.log(problemID);

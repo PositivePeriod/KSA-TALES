@@ -4,23 +4,30 @@ import { MapObject } from './entity/mapObject.js';
 
 class App {
     constructor() {
-        this.canvas = document.createElement('canvas');
-        document.body.appendChild(this.canvas);
+        this.frame = document.getElementById('gameFrame');
+        this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
 
-        this.stageWidth = document.body.clientWidth;
-        this.stageHeight = document.body.clientHeight;
+        var stageWidth = document.body.clientWidth;
+        var stageHeight = document.body.clientHeight;
 
-        this.pixelRatio = 1;
-        // this.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
+        this.grid = Math.min(stageWidth / this.m, stageHeight / this.n);
+        this.stageWidth = this.grid * this.m;
+        this.stageHeight = this.grid * this.n;
+
+        this.frame.width = this.stageWidth * this.pixelRatio;
+        this.frame.height = this.stageHeight * this.pixelRatio;
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
-        this.ctx.scale(this.pixelRatio, this.pixelRatio);
+
+        this.pixelRatio = 1; // TODO No need?
+        // this.pixelRatio = window.devicePixelRatio || 1; // TODO error check?
+        // this.ctx.scale(this.pixelRatio, this.pixelRatio);
 
         this.showRange = { width: 5, height: 3 };
-        var m = 2 * this.showRange.width + 1;
-        var n = 2 * this.showRange.height + 1;
-        this.map = new MapObject(this.stageWidth, this.stageHeight, m, n, this.ctx);
+        this.m = 2 * this.showRange.width + 1; // blockX
+        this.n = 2 * this.showRange.height + 1; // blockY
+        this.map = new MapObject(this.stageWidth, this.stageHeight, this.m, this.n, this.ctx);
 
         this.commandKey = {
             'KeyUp': 'KeyW',
@@ -29,9 +36,9 @@ class App {
             'KeyRight': 'KeyD',
             'KeyInteract': 'Space',
             'KeyAnswer': 'Enter',
-            'KeyTrap' : 'Digit1',
-            'KeyFlash' : 'Digit2',
-            'KeyHint' : 'Digit3'
+            'KeyTrap': 'Digit1',
+            'KeyFlash': 'Digit2',
+            'KeyHint': 'Digit3'
         }
         this.network = new Network(this.map);
         this.network.connect();
@@ -56,13 +63,25 @@ class App {
     }
 
     resize() {
-        this.stageWidth = document.body.clientWidth;
-        this.stageHeight = document.body.clientHeight;
+        var stageWidth = document.body.clientWidth;
+        var stageHeight = document.body.clientHeight;
+
+        this.grid = Math.round(Math.min(stageWidth / this.m, stageHeight / this.n));
+        this.stageWidth = this.grid * this.m;
+        this.stageHeight = this.grid * this.n;
+
+        this.frame.width = this.stageWidth * this.pixelRatio;
+        this.frame.height = this.stageHeight * this.pixelRatio;
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
-        this.ctx.scale(this.pixelRatio, this.pixelRatio);
 
-        this.map.resize(this.stageWidth, this.stageHeight);
+        console.log('frame', this.frame.width, this.frame.height);
+        console.log('canvas', this.canvas.width, this.canvas.height);
+        console.log('body', document.body.clientWidth, document.body.clientHeight, 'stage', this.stageWidth, this.stageHeight);
+
+        // this.ctx.scale(this.pixelRatio, this.pixelRatio);
+
+        this.map.resize(this.stageWidth, this.stageHeight, this.grid);
     }
 }
 

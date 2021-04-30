@@ -10,6 +10,8 @@
     outline: 0;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 html {
@@ -21,7 +23,7 @@ html {
 body {
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: black;
 }
 
 a {
@@ -48,6 +50,21 @@ a:hover {
 .center {
     margin: auto;
     width: 50%;
+}
+
+#gameFrame {
+    width: 100%;
+    height: 100%;
+    /*display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+#gameCanvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid green;
 }
 
 #problem {

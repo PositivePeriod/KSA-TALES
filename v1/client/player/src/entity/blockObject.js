@@ -1,9 +1,11 @@
+import { getAsset } from './assets.js';
+
 const COLOR = {
     'F': 'rgba(23, 63, 95, 0.7)',
     'W': 'rgba(32, 99, 155, 1)',
     'D': 'rgba(237, 85, 59, 1)',
     'P': 'rgba(60, 174, 121, 1)',
-    'N': 'rgba(0, 0, 0, 1)',
+    'N': 'rgba(30, 30, 30, 1)',
     'TRAP': 'rgba(100, 100, 100, 1)',
     'LIGHT': 'rgba(200, 200, 100, 1)'
 };
@@ -31,6 +33,16 @@ export class BlockObject {
         this.size = size;
     }
 
+
+
+    drawImg(ctx) {
+        var img = new Image();
+        img.src = "../path.png";
+
+
+        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx.drawImage(img, 8, 8);
+    }
     draw(ctx) {
         ctx.lineJoin = "round";
         ctx.lineWidth = this.corner;

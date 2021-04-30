@@ -32,11 +32,8 @@ class Game {
     }
 
     prepareAchievement() {
-        this.beUsed = {};
-        this.bePlayer = {};
-        for (var [beid, be] of Object.entries(this.map.achievement.blockEvents)) {
-            this.beUsed[beid] = be.showrank;
-            this.bePlayer[beid] = [];
+        for (var [blockEventID, blockEvent] of Object.entries(this.map.achievement.blockEvents)) {
+            blockEvent.rankings = [];
         }
     }
 
@@ -86,12 +83,12 @@ class Game {
                     player.x = newX;
                     player.y = newY;
                     var newPos = [newX, newY];
-                    for (let [beid, be] of Object.entries(this.map.achievement.blockEvents)) {
-                        if (this.beUsed[beid] > 0 && !(player.socketID in this.bePlayer[beid]) && be.blocks.some(block => isEqual(block, newPos))) {
-                            this.io.emit(MSG.SEND_ACHIEVEMENT, player.AA + ' ' + be.message);
-                            console.log(player.AA + ' ' + be.message);
-                            this.beUsed[beid]--;
-                            this.bePlayer[beid].push(player.socketID)
+                    for (let [blockEventID, blockEvent] of Object.entries(this.map.achievement.blockEvents)) {
+                        if (blockEvent.leftrank > 0 && !(blockEvent.rankings.includes(player.socketID)) && blockEvent.blocks.some(block => isEqual(block, newPos))) {
+                            this.io.emit(MSG.SEND_ACHIEVEMENT, player.AA + ' ' + blockEvent.message);
+                            console.log(player.AA + ' ' + blockEvent.message);
+                            blockEvent.leftrank--;
+                            blockEvent.rankings.push(player.socketID);
                         }
                     }
                 }

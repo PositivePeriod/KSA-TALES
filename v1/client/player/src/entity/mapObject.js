@@ -3,6 +3,10 @@ const COLOR = {
     'PLAYER': 'rgba(246, 213, 92, 1)'
 };
 
+const objectImgs = {
+    'W': 'Wall1',
+}
+
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, ctx) {
         this.stageWidth = stageWidth;
@@ -12,14 +16,6 @@ export class MapObject {
         this.ctx = ctx;
 
         this.data = null;
-        // if (data !== undefined) {
-        //     data.then(function(resolvedData) {
-        //         this.initData(resolvedData);
-        //     }.bind(this));
-        // } else {
-        //     this.initData(null);
-        // }
-
         this.ratio = 0.8;
         this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
         this.pos = {
@@ -28,50 +24,7 @@ export class MapObject {
         }
     }
 
-    initData(blueprint) {
-        // if (blueprint === null || blueprint === '') {
-        //     const data = new Array(this.x);
-        //     for (let x = 0; x < this.x; x++) {
-        //         data[x] = new Array(this.y);
-        //         for (let y = 0; y < this.y; y++) {
-        //             const block = new Block(
-        //                 'ground',
-        //                 this.x + x * this.size,
-        //                 this.y + y * this.size,
-        //                 this.size 
-        //             );
-        //             data[x][y] = block;
-        //         }
-        //     }
-        //     this.data = data
 
-        // } else {
-        //     blueprint = blueprint.split('\n');
-
-        //     this.x = Math.max(...blueprint.map(el => el.trim().length));
-        //     this.y = blueprint.length;
-        //     for (let i = 0; i < this.y; i++) {
-        //         blueprint[i] = blueprint[i].trim();
-        //         blueprint[i] += 'E'.repeat(this.x - blueprint[i].length);
-        //     }
-
-        //     const data = new Array(this.x);
-        //     for (let x = 0; x < this.x; x++) {
-        //         data[x] = new Array(this.y);
-        //         for (let y = 0; y < this.y; y++) {
-        //             const block = new Block(
-        //                 blueprint[y][x],
-        //                 this.x + x * this.size,
-        //                 this.y + y * this.size,
-        //                 this.size
-        //             );
-        //             data[x][y] = block;
-        //         }
-        //     }
-        //     this.data = data
-        // }
-
-    }
 
     updateData(data) {
         this.players = data.players;
@@ -87,10 +40,10 @@ export class MapObject {
         }
     }
 
-    resize(stageWidth, stageHeight) {
+    resize(stageWidth, stageHeight, grid) {
         this.stageWidth = stageWidth;
         this.stageHeight = stageHeight;
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
+        this.grid = grid * this.ratio;
         this.pos.x = stageWidth / 2 - this.grid * this.x / 2;
         this.pos.y = stageHeight / 2 - this.grid * this.y / 2;
 
@@ -102,6 +55,24 @@ export class MapObject {
             }
         }
     }
+
+    getProblem(problemID) {
+        console.log(problemID);
+        const asset = new Image();
+        asset.src = `http://localhost:8000/assets/${problemID}.png`;
+        asset.onload = () => {
+            var problem = document.getElementById('problem');
+            while (problem.firstChild) {
+                problem.removeChild(problem.lastChild);
+            }
+            problem.appendChild(asset);
+            problem.classList.remove('invisible');
+            problem.classList.add('visible');
+            // this.socket.emit(MSG.SEND_PROBLEM, data);
+        };
+
+    }
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);

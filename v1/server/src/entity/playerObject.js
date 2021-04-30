@@ -19,6 +19,7 @@ class PlayerObject {
         this.trap = 100;
         this.flash = 100;
         this.hint = 1;
+        this.trapdeleter = 100;
 
         this.commandQueue = new InputDeque();
         this.dir = { x: 0, y: -1 };

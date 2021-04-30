@@ -36,7 +36,7 @@
     },
     "achievement": {
         "blockEvents": {
-            "BE1": { "blocks": [[5,2], [5,3]], "message": "First Entered 2nd room", "showrank": 3}
+            "BE1": { "blocks": [[5,2], [5,3]], "message": "First Entered 2nd room", "leftrank": 3}
         }
     }
 }
