@@ -21,7 +21,7 @@ class Game {
         // this.playSocket = {}; // TODO
         // this.spectateSocket = {}; // TODO
 
-        this.time = 300;
+        this.time = 20;
         this.map = new MapObject();
         this.showRange = { width: 5, height: 3 };
         this.io = null;
@@ -133,7 +133,7 @@ class Game {
     }
 
     update() {
-        console.log(`Game | Turn Change | ${Object.keys(this.players).length} Players`)
+        // console.log(`Game | Turn Change | ${Object.keys(this.players).length} Players`)
         for (let [socketID, player] of Object.entries(this.players)) {
             this.updatePlayer(player);
         }

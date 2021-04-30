@@ -1,4 +1,4 @@
-import { getAsset } from './assets.js';
+import { getAsset } from '../util/assets.js';
 
 const COLOR = {
     'F': 'rgba(23, 63, 95, 0.7)',
@@ -10,6 +10,10 @@ const COLOR = {
     'LIGHT': 'rgba(200, 200, 100, 1)'
 };
 
+const objectImgsname = {
+    'W': 'Wall1.png',
+    'P': 'Problem.png'
+}
 export class BlockObject {
     constructor(type, light, showTrap, x, y, size) {
         this.type = type;
@@ -20,6 +24,7 @@ export class BlockObject {
         this.size = size;
         this.margin = 0.5;
         this.corner = 20;
+        this.imgname = objectImgsname[type];
         if (this.light) {
             this.color = COLOR['LIGHT']
         } else {
@@ -36,14 +41,15 @@ export class BlockObject {
 
 
     drawImg(ctx) {
-        var img = new Image();
-        img.src = "../path.png";
-
-
-        var ctx = document.getElementById('canvas').getContext('2d');
-        ctx.drawImage(img, 8, 8);
+        var img = getAsset(this.imgname);
+        ctx.beginPath()
+        ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
     }
     draw(ctx) {
+        if(this.imgname !== undefined){
+            this.drawImg(ctx)
+            return
+        }
         ctx.lineJoin = "round";
         ctx.lineWidth = this.corner;
         ctx.strokeStyle = 'transparent';

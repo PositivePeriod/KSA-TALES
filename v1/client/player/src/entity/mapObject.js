@@ -3,9 +3,7 @@ const COLOR = {
     'PLAYER': 'rgba(246, 213, 92, 1)'
 };
 
-const objectImgs = {
-    'W': 'Wall1',
-}
+
 
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, ctx) {

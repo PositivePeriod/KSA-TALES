@@ -1,9 +1,11 @@
 import { Network } from './util/network.js';
 import { KeyboardManager } from './util/inputManager.js';
 import { MapObject } from './entity/mapObject.js';
+import { downloadAssets } from './util/assets.js';
 
 class App {
     constructor() {
+        downloadAssets();
         this.frame = document.getElementById('gameFrame');
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
