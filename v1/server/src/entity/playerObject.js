@@ -2,7 +2,7 @@ const InputDeque = require("../util/deque");
 const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObject");
 
 // TODO / define const Flash area of player
-const FlashArea = [[1,1], [1,0], [1,-1], [0,1], [0,-1], [-1,1], [-1,0], [-1,-1]];
+const FlashArea = [[1,1],[1,0],[1,-1],[2,2],[2,1],[2,0],[2,-1],[2,-2]];
 const isEqual = (first, second) => {
     return JSON.stringify(first) === JSON.stringify(second);
 }
@@ -60,8 +60,22 @@ class PlayerObject {
         }
     }
 
+    getFlashArea(){
+        var dirFlashArea = [];
+        var temp = {
+            x:this.dir.x + this.dir.y*-1,
+            y:this.dir.y + this.dir.x*-1
+        }
+        for(var i =0;i<8;i++){
+            dirFlashArea.push([FlashArea[i][0]*this.dir.x +  FlashArea[i][1]*this.dir.y , FlashArea[i][0]*this.dir.y +  -FlashArea[i][1]*this.dir.x]);
+        }
+        return dirFlashArea
+    }
+
     inFlashArea(block) {
-        return FlashArea.some(area => isEqual(area, [block.x - this.x, block.y - this.y]))
+        var tempFlashArea = this.getFlashArea()
+        console.log(tempFlashArea)
+        return tempFlashArea.some(area => isEqual(area, [block.x - this.x, block.y - this.y]))
     }
 
     useTrap(block) {
