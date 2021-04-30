@@ -16,7 +16,7 @@ class PlayerObject {
         this.y = y;
 
         this.key = ["K1"];
-        this.trap = 1;
+        this.trap = 100;
         this.flash = 100;
         this.hint = 1;
 

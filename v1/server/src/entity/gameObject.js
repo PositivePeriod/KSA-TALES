@@ -49,6 +49,7 @@ class Game {
         var nextX = player.x + player.dir.x;
         var nextY = player.y + player.dir.y;
         var command = player.commandQueue.pop();
+        if (!(player.canMove)) {return }
         switch (command) {
             case null:
                 break;
@@ -56,21 +57,19 @@ class Game {
             case 'KeyDown':
             case 'KeyLeft':
             case 'KeyRight':
-                if (player.canMove) {
-                    var dir = MOVE[command];
-                    player.dir = dir;
-                    var newX = player.x + dir.x;
-                    var newY = player.y + dir.y;
-                    var block = this.map.getBlock(newX, newY);
-                    if (block !== null && player.canPass(block)) {
-                        player.x = newX;
-                        player.y = newY;
-                        if (block instanceof FloorBlock && block.existTrap()) {
-                            player.canMove = false;
-                            block.deleteTrap();
-                            this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap");
-                        }
-                    }
+                var dir = MOVE[command];
+                player.dir = dir;
+                var newX = player.x + dir.x;
+                var newY = player.y + dir.y;
+                var curblock = this.map.getBlock(player.x, player.y)
+                var newblock = this.map.getBlock(newX, newY);
+                if (curblock instanceof FloorBlock && curblock.existTrap()) {
+                    player.canMove = false;
+                    curblock.deleteTrap();
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap");
+                } else if (newblock !== null && player.canPass(newblock)) {
+                    player.x = newX;
+                    player.y = newY;
                 }
                 break;
             case 'KeyInteract':
