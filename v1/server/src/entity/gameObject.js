@@ -21,7 +21,7 @@ class Game {
         // this.playSocket = {}; // TODO
         // this.spectateSocket = {}; // TODO
 
-        this.time = 20;
+        this.time = 100;
         this.map = new MapObject();
         this.showRange = { width: 5, height: 3 };
         this.io = null;

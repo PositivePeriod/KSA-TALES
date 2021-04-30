@@ -4,7 +4,7 @@ const ASSET_NAMES = [
     'Wall1.png',
     'Wall2.png',
     'Problem.png',
-    
+
 
 ];
 
@@ -16,15 +16,20 @@ function downloadAsset(assetName) {
         asset.src = `http://localhost:8000/assets/${assetName}`;
         asset.onload = () => {
             assets[assetName] = asset;
-            console.log(assets,'asdflhasdfklfsdajkl');
             resolve();
         };
     });
 }
 
-export const downloadAssets = () => { Promise.all(ASSET_NAMES.map(downloadAsset)).then(console.info("All essets downloaded")); };
+export const downloadAssets = (callback) => {
+    Promise.all(ASSET_NAMES.map(downloadAsset)).then(
+        () => {
+            console.info("All essets downloaded");
+            callback();
+        }
+    );
+};
 
 export const getAsset = (assetName) => {
-    console.log(assets,assetName);
     return assets[assetName];
 };

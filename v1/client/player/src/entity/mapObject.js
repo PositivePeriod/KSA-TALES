@@ -13,6 +13,7 @@ export class MapObject {
         this.y = y; // 세로 칸 개수
         this.ctx = ctx;
 
+
         this.data = null;
         this.ratio = 0.8;
         this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
@@ -32,7 +33,7 @@ export class MapObject {
                 var blockType = (data.map[x][y] !== null) ? data.map[x][y]['type'] : 'N';
                 var light = (data.map[x][y] !== null) ? data.map[x][y]['light'] : false;
                 var showTrap = (data.map[x][y] !== null) ? data.map[x][y]['showTrap'] : false;
-                const block = new BlockObject(blockType, light, showTrap, this.x + x * this.grid, this.y + y * this.grid, this.grid);
+                const block = new BlockObject(blockType, light, showTrap, this.pos.x + x * this.grid,this.pos.y + y * this.grid, this.grid);
                 this.mapData[x][y] = block;
             }
         }
@@ -42,8 +43,10 @@ export class MapObject {
         this.stageWidth = stageWidth;
         this.stageHeight = stageHeight;
         this.grid = grid * this.ratio;
-        this.pos.x = stageWidth / 2 - this.grid * this.x / 2;
-        this.pos.y = stageHeight / 2 - this.grid * this.y / 2;
+        this.pos = {
+            'x': stageWidth / 2 - this.grid * this.x / 2,
+            'y': stageHeight / 2 - this.grid * this.y / 2
+        }
 
         if (this.data !== null) {
             for (let x = 0; x < this.x; x++) {
@@ -88,8 +91,8 @@ export class MapObject {
             this.ctx.strokeStyle = 'transparent';
             this.ctx.fillStyle = COLOR['PLAYER'];
             var radius = this.grid * 0.4;
-            var centerX = this.x + this.grid * player.x + this.grid * 0.5;
-            var centerY = this.y + this.grid * player.y + this.grid * 0.5;
+            var centerX = this.grid*0.5 + this.grid * player.x + this.stageWidth / 2 - this.grid * this.x / 2;
+            var centerY = this.grid*0.5 + this.grid * player.y + this.stageHeight / 2 - this.grid * this.y / 2;
             this.ctx.beginPath()
             this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             this.ctx.fill();

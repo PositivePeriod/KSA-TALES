@@ -8,7 +8,7 @@ export class Network {
         const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
         this.socket = io(`${socketProtocol}://${window.location.host}`);
 
-        this.time = 10;
+        this.time = 50;
         this.commandQueue = new InputDeque();
         setInterval(this.sendCommand.bind(this), this.time);
 

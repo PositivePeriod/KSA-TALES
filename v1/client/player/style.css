@@ -55,16 +55,11 @@ a:hover {
 #gameFrame {
     width: 100%;
     height: 100%;
-    /*display: flex;
-    justify-content: center;
-    align-items: center; */
 }
 
 #gameCanvas {
+    margin: 0px auto;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 3px solid green;
 }
 
 #problem {

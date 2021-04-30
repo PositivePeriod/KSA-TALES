@@ -35,39 +35,24 @@ class ServerManager {
         this.app.set('views', path.join(__dirname, `../../../${version}/server/views`));
         this.app.set('view-engine', 'ejs');
 
-        this.app.get('/', function(req, res) {
-            const data = {
-                title: 'MAIN',
-                body: fs.readFileSync(path.resolve(__dirname, '../views/body/main.html'), 'utf8')
-            }
-            res.render('template.ejs', data);
-        });
+        this.app.use('/about', function(req, res) { res.sendFile(path.join(__dirname, '../public/about.html')); });
+        this.app.use('/leaderboard', function(req, res) { res.sendFile(path.join(__dirname, '../public/leaderboard.html')); });
 
-        this.app.get('/favicon.ico', function(req, res) {
-            res.sendFile(path.join(__dirname, '../assets/favicon.ico'));
-        });
-        this.app.get('/about', function(req, res) {
-            res.send('Who made the site? By KSA STUDENTS!');
-        });
-        this.app.get('/leaderboard', function(req, res) {
-            res.send('Take a look! LEADER BOARD Go for it! Beat other teams :)');
-        });
-        this.app.get('/easteregg', function(req, res) {
-            res.send("Nice try but dont you think it is too obvious? :(");
-        });
-        this.app.get('/spectate', function(req, res) {
-            res.send("spectate");
+        this.app.get('/problems/:id', function(req, res) {
+            var id = req.params.id;
+            const data = {
+                title: id,
+                body: fs.readFileSync(path.resolve(__dirname, `../views/problems/${id}.html`), 'utf8')
+            }
+            res.render('problem.ejs', data);
         });
 
         this.app.use('/play', express.static(path.join(__dirname, `../../../${version}/client/player`)));
         // this.app.use('/spectate', express.static(path.join(__dirname, `../../../${version}/client/spectator`)));
-        this.app.use('/assets', express.static(path.join(__dirname, `../assets`)));
-        this.app.use('/play/assets', express.static(path.join(__dirname, `../problems`)));
+        this.app.get('/spectate', function(req, res) { res.send("spectate"); });
 
-        this.app.use(function(req, res, next) {
-            res.status(404).send('Sorry cant find that!');
-        });
-
+        this.app.use('/', express.static(path.join(__dirname, `../public`)))
+        this.app.use((req, res, next) => { res.sendFile(path.join(__dirname, '../public/404.html')); });
     }
 
     makeSocket() {

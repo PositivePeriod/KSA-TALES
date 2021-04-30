@@ -2,6 +2,10 @@
 제목 : KSA Labyrinth : UNDER THE KSA
 설명 : KSA SAF 2020 Labyrinth
 
+    <meta name="title" content="UNDER THE KSA" />
+    <meta name="author" content="KSA 2021 SAF 추진위원회">
+    <meta name="description" content="KSA Labyrinth : UNDER THE KSA">
+
 1. 문제 번역 영어로 / 문제 올리기 보여주기
 <!-- 2. map 생성시 가장 바깥쪽은 wall로 두르는 것이 좋을 듯 (에러 방지) // 구현 자체는 안정적인 듯 에러 안 남 -->
 3. 사람 그리면서 다른 사람도 가져와야 하고 dir, 프로필 보내고 받기
@@ -15,7 +19,7 @@
 10. 관리자용 관전 페이지
 11. 소리 넣기
 12. dictionary 용도는 initialize Map으로 바꾸기
-13. problem.id 보여주면 안 됨 ?? 필요없을 듯
+<!-- 13. problem.id 보여주면 안 됨 ?? 필요없을 듯 -->
 14. Flash 켰을 때 보이는 범위 설정 (벽으로 막혀 있을 수도 있으니까 각도를 측정해야 되나? while 문이나 BFS 같은 거 필요할 듯)
 15. 튜토리얼 제작
 16. Hint 사진 띄우기 구현
