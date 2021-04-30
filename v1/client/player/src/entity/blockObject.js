@@ -11,8 +11,9 @@ const COLOR = {
 };
 
 const objectImgsname = {
-    'W': 'Wall1.png',
-    'P': 'Problem.png'
+    'W': 'wall1.png',
+    'P': 'problem.png',
+    'D': 'door.png'
 }
 export class BlockObject {
     constructor(type, light, showTrap, x, y, size) {
@@ -32,13 +33,29 @@ export class BlockObject {
         }
     }
 
+    
+
     resize(x, y, size) {
         this.x = x;
         this.y = y;
         this.size = size;
     }
 
-
+    drawDoor(ctx,isHor) {
+        var img = getAsset(this.imgname);
+        ctx.beginPath();
+        if(isHor){
+            ctx.save();
+            ctx.translate(this.x + this.size/2,this.y + this.size/2);
+            ctx.rotate(Math.PI/2);
+            ctx.translate(-this.x - this.size/2,-this.y -this.size/2);
+            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+            ctx.restore();
+        }
+        else{    
+            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+        }
+    }
 
     drawImg(ctx) {
         var img = getAsset(this.imgname);

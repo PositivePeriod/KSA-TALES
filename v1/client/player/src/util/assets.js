@@ -1,9 +1,10 @@
 const ASSET_NAMES = [
     'ocean.png',
     'trap.png',
-    'Wall1.png',
-    'Wall2.png',
-    'Problem.png',
+    'wall1.png',
+    'wall2.png',
+    'problem.png',
+    'door.png'
 
 
 ];

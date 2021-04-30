@@ -80,7 +80,29 @@ export class MapObject {
         if (this.mapData !== null) {
             for (let x = 0; x < this.x; x++) {
                 for (let y = 0; y < this.y; y++) {
-                    this.mapData[x][y].draw(this.ctx);
+                    if(this.mapData[x][y].type == 'D'){
+                        var isHor = true;
+                        if(x==this.x-1){
+                            if(this.mapData[x-1][y].type == 'F' || this.mapData[x-1][y].type == 'N'){
+                                isHor = false;
+                            }
+                        }
+                        else{
+                            if(this.mapData[x+1][y].type == 'F' || this.mapData[x+1][y].type == 'N'){
+                                isHor = false;
+                            }
+                        }
+                        if(Math.floor(this.x/2) == x && Math.floor(this.y/2) == y){
+                            isHor = !isHor
+                        }
+                        this.mapData[x][y].drawDoor(this.ctx,isHor);
+
+
+                    }
+                    else{
+                        this.mapData[x][y].draw(this.ctx);
+                    }
+                    
                 }
             }
 

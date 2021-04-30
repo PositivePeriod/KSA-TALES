@@ -1,19 +1,34 @@
 const InputDeque = require("../util/deque");
-const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObject");
+const {
+    WallBlock,
+    DoorBlock,
+    FloorBlock,
+    ProblemBlock
+} = require("./blockObject");
 
 // TODO / define const Flash area of player
-const FlashArea = [[1,1],[1,0],[1,-1],[2,2],[2,1],[2,0],[2,-1],[2,-2]];
+const FlashArea = [
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [2, 2],
+    [2, 1],
+    [2, 0],
+    [2, -1],
+    [2, -2]
+];
 const isEqual = (first, second) => {
     return JSON.stringify(first) === JSON.stringify(second);
 }
 
 class PlayerObject {
-    constructor(socketID, AA, name, x, y) {
+    constructor(socketID, AA, name, x, y,map) {
         this.socketID = socketID;
         this.AA = AA;
         this.name = name;
         this.x = x;
         this.y = y;
+        this.map = map;
 
         this.key = ["K1"];
         this.trap = 100;
@@ -22,24 +37,38 @@ class PlayerObject {
         this.trapdeleter = 100;
 
         this.commandQueue = new InputDeque();
-        this.dir = { x: 0, y: -1 };
+        this.dir = {
+            x: 0,
+            y: -1
+        };
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
         this.canMove = true;
         this.usingFlash = false;
     }
 
     show() {
-        return { 'name': this.name, 'AA': this.AA, 'color': this.color, 'x': this.x, 'y': this.y, 'dir': this.dir }
+        return {
+            'name': this.name,
+            'AA': this.AA,
+            'color': this.color,
+            'x': this.x,
+            'y': this.y,
+            'dir': this.dir
+        }
     }
 
     solve(problemID, rewards) {
         this.solvedProblemIDs.push(problemID)
         for (reward of rewards) {
-            switch(reward.charAt(0)) {
-                case 'T': this.trap++;
-                case 'F': this.flash++;
-                case 'H': this.hint++;
-                case 'K': this.key.push(reward);
+            switch (reward.charAt(0)) {
+                case 'T':
+                    this.trap++;
+                case 'F':
+                    this.flash++;
+                case 'H':
+                    this.hint++;
+                case 'K':
+                    this.key.push(reward);
                 default:
                     console.log("Error | Impossible Reward");
             }
@@ -60,22 +89,36 @@ class PlayerObject {
         }
     }
 
-    getFlashArea(){
+    getFlashArea() {
         var dirFlashArea = [];
-        var temp = {
-            x:this.dir.x + this.dir.y*-1,
-            y:this.dir.y + this.dir.x*-1
+        for (var i = 0; i < 8; i++) {
+            dirFlashArea.push([FlashArea[i][0] * this.dir.x + FlashArea[i][1] * this.dir.y, FlashArea[i][0] * this.dir.y + -FlashArea[i][1] * this.dir.x]);
+        }   
+        var ret = [];
+        if(this.canpass(this.map.blocks[this.x + dirFlashArea[0][0]][this.y + dirFlashArea[0][1]])){
+            ret.push(dirFlashArea[0]);
+            ret.push(dirFlashArea[3]);
+            ret.push(dirFlashArea[4]);
         }
-        for(var i =0;i<8;i++){
-            dirFlashArea.push([FlashArea[i][0]*this.dir.x +  FlashArea[i][1]*this.dir.y , FlashArea[i][0]*this.dir.y +  -FlashArea[i][1]*this.dir.x]);
+        if(this.canpass(this.map.blocks[this.x + dirFlashArea[1][0]][this.y + dirFlashArea[1][1]])){
+            ret.push(dirFlashArea[1]);
+            ret.push(dirFlashArea[5]);
+            ret.push(dirFlashArea[4]);
+            ret.push(dirFlashArea[6]);
         }
-        return dirFlashArea
+        if(this.canpass(this.map.blocks[this.x + dirFlashArea[2][0]][this.y + dirFlashArea[2][1]].pass)){
+            ret.push(dirFlashArea[2]);
+            ret.push(dirFlashArea[7]);
+            ret.push(dirFlashArea[6]);
+
+        }
+        return ret
+
     }
 
     inFlashArea(block) {
-        var tempFlashArea = this.getFlashArea()
-        console.log(tempFlashArea)
-        return tempFlashArea.some(area => isEqual(area, [block.x - this.x, block.y - this.y]))
+        return this.getFlashArea(block).some(area => isEqual(area, [block.x - this.x, block.y - this.y]))
+        
     }
 
     useTrap(block) {

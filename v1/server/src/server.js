@@ -95,7 +95,9 @@ class ServerManager {
 
     handleInput(socket, command) {
         console.log(`${socket.id} | Handle Input`);
-        this.game.players[socket.id].commandQueue.push(command);
+        if (this.game.players.has(socket.id)) {
+            this.game.players.get(socket.id).commandQueue.push(command);
+        }
     }
 
     disconnect(socket) {

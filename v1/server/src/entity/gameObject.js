@@ -18,14 +18,14 @@ const isEqual = (first, second) => {
 class Game {
     constructor() {
         this.sockets = {};
-        // this.playSocket = {}; // TODO
+        // this.playSocket = {}; // TO
         // this.spectateSocket = {}; // TODO
 
         this.time = 100;
         this.map = new MapObject();
         this.showRange = { width: 5, height: 3 };
         this.io = null;
-        this.players = {};
+        this.players = new Map();
         this.joinedAA = [];
         this.prepareAchievement();
         setInterval(this.update.bind(this, 1), this.time);
@@ -43,17 +43,13 @@ class Game {
             var socketID = socket.id;
             var pos = this.map.startPos;
             this.joinedAA.push(AA);
-            this.players[socketID] = new PlayerObject(socketID, AA, name, pos.x, pos.y);
+            var player = new PlayerObject(socketID, AA, name, pos.x, pos.y,this.map);
+            this.players.set(socketID, player);
         }
     }
 
     removePlayer(id) {
-        if (this.players[id] !== undefined) {
-            delete this.players[id];
-        } else {
-            console.log('Error | No such player exists');
-        }
-
+        this.players.delete(id);
     }
 
     updatePlayer(player) {
@@ -134,7 +130,7 @@ class Game {
 
     update() {
         // console.log(`Game | Turn Change | ${Object.keys(this.players).length} Players`)
-        for (let [socketID, player] of Object.entries(this.players)) {
+        for (let [socketID, player] of this.players) {
             this.updatePlayer(player);
         }
 
@@ -151,7 +147,7 @@ class Game {
 
     show() {
         var playerCoordList = [];
-        for (let [socketID, player] of Object.entries(this.players)) {
+        for (let [socketID, player] of this.players) {
             playerCoordList.push({
                 x: player.x,
                 y: player.y,
@@ -159,7 +155,7 @@ class Game {
                 AA: player.AA
             })
         }
-        for (let [socketID, player] of Object.entries(this.players)) {
+        for (let [socketID, player] of this.players) {
             var socket = this.sockets[socketID];
             var visibleMap = this.map.show(player, this.showRange, playerCoordList);
             socket.emit(MSG.UPDATE_GAME, visibleMap);

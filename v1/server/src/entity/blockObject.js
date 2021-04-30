@@ -18,7 +18,7 @@ class WallBlock extends BlockObject {
 }
 
 class DoorBlock extends BlockObject {
-    constructor(x, y, roomIDs, keyIDs) {
+    constructor(x, y, roomIDs, keyIDs){
         super('D', x, y, roomIDs);
         this.keyIDs = keyIDs;
     }
