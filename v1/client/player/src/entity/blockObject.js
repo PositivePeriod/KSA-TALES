@@ -17,6 +17,7 @@ export class BlockObject {
         this.y = y; // pixelY
         this.size = size;
         this.margin = 0.5;
+        this.corner = 20;
         if (this.light) {
             this.color = COLOR['LIGHT']
         } else {
@@ -31,9 +32,13 @@ export class BlockObject {
     }
 
     draw(ctx) {
+        ctx.lineJoin = "round";
+        ctx.lineWidth = this.corner;
         ctx.strokeStyle = 'transparent';
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+        // ctx.fillRect(this.x + this.margin + (this.corner / 2), this.y + this.margin + (this.corner / 2),
+        //     this.size - 2 * this.margin - 2 * (this.corner / 2), this.size - 2 * this.margin - 2 * (this.corner / 2));
         if (this.showTrap) {
             ctx.strokeStyle = 'transparent';
             ctx.fillStyle = COLOR['TRAP'];

@@ -22,6 +22,7 @@ export class Network {
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
         this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this));
         this.socket.on(MSG.SEND_HINT, this.getHint.bind(this));
+        this.socket.on(MSG.SEND_ACHIEVEMENT, this.getAchievement.bind(this));
     }
 
     joinGame(AA, code, name) {
@@ -79,6 +80,11 @@ export class Network {
             problem.classList.add('visible');
             // this.socket.emit(MSG.SEND_PROBLEM, data);
         };
+    }
+
+    getAchievement(message) {
+        console.log(message)
+        // TODO / should load to html
     }
 
     disconnect() {

@@ -51,7 +51,7 @@ class App {
         window.addEventListener('resize', this.resize.bind(this), false);
         this.resize();
 
-        var pseudoInput = { 'AA': 'AA1_1', 'code': 'CDQE', 'name': 'Lets go' } // TODO
+        var pseudoInput = { AA: 'AA 1-1', code: 'CDQE', name: 'Lets go' } // TODO
         this.network.joinGame(pseudoInput.AA, pseudoInput.code, pseudoInput.name);
     }
 

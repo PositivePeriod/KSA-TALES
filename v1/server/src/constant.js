@@ -7,6 +7,7 @@ const MSG = Object.freeze({
 
     SEND_PROBLEM: 'sendProblem',
     SEND_HINT: 'sendHint',
+    SEND_ACHIEVEMENT: 'sendAchievement',
 
     JOIN_SPECTATE: 'joinSpectate',
     LEAVE_SPECTATE: 'joinSpectate',
@@ -17,9 +18,9 @@ const MSG = Object.freeze({
 });
 
 const AAtoCODE = Object.freeze({
-    'AA1_1': 'CDQE',
-    'AA1_2': 'DKRO',
-    'AA2_1': 'CVPF'
+    'AA 1-1': 'CDQE',
+    'AA 1-2': 'DKRO',
+    'AA 2-1': 'CVPF'
 });
 
 var reverse = {};

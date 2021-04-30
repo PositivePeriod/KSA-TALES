@@ -18,7 +18,7 @@ const version = 'v1';
 
 class ServerManager {
     constructor() {
-        this.game = new Game(this);
+        this.game = new Game();
 
         this.app = express();
         this.route();
@@ -115,7 +115,7 @@ class ServerManager {
 
     disconnect(socket) {
         console.log(`${socket.id} | Disconnect`);
-        delete this.game.sockets[socket.id];
+        this.game.removePlayer(socket.id);
     }
 }
 

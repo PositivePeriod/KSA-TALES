@@ -7,7 +7,7 @@ class MapObject {
     constructor() {
         this.width = mapData.width;
         this.height = mapData.height;
-
+        this.achievement = mapData.achievement;
         this.blocks = Array.from(Array(this.width), () => Array(this.height).fill(null));
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {

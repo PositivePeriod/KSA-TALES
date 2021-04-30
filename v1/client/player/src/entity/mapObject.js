@@ -2,6 +2,7 @@ import { BlockObject } from './blockObject.js';
 const COLOR = {
     'PLAYER': 'rgba(246, 213, 92, 1)'
 };
+
 export class MapObject {
     constructor(stageWidth, stageHeight, x, y, ctx) {
         this.stageWidth = stageWidth;
@@ -113,6 +114,8 @@ export class MapObject {
 
         }
         this.players.forEach(player => {
+            this.ctx.lineJoin = "miter";
+            this.ctx.lineWidth = 1.0;
             this.ctx.strokeStyle = 'transparent';
             this.ctx.fillStyle = COLOR['PLAYER'];
             var radius = this.grid * 0.4;
