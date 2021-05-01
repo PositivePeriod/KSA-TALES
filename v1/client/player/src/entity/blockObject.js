@@ -24,7 +24,7 @@ export class BlockObject {
         this.y = y; // pixelY
         this.size = size;
         this.margin = 0.5;
-        this.corner = 20;
+        // this.corner = 20;
         this.imgname = objectImgsname[type];
         if (this.light) {
             this.color = COLOR['LIGHT']
@@ -67,8 +67,8 @@ export class BlockObject {
             this.drawImg(ctx)
             return
         }
-        ctx.lineJoin = "round";
-        ctx.lineWidth = this.corner;
+        // ctx.lineJoin = "round";
+        // ctx.lineWidth = this.corner;
         ctx.strokeStyle = 'transparent';
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);

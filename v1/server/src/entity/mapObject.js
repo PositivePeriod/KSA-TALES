@@ -1,7 +1,20 @@
 const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
-const mapNumber = 2;
+const mapNumber = 3;
 const mapData = require(`../../data/mapData${mapNumber}.json`);
+const Adjacents = [
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, 1],
+    [0, -1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1]
+];
+const isEqual = (first, second) => {
+    return JSON.stringify(first) === JSON.stringify(second);
+}
 
 class MapObject {
     constructor() {
@@ -13,26 +26,35 @@ class MapObject {
             for (let y = 0; y < this.height; y++) {
                 var roomIDs = mapData.room[y][x];
                 var blockData = mapData.map[y][x];
+                // console.log(blockData,y,x)
                 var blockType = blockData.slice(0, 1);
                 switch (blockType) {
                     case 'W':
-                        var block = new WallBlock(x, y, roomIDs);
+                        var block = new WallBlock(x, y, roomIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
                         break;
                     case 'D':
-                        var problemIDs = mapData.door[blockData]
-                        var block = new DoorBlock(x, y, roomIDs, problemIDs);
+                        // var problemIDs = mapData.door[blockData]
+                        var problemIDs = ['K1']
+                        var block = new DoorBlock(x, y, roomIDs, problemIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
                         break;
                     case 'P':
                         var problemData = mapData.problem[blockData];
-                        var id = problemData["id"];
-                        var answer = problemData["answer"];
-                        var reward = problemData["reward"];
+                        var id ="-1";
+                        var answer ="-1";
+                        var reward = "-1";
+                        
+                        // var id = problemData["id"];
+                        // var answer = problemData["answer"];
+                        // var reward = problemData["reward"];
                         var block = new ProblemBlock(x, y, roomIDs, id, answer, reward); // TODO
                         break;
                     case 'S':
                         this.startPos = { "x": x, "y": y };
                     case 'F':
                         var block = new FloorBlock(x, y, roomIDs);
+                        if(blockData.slice(1,2) == 'T'){
+                            block.addTrap()
+                        }
                         break;
                 }
                 this.blocks[x][y] = block;
@@ -42,6 +64,23 @@ class MapObject {
 
     getBlock(x, y) {
         return (0 <= x && x < this.width && 0 <= y && y < this.height) ? this.blocks[x][y] : null;
+    }
+
+    destroyBlock(x, y, blocktype) {
+        var block = this.getBlock(x, y);
+        if (blocktype === 'W') {
+            this.blocks[x][y] = new DestroyedWallBlock(block.x, block.y, block.roomIDs);
+            for (let [adjx, adjy] of Adjacents) {
+                var adjBlock = this.getBlock(x + adjx, y + adjy);
+                if (adjBlock !== null && adjBlock.type === 'W') {
+                    adjBlock.appendRoomIDs(block.roomIDs);
+                    console.log(block.roomIDs);
+                    console.log(x + adjx, y + adjy, adjBlock.roomIDs);
+                }
+            }
+        } else if (blocktype === 'D') {
+            this.blocks[x][y] = new DestroyedDoorBlock(block.x, block.y, block.roomIDs);
+        }
     }
 
     show(player, range, players) {
@@ -76,7 +115,11 @@ class MapObject {
 
         return {
             "map": data,
-            "players": visiblePlayer
+            "players": visiblePlayer,
+            "myPos":{
+                x:playerX,
+                y:playerY,
+            }
         }
     }
 }

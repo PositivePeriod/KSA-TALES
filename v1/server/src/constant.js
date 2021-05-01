@@ -17,11 +17,7 @@ const MSG = Object.freeze({
     DISCONNECT_SERVER: "disconnect",
 });
 
-const AAtoCODE = Object.freeze({
-    "AA 1-1": "CDQE",
-    "AA 1-2": "DKRO",
-    "AA 2-1": "CVPF"
-});
+const AAtoCODE = Object.freeze(new Map([["AA1_1", "CDQE"],["AA1_2", "DKRO"],["AA2_1", "CVPF"]]));
 
 var reverse = {};
 for (let [key, value] of Object.entries(AAtoCODE)) {

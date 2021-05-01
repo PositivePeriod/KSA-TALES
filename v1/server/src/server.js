@@ -47,11 +47,37 @@ class ServerManager {
             res.render('problem.ejs', data);
         });
 
-        this.app.use('/play', express.static(path.join(__dirname, `../../../${version}/client/player`)));
+        this.app.get('/register/play/:AA/:code/:name', function(req, res) {
+            const AA = req.params.AA;
+            const code = req.params.code;
+            const name = req.params.name;
+            if (AAtoCODE.get(AA) === code) {
+                res.redirect(`http://localhost:8000/play/${AA}/${code}/${name}`);
+            } else {
+                res.redirect('http://localhost:8000/register')
+            }
+        });
+
+        this.app.get('/register/spectate/:AA/:code', function(req, res, next) {
+            const AA = req.params.AA;
+            const code = req.params.code;
+            if (AAtoCODE.get(AA) === code) {
+                res.redirect(`http://localhost:8000/spectate/${AA}/${code}`);
+            } else {
+                res.redirect('http://localhost:8000/register');
+            }
+        });
+
+        this.app.use('/register', function(req, res) { res.sendFile(path.join(__dirname, '../public/register.html')); });
+
+        this.app.use('/play', function(req, res) { res.sendFile(path.join(__dirname, `../../../${version}/client/player/index.html`)); });
+        this.app.use('/spectate', function(req, res) { res.sendFile(path.join(__dirname, `../../../${version}/client/spectate/index.html`)); });
         // this.app.use('/spectate', express.static(path.join(__dirname, `../../../${version}/client/spectator`)));
         this.app.get('/spectate', function(req, res) { res.send("spectate"); });
 
-        this.app.use('/', express.static(path.join(__dirname, `../public`)))
+        this.app.use('/assets/play', express.static(path.join(__dirname, `../../../${version}/client/player`)));
+        this.app.use('/', express.static(path.join(__dirname, `../public`)));
+
         this.app.use((req, res, next) => { res.sendFile(path.join(__dirname, '../public/404.html')); });
     }
 
@@ -81,11 +107,12 @@ class ServerManager {
         var AA = data.AA;
         var code = data.code;
         var playerName = data.name;
-        if (AAtoCODE[AA] === code) {
+        if (AAtoCODE.has(AA) && AAtoCODE.get(AA) === code) {
             console.log(`${socket.id} | Join Room Success`);
             this.game.addPlayer(socket, AA, playerName); // TODO 한 반 당 한 명만
         } else {
             console.log(`${socket.id} | Join Room Failure`);
+            socket.emit(MSG.JOIN_PLAY, null);
         }
     }
 
@@ -94,7 +121,7 @@ class ServerManager {
     }
 
     handleInput(socket, command) {
-        console.log(`${socket.id} | Handle Input`);
+        // console.log(`${socket.id} | Handle Input`);
         if (this.game.players.has(socket.id)) {
             this.game.players.get(socket.id).commandQueue.push(command);
         }

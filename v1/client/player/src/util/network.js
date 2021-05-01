@@ -16,9 +16,8 @@ export class Network {
     }
 
     connect() {
-        this.socket.on(MSG.JOIN_PLAY, this.joinGame.bind(this));
+        this.socket.on(MSG.JOIN_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
-        this.socket.on(MSG.DISCONNECT_SERVER, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
         this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this));
         this.socket.on(MSG.SEND_HINT, this.getHint.bind(this));
@@ -54,13 +53,16 @@ export class Network {
         const asset = new Image();
         asset.src = `http://localhost:8000/assets/${problemID}.png`;
         asset.onload = () => {
+            // var gameCanvas = document.getElementById('gameCanvas');
+            // gameCanvas.classList.add('invisible');
+            // document.getElementById('gameFrame').hidden = true;
             var problem = document.getElementById('problem');
             while (problem.firstChild) {
                 problem.removeChild(problem.lastChild);
             }
             problem.appendChild(asset);
-            problem.classList.remove('invisible');
-            problem.classList.add('visible');
+            problem.hidden = false;
+
             // this.socket.emit(MSG.SEND_PROBLEM, data);
         };
 
@@ -93,6 +95,6 @@ export class Network {
     }
 
     disconnectFromServer() {
-        // redirect to main page
+        window.location.href = 'http://localhost:8000/register';
     }
 }

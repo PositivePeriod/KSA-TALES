@@ -26,7 +26,7 @@ class Game {
         this.showRange = { width: 5, height: 3 };
         this.io = null;
         this.players = new Map();
-        this.joinedAA = [];
+        this.joinedAA = new Set();
         this.prepareAchievement();
         setInterval(this.update.bind(this, 1), this.time);
     }
@@ -38,18 +38,26 @@ class Game {
     }
 
     addPlayer(socket, AA, name) {
-        // if (!this.joinedAA.includes(AA)) {  //현재 AA가 이름이 다 똑같아서 이거 활성화하면 우리 실험할떄 플레이어 추가가 안됨
-        if(true){
+        if (!this.joinedAA.has(AA)) {
+            // if(true){
             var socketID = socket.id;
             var pos = this.map.startPos;
-            this.joinedAA.push(AA);
-            var player = new PlayerObject(socketID, AA, name, pos.x, pos.y,this.map);
+            var player = new PlayerObject(socketID, AA, name, pos.x, pos.y, this.map);
             this.players.set(socketID, player);
+            this.joinedAA.add(AA);
         }
     }
 
     removePlayer(id) {
-        this.players.delete(id);
+        if (this.players.has(id)) {
+            var player = this.players.get(id);
+            var AA = player.AA;
+            console.log(player, player.AA);
+            console.log(this.joinedAA.has(AA));
+            this.joinedAA.delete(AA);
+            console.log(this.joinedAA.has(AA));
+            this.players.delete(id);
+        }
     }
 
     updatePlayer(player) {
@@ -57,7 +65,7 @@ class Game {
         var nextX = player.x + player.dir.x;
         var nextY = player.y + player.dir.y;
         var command = player.commandQueue.pop();
-        if (!(player.canMove)) {return }
+        if (!(player.canMove)) { return }
         switch (command) {
             case null:
                 break;
@@ -123,20 +131,39 @@ class Game {
                     }
                 }
                 break;
-            default:
-                console.log('Error | Impossible key');
+            case 'KeyHammer':
+                if (player.hammer > 0) {
+                    var block = this.map.getBlock(nextX, nextY);
+                    if (block !== null && block instanceof WallBlock && block.weak) {
+                        this.map.destroyBlock(nextX, nextY, 'W');
+                        player.useHammer();
+                    } else if (block !== null && block instanceof DoorBlock && block.weak) {
+                        this.map.destroyBlock(nextX, nextY, 'D');
+                        player.useHammer();
+                    }
+                }
+                break;
+            case 'KeyBulldozer':
+                if (player.bulldozer > 0) {
+                    var block = this.map.getBlock(nextX, nextY);
+                    if (block !== null && block instanceof FloorBlock && block.existTrap()) {
+                        player.useBulldozer(block);
+                    }
+                }
+                default:
+                    console.log('Error | Impossible key');
         }
     }
 
     update() {
-        // console.log(`Game | Turn Change | ${Object.keys(this.players).length} Players`)
+        console.log(`Game | Turn Change | ${Array.from(this.joinedAA.keys())}`)
         for (let [socketID, player] of this.players) {
             this.updatePlayer(player);
         }
 
         // for (let [socketID, player] of Object.entries(this.sockets)) {
-            // flashlight, trap
-            // 만약 문제 봐야 할 상황이면 문제도 띄워줌
+        // flashlight, trap
+        // 만약 문제 봐야 할 상황이면 문제도 띄워줌
         // }
         this.show();
     }

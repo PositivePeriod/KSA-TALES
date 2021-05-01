@@ -95,18 +95,18 @@ class PlayerObject {
             dirFlashArea.push([FlashArea[i][0] * this.dir.x + FlashArea[i][1] * this.dir.y, FlashArea[i][0] * this.dir.y + -FlashArea[i][1] * this.dir.x]);
         }   
         var ret = [];
-        if(this.canpass(this.map.blocks[this.x + dirFlashArea[0][0]][this.y + dirFlashArea[0][1]])){
+        if(this.canPass(this.map.blocks[this.x + dirFlashArea[0][0]][this.y + dirFlashArea[0][1]])){
             ret.push(dirFlashArea[0]);
             ret.push(dirFlashArea[3]);
             ret.push(dirFlashArea[4]);
         }
-        if(this.canpass(this.map.blocks[this.x + dirFlashArea[1][0]][this.y + dirFlashArea[1][1]])){
+        if(this.canPass(this.map.blocks[this.x + dirFlashArea[1][0]][this.y + dirFlashArea[1][1]])){
             ret.push(dirFlashArea[1]);
             ret.push(dirFlashArea[5]);
             ret.push(dirFlashArea[4]);
             ret.push(dirFlashArea[6]);
         }
-        if(this.canpass(this.map.blocks[this.x + dirFlashArea[2][0]][this.y + dirFlashArea[2][1]].pass)){
+        if(this.canPass(this.map.blocks[this.x + dirFlashArea[2][0]][this.y + dirFlashArea[2][1]])){
             ret.push(dirFlashArea[2]);
             ret.push(dirFlashArea[7]);
             ret.push(dirFlashArea[6]);

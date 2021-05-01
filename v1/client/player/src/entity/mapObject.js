@@ -17,16 +17,48 @@ export class MapObject {
         this.data = null;
         this.ratio = 0.8;
         this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
+
         this.pos = {
             'x': stageWidth / 2 - this.grid * this.x / 2,
             'y': stageHeight / 2 - this.grid * this.y / 2
         }
+
+        this.miniMap = {
+            'x':1,
+            'y':2,
+            'width':118,
+            'height':119,
+        }
+        
+        this.miniMapratio = 0.2;
+        this.miniMapGrid = Math.min(stageWidth / this.miniMap.width, stageHeight / this.miniMap.height) * this.ratio;
+
+        this.miniMap.data = Array.from(Array(this.miniMap.x), () => Array(this.miniMap.y).fill(null));
     }
 
 
+    updateMinimap(){
+        // console.log(this.miniMapGrid,this.ctx,'affsdsdjlsdlsdllh');
+        // console.log((this.miniMap.x)*this.miniMapGrid, (this.miniMap.y)*this.miniMapGrid);
+        // console.log(this.x,this.y);
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = 'transparent';
+        this.ctx.fillStyle = 'rgba(32, 99, 155, 1)';
+        this.ctx.fillRect(0,0,50,50);
+        for (let x = 0; x < this.x; x++) {
+            for (let y = 0; y < this.y; y++) {
+                if(this.mapData[x][y].type == 'N'){
+                    continue;
+                }
+                this.ctx.fillRect((x+this.miniMap.x)*this.miniMapGrid, (y+this.miniMap.y)*this.miniMapGrid,this.miniMapGrid,this.miniMapGrid);
+            }
+        }
+    }
 
     updateData(data) {
         this.players = data.players;
+        this.miniMap.x = data.myPos.x;
+        this.miniMap.y = data.myPos.y;
         this.mapData = Array.from(Array(this.x), () => Array(this.y).fill(null));
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
@@ -37,6 +69,7 @@ export class MapObject {
                 this.mapData[x][y] = block;
             }
         }
+        // this.updateMinimap()
     }
 
     resize(stageWidth, stageHeight, grid) {
@@ -56,24 +89,6 @@ export class MapObject {
             }
         }
     }
-
-    getProblem(problemID) {
-        console.log(problemID);
-        const asset = new Image();
-        asset.src = `http://localhost:8000/assets/${problemID}.png`;
-        asset.onload = () => {
-            var problem = document.getElementById('problem');
-            while (problem.firstChild) {
-                problem.removeChild(problem.lastChild);
-            }
-            problem.appendChild(asset);
-            problem.classList.remove('invisible');
-            problem.classList.add('visible');
-            // this.socket.emit(MSG.SEND_PROBLEM, data);
-        };
-
-    }
-
 
     draw() {
         this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
