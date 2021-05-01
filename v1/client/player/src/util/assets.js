@@ -14,7 +14,7 @@ const assets = {};
 function downloadAsset(assetName) {
     return new Promise(resolve => {
         const asset = new Image();
-        asset.src = `http://localhost:8000/assets/${assetName}`;
+        asset.src = `/assets/${assetName}`;
         asset.onload = () => {
             assets[assetName] = asset;
             resolve();

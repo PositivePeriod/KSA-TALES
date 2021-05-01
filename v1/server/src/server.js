@@ -4,15 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const { MSG, AAtoCODE } = require('./constant');
 const Game = require('./entity/gameObject');
-
-// const mainRouter = require(`./${version}/src/mainRouter`);
-// const problemRouter = require(`./${version}/src/problemRouter`);
-
-// app.set('views', path.join(__dirname, `${version}/views`));
-// app.set('view-engine', 'ejs');
-
-// app.use('/problem', problemRouter);
-// app.use('/', mainRouter)
+const cors = require('cors');
 
 const version = 'v1';
 
@@ -21,6 +13,7 @@ class ServerManager {
         this.game = new Game();
 
         this.app = express();
+        this.app.use(cors());
         this.route();
 
         const port = process.env.PORT || 8000;
@@ -52,9 +45,9 @@ class ServerManager {
             const code = req.params.code;
             const name = req.params.name;
             if (AAtoCODE.get(AA) === code) {
-                res.redirect(`http://localhost:8000/play/${AA}/${code}/${name}`);
+                res.redirect(`/play/${AA}/${code}/${name}`);
             } else {
-                res.redirect('http://localhost:8000/register')
+                res.redirect(`/register`)
             }
         });
 
@@ -62,9 +55,9 @@ class ServerManager {
             const AA = req.params.AA;
             const code = req.params.code;
             if (AAtoCODE.get(AA) === code) {
-                res.redirect(`http://localhost:8000/spectate/${AA}/${code}`);
+                res.redirect(`/spectate/${AA}/${code}`);
             } else {
-                res.redirect('http://localhost:8000/register');
+                res.redirect(`/register`);
             }
         });
 
@@ -90,7 +83,7 @@ class ServerManager {
 
             socket.on(MSG.JOIN_PLAY, this.joinPlay.bind(this, socket));
 
-            socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));
+            socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));   
 
             // socket.on(MSG.JOIN_SPECTATE, ); // TODO
             // socket.on(MSG.LEAVE_SPECTATE, ); // TODO
@@ -116,6 +109,8 @@ class ServerManager {
         }
     }
 
+    
+
     leaveGame() {
         this.game.removePlayer(socket);
     }
@@ -124,6 +119,10 @@ class ServerManager {
         // console.log(`${socket.id} | Handle Input`);
         if (this.game.players.has(socket.id)) {
             this.game.players.get(socket.id).commandQueue.push(command);
+            var commandQueue = this.game.players.get(socket.id).commandQueue;
+            if (commandQueue.getSize() < 1) {
+                commandQueue.push(command);
+            }
         }
     }
 
@@ -133,4 +132,4 @@ class ServerManager {
     }
 }
 
-var server = new ServerManager();
+new ServerManager();

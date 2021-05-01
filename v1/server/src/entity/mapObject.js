@@ -100,10 +100,15 @@ class MapObject {
             }
         }
         const visiblePlayer = [];
+        const allPlayers = [];
         players.forEach(player => {
             var validX = (playerX - range.width <= player.x) && (player.x <= playerX + range.width);
             var validY = (playerY - range.height <= player.y) && (player.y <= playerY + range.height);
             var block = this.getBlock(player.x, player.y);
+            allPlayers.push({
+                "x": player.x - (playerX - range.width),
+                "y": player.y - (playerY - range.height)
+            });
             var isVisible = roomIDs.filter(roomID => block.roomIDs.includes(roomID)).length > 0;
             if (validX && validY && isVisible) {
                 visiblePlayer.push({
@@ -116,6 +121,7 @@ class MapObject {
         return {
             "map": data,
             "players": visiblePlayer,
+            "allPlayers":allPlayers,
             "myPos":{
                 x:playerX,
                 y:playerY,

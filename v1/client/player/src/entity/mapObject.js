@@ -1,6 +1,15 @@
 import { BlockObject } from './blockObject.js';
 const COLOR = {
-    'PLAYER': 'rgba(246, 213, 92, 1)'
+    'ME' : 'rgba(0,0,255,1)',
+    'PLAYER': 'rgba(246, 213, 92, 1)',
+    'PLAYER_MINIMAP': 'rgba(255, 0, 0, 1)',
+    'F': 'rgba(255, 255, 255, 1)',
+    'W': 'rgba(0, 0, 0, 1)',
+    'D': 'rgba(255, 255, 255, 1)',
+    'P': 'rgba(255, 255, 255, 1)',
+    'N': 'rgba(30, 30, 30, 1)',
+    'TRAP': 'rgba(100, 100, 100, 1)',
+    'LIGHT': 'rgba(200, 200, 100, 1)'
 };
 
 
@@ -20,9 +29,11 @@ export class MapObject {
 
         this.pos = {
             'x': stageWidth / 2 - this.grid * this.x / 2,
-            'y': stageHeight / 2 - this.grid * this.y / 2
+            'y': stageHeight / 2 - this.grid * this.y / 2,
+            'endx': stageWidth / 2 + this.grid * this.x / 2,
+            'endy': stageHeight / 2 + this.grid * this.y / 2,
+            
         }
-
         this.miniMap = {
             'x':1,
             'y':2,
@@ -30,12 +41,14 @@ export class MapObject {
             'height':119,
         }
         
-        // this.miniMap.mapData = Array.from(Array(this.miniMap.x), () => Array(this.miniMap.y).fill(null));
+        this.miniMap.mapData = Array.from(Array(this.miniMap.width), () => Array(this.miniMap.height).fill(null));
         
-        this.miniMapratio = 0.2;
-        this.miniMapGrid = Math.min(stageWidth / this.miniMap.width, stageHeight / this.miniMap.height) * this.ratio;
+        this.miniMapratio = 0.4;
+        this.miniMapGrid = Math.min(stageWidth / this.miniMap.width, stageHeight / this.miniMap.height) * this.miniMapratio;
 
-        this.miniMap.data = Array.from(Array(this.miniMap.x), () => Array(this.miniMap.y).fill(null));
+        this.miniMap.posx = this.pos.endx -this.miniMapGrid*this.miniMap.width;
+        this.miniMap.posy = this.pos.endy -this.miniMapGrid*this.miniMap.height;
+        
     }
 
 
@@ -46,15 +59,53 @@ export class MapObject {
                 if(this.mapData[x][y].type == 'N'){
                     continue;
                 }
-                this.ctx.strokeStyle = 'transparent';
-                this.ctx.fillStyle = this.mapData[x][y].color;
-                this.ctx.fillRect((x+this.miniMap.x)*this.miniMapGrid, (y+this.miniMap.y)*this.miniMapGrid,this.miniMapGrid,this.miniMapGrid);
+                // console.log(this.miniMap.mapData)
+                this.miniMap.mapData[x-Math.floor(this.x/2) + this.miniMap.x][y-Math.floor(this.y/2) + this.miniMap.y] = this.mapData[x][y].type;
             }
         }
+
+        
+        for (let x = 0; x < this.miniMap.width; x++) {
+            for (let y = 0; y < this.miniMap.height; y++) {
+                this.ctx.strokeStyle = 'transparent';
+                if(this.miniMap.mapData[x][y] == null){
+                    this.ctx.fillStyle = COLOR['N']
+                }
+                else{
+                    this.ctx.fillStyle = COLOR[this.miniMap.mapData[x][y]]
+                }
+                this.ctx.fillRect(this.miniMap.posx+x*this.miniMapGrid,this.miniMap.posy+ y*this.miniMapGrid,this.miniMapGrid,this.miniMapGrid);
+            }
+        }
+
+        this.allPlayers.forEach(player => {
+            this.ctx.beginPath()
+            this.ctx.strokeStyle = 'transparent';
+            this.ctx.fillStyle = COLOR['PLAYER_MINIMAP'];
+            var radius = this.miniMapGrid;
+
+            var centerX = this.miniMap.posx+ this.miniMapGrid*0.5 + (player.x-Math.floor(this.x/2) + this.miniMap.x)*this.miniMapGrid;
+            var centerY = this.miniMap.posy+this.miniMapGrid*0.5 + (player.y-Math.floor(this.y/2) + this.miniMap.y)*this.miniMapGrid;
+            
+            this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            this.ctx.fill();
+        });
+
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = 'transparent';
+        this.ctx.fillStyle = COLOR['ME'];
+        var radius = this.miniMapGrid;
+
+        var centerX = this.miniMap.posx+this.miniMapGrid*0.5 + (this.miniMap.x)*this.miniMapGrid;
+        var centerY = this.miniMap.posy+this.miniMapGrid*0.5 + (this.miniMap.y)*this.miniMapGrid;
+        
+        this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        this.ctx.fill();
     }
 
     updateData(data) {
         this.players = data.players;
+        this.allPlayers = data.allPlayers;
         this.miniMap.x = data.myPos.x;
         this.miniMap.y = data.myPos.y;
         this.mapData = Array.from(Array(this.x), () => Array(this.y).fill(null));

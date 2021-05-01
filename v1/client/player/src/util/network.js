@@ -35,7 +35,7 @@ export class Network {
     }
 
     tryToSendCommand(command) {
-        if (this.commandQueue.getSize() < 5) {
+        if (this.commandQueue.getSize() < 1) {
             this.commandQueue.push(command);
         }
     }
@@ -43,7 +43,7 @@ export class Network {
     sendCommand() {
         var command = this.commandQueue.pop();
         if (command !== null) {
-            this.socket.emit(MSG.HANDLE_INPUT, command);
+            this.socket.emit(MSG.HANDLE_INPUT,  command);
         }
     }
 
@@ -51,7 +51,7 @@ export class Network {
     getProblem(problemID) {
         console.log(problemID);
         const asset = new Image();
-        asset.src = `http://localhost:8000/assets/${problemID}.png`;
+        asset.src = `/assets/${problemID}.png`;
         asset.onload = () => {
             // var gameCanvas = document.getElementById('gameCanvas');
             // gameCanvas.classList.add('invisible');
@@ -67,6 +67,8 @@ export class Network {
         };
 
     }
+
+
 
     getHint(problemID) {
         // TODO / should be changed to load hint image
@@ -95,6 +97,6 @@ export class Network {
     }
 
     disconnectFromServer() {
-        window.location.href = 'http://localhost:8000/register';
+        window.location.href = `/register`;
     }
 }
