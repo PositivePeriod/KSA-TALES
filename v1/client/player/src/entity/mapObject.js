@@ -30,6 +30,8 @@ export class MapObject {
             'height':119,
         }
         
+        // this.miniMap.mapData = Array.from(Array(this.miniMap.x), () => Array(this.miniMap.y).fill(null));
+        
         this.miniMapratio = 0.2;
         this.miniMapGrid = Math.min(stageWidth / this.miniMap.width, stageHeight / this.miniMap.height) * this.ratio;
 
@@ -38,18 +40,14 @@ export class MapObject {
 
 
     updateMinimap(){
-        // console.log(this.miniMapGrid,this.ctx,'affsdsdjlsdlsdllh');
-        // console.log((this.miniMap.x)*this.miniMapGrid, (this.miniMap.y)*this.miniMapGrid);
-        // console.log(this.x,this.y);
         this.ctx.beginPath();
-        this.ctx.strokeStyle = 'transparent';
-        this.ctx.fillStyle = 'rgba(32, 99, 155, 1)';
-        this.ctx.fillRect(0,0,50,50);
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
                 if(this.mapData[x][y].type == 'N'){
                     continue;
                 }
+                this.ctx.strokeStyle = 'transparent';
+                this.ctx.fillStyle = this.mapData[x][y].color;
                 this.ctx.fillRect((x+this.miniMap.x)*this.miniMapGrid, (y+this.miniMap.y)*this.miniMapGrid,this.miniMapGrid,this.miniMapGrid);
             }
         }
@@ -69,7 +67,6 @@ export class MapObject {
                 this.mapData[x][y] = block;
             }
         }
-        // this.updateMinimap()
     }
 
     resize(stageWidth, stageHeight, grid) {
@@ -92,6 +89,7 @@ export class MapObject {
 
     draw() {
         this.ctx.clearRect(0, 0, this.stageWidth, this.stageHeight);
+        
         if (this.mapData !== null) {
             for (let x = 0; x < this.x; x++) {
                 for (let y = 0; y < this.y; y++) {
@@ -111,8 +109,8 @@ export class MapObject {
                             isHor = !isHor
                         }
                         this.mapData[x][y].drawDoor(this.ctx,isHor);
-
-
+                        
+                        
                     }
                     else{
                         this.mapData[x][y].draw(this.ctx);
@@ -120,7 +118,7 @@ export class MapObject {
                     
                 }
             }
-
+            
         }
         this.players.forEach(player => {
             this.ctx.lineJoin = "miter";
@@ -134,12 +132,16 @@ export class MapObject {
             this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             this.ctx.fill();
         });
+        
+        
+        this.updateMinimap()
     }
-
+    
     coordinate(x, y) { // TODO ????? 왜 만듬
         return {
             'x': this.pos.x + x * this.grid,
             'y': this.pos.y + y * this.grid
         }
     }
+    
 }

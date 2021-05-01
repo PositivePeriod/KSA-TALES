@@ -4,6 +4,7 @@
   "description": "KSA SAF 2020",
   "main": "v1/server/src/server.js",
   "scripts": {
+    "start": "node v1/server/src/server.js",
     "develop": "node v1/server/src/server.js",
     "develop:loop": "nodemon --watch v1",
     "test": "echo \"Error: no test specified\" && exit 1"
