@@ -1,4 +1,4 @@
-const { FloorBlock, ProblemBlock } = require("./blockObject");
+const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObject");
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
 
@@ -21,6 +21,7 @@ class Game {
         // this.playSocket = {}; // TO
         // this.spectateSocket = {}; // TODO
 
+        this.turn = 0;
         this.time = 100;
         this.map = new MapObject();
         this.showRange = { width: 5, height: 3 };
@@ -51,11 +52,8 @@ class Game {
     removePlayer(id) {
         if (this.players.has(id)) {
             var player = this.players.get(id);
-            var AA = player.AA;
-            console.log(player, player.AA);
-            console.log(this.joinedAA.has(AA));
+            var AA = player.AA;''
             this.joinedAA.delete(AA);
-            console.log(this.joinedAA.has(AA));
             this.players.delete(id);
         }
     }
@@ -109,7 +107,7 @@ class Game {
                 console.log('Error | No need key');
                 break;
             case 'KeyTrap':
-                if (player.trap > 0) {
+                if (player.inventory.get("trap") > 0) {
                     var block = this.map.getBlock(nextX, nextY);
                     if (block !== null && block instanceof FloorBlock) {
                         player.useTrap(block);
@@ -117,13 +115,13 @@ class Game {
                 }
                 break;
             case 'KeyFlash':
-                if (player.flash > 0) {
+                if (player.inventory.get("flash") > 0) {
                     player.useFlash();
                     console.log("Used Flash");
                 }
                 break;
             case 'KeyHint':
-                if (player.hint > 0) {
+                if (player.inventory.get("hint") > 0) {
                     var block = this.map.getBlock(nextX, nextY);
                     if (block !== null && block instanceof ProblemBlock) {
                         player.useHint();
@@ -132,7 +130,7 @@ class Game {
                 }
                 break;
             case 'KeyHammer':
-                if (player.hammer > 0) {
+                if (player.inventory.get("hammer") > 0) {
                     var block = this.map.getBlock(nextX, nextY);
                     if (block !== null && block instanceof WallBlock && block.weak) {
                         this.map.destroyBlock(nextX, nextY, 'W');
@@ -143,11 +141,12 @@ class Game {
                     }
                 }
                 break;
-            case 'KeyBulldozer':
-                if (player.bulldozer > 0) {
+            case 'KeyTrapDeleter':
+                if (player.inventory.get("trapDeleter") > 0) {
                     var block = this.map.getBlock(nextX, nextY);
                     if (block !== null && block instanceof FloorBlock && block.existTrap()) {
-                        player.useBulldozer(block);
+                        // TODO
+                        player.useTrapDeleter(block);
                     }
                 }
                 default:
@@ -156,7 +155,10 @@ class Game {
     }
 
     update() {
-        console.log(`Game | Turn Change | ${Array.from(this.joinedAA.keys())}`)
+        this.turn++;
+        if (this.turn % 40 === 0) {
+            console.log(`Game | Turn ${this.turn} | ${Array.from(this.joinedAA.keys())}`);
+        }
         for (let [socketID, player] of this.players) {
             this.updatePlayer(player);
         }

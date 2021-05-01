@@ -19,8 +19,8 @@ export class Network {
         this.socket.on(MSG.JOIN_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.SEND_PROBLEM, this.getProblem.bind(this));
-        this.socket.on(MSG.SEND_HINT, this.getHint.bind(this));
+        this.socket.on(MSG.SEND_PROBLEM, this.useProblem.bind(this));
+        this.socket.on(MSG.SEND_HINT, this.showHint.bind(this));
         this.socket.on(MSG.SEND_ACHIEVEMENT, this.getAchievement.bind(this));
     }
 
@@ -43,48 +43,56 @@ export class Network {
     sendCommand() {
         var command = this.commandQueue.pop();
         if (command !== null) {
-            this.socket.emit(MSG.HANDLE_INPUT,  command);
+            this.socket.emit(MSG.HANDLE_INPUT, command);
         }
     }
 
+    useProblem(problemID) {
+        var problem = document.getElementById('problem');
+        if (!problem.hidden) {
+            this.showProblem(problemID);
+        } else {
+            this.hideProblem();
+        }
+    }
 
-    getProblem(problemID) {
+    showProblem(problemID) {
         console.log(problemID);
+
         const asset = new Image();
         asset.src = `/assets/${problemID}.png`;
         asset.onload = () => {
-            // var gameCanvas = document.getElementById('gameCanvas');
-            // gameCanvas.classList.add('invisible');
-            // document.getElementById('gameFrame').hidden = true;
-            var problem = document.getElementById('problem');
-            while (problem.firstChild) {
-                problem.removeChild(problem.lastChild);
-            }
-            problem.appendChild(asset);
+            const hint = document.getElementById('hint');
+            hint.hidden = true;
+
+            const gameCanvas = document.getElementById('gameCanvas');
+            gameCanvas.hidden = true;
+
+            const problem = document.getElementById('problem');
             problem.hidden = false;
-
-            // this.socket.emit(MSG.SEND_PROBLEM, data);
+            problem.appendChild(asset);
         };
-
     }
 
+    hideProblem() {
+        const hint = document.getElementById('hint');
+        hint.hidden = true;
 
+        const problem = document.getElementById('problem');
+        problem.hidden = true;
+        while (problem.firstChild) {
+            problem.removeChild(problem.lastChild);
+        }
 
-    getHint(problemID) {
-        // TODO / should be changed to load hint image
-        console.log(problemID);
-        const asset = new Image();
-        asset.src = `assets/${problemID}.png`;
-        asset.onload = () => {
-            var problem = document.getElementById('problem');
-            while (problem.firstChild) {
-                problem.removeChild(problem.lastChild);
-            }
-            problem.appendChild(asset);
-            problem.classList.remove('invisible');
-            problem.classList.add('visible');
-            // this.socket.emit(MSG.SEND_PROBLEM, data);
-        };
+        const gameCanvas = document.getElementById('gameCanvas');
+        gameCanvas.hidden = false;
+    }
+
+    showHint(hintMSG) {
+        console.log(hintMSG);
+        const hint = document.getElementById('hint');
+        hint.innerText = hintMSG;
+        hint.hidden = false;
     }
 
     getAchievement(message) {

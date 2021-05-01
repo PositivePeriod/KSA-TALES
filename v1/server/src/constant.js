@@ -53,9 +53,9 @@ const PROBLEMS = {
     "annual": { "hint": null, "answer": ["3월 26일 17시 48분 59초", "9월 28일 17시 56분 43초"], "type": "and" },
     "four_character_idioms": { "hint": null, "answer": "확인필요" },
     "variable": { "hint": "그냥 푸세요 =D", "answer": {"A":9876, "B":5432} },
-    "arrangement": { "hint": null, "answer": "H" },
+    "arrangement": { "hint": "나홀로 집에", "answer": "H" },
     "password": { "hint": "밀자", "answer": "CURSE" },
-    "number": { "hint": "영어로", "answer": 3 },
+    "number": { "hint": "영어로", "answer": 3 }
 };
 
 module.exports = { MSG, AAtoCODE, CODEtoAA, PROBLEMS};

@@ -49,7 +49,7 @@ class App {
             "KeyFlash": "Digit2",
             "KeyHint": "Digit3",
             "KeyHammer": "Digit4",
-            "KeyBulldozer": "Digit5"
+            "KeyTrapDeleter": "Digit5"
         }
 
         this.network = new Network(this.map);
@@ -66,7 +66,7 @@ class App {
         this.keyboard.listen(this.commandKey["KeyFlash"], this.network.tryToSendCommand.bind(this.network, "KeyFlash"));
         this.keyboard.listen(this.commandKey["KeyHint"], this.network.tryToSendCommand.bind(this.network, "KeyHint"));
         this.keyboard.listen(this.commandKey["KeyHammer"], this.network.tryToSendCommand.bind(this.network, "KeyHammer"));
-        this.keyboard.listen(this.commandKey["KeyBulldozer"], this.network.tryToSendCommand.bind(this.network, "KeyBulldozer"));
+        this.keyboard.listen(this.commandKey["KeyTrapDeleter"], this.network.tryToSendCommand.bind(this.network, "KeyTrapDeleter"));
         this.keyboard.activate();
 
         window.addEventListener("resize", this.resize.bind(this), false);

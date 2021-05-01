@@ -16,9 +16,12 @@
 <body>
     <div id="gameFrame">
         <canvas id="gameCanvas"></canvas>
+        <div id="problem" hidden>
+            <input type='answer' id='answer' name='answer' placeholder='Enter Answer' />
+            <h2 id="hint" hidden></h2>
+        </div>
     </div>
     <div id="inventory"></div>
-    <div id="problem"></div>
 
     <script type="module" type="text/javascript" src="/assets/play/src/app.js"></script>
     <script src="/socket.io/socket.io.js"></script>

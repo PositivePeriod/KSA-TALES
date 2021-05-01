@@ -22,19 +22,24 @@ const isEqual = (first, second) => {
 }
 
 class PlayerObject {
-    constructor(socketID, AA, name, x, y,map) {
+    constructor(socketID, AA, name, x, y, map) {
         this.socketID = socketID;
         this.AA = AA;
         this.name = name;
         this.x = x;
         this.y = y;
         this.map = map;
+        this.score = 0;
+        this.visited = []
 
-        this.key = ["K1"];
-        this.trap = 100;
-        this.flash = 100;
-        this.hint = 1;
-        this.trapdeleter = 100;
+        this.inventory = new Map([
+            ['keys', ["K1"]],
+            ['trap', 100],
+            ['flash', 100],
+            ['hint', 1],
+            ['trapDeleter', 100],
+            ['hammer', 10]
+        ]);
 
         this.commandQueue = new InputDeque();
         this.dir = {
@@ -57,18 +62,37 @@ class PlayerObject {
         }
     }
 
+    enter() {
+        for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
+            if (!this.visited.includes(i)) {
+                this.score += 10
+            }
+        }
+    }
+    checkAnswer(problemBlock, answer) {
+        if (problemBlock.answer == answer) {
+            this.solve(problemBlock.id,problemBlock.answer);
+        }
+    }
+
+
+
+
+
     solve(problemID, rewards) {
         this.solvedProblemIDs.push(problemID)
         for (reward of rewards) {
             switch (reward.charAt(0)) {
                 case 'T':
-                    this.trap++;
+                    this.inventory.set("trap", this.inventory.get("trap") +1 );
                 case 'F':
-                    this.flash++;
+                    this.inventory.set("flash", this.inventory.get("flash") +1 );
                 case 'H':
-                    this.hint++;
+                    this.inventory.set("hint", this.inventory.get("hint") +1 );
                 case 'K':
-                    this.key.push(reward);
+                    var keys = this.inventory.get("keys");
+                    keys.push(reward);
+                    this.inventory.set("keys", keys);
                 default:
                     console.log("Error | Impossible Reward");
             }
@@ -79,7 +103,8 @@ class PlayerObject {
         if (block instanceof WallBlock) {
             return false
         } else if (block instanceof DoorBlock) {
-            return block.keyIDs.every(keyID => this.key.includes(keyID));
+            var keys = this.inventory.get('keys');
+            return block.keyIDs.every(keyID => keys.includes(keyID));
         } else if (block instanceof FloorBlock) {
             return true
         } else if (block instanceof ProblemBlock) {
@@ -93,20 +118,20 @@ class PlayerObject {
         var dirFlashArea = [];
         for (var i = 0; i < 8; i++) {
             dirFlashArea.push([FlashArea[i][0] * this.dir.x + FlashArea[i][1] * this.dir.y, FlashArea[i][0] * this.dir.y + -FlashArea[i][1] * this.dir.x]);
-        }   
+        }
         var ret = [];
-        if(this.canPass(this.map.blocks[this.x + dirFlashArea[0][0]][this.y + dirFlashArea[0][1]])){
+        if (this.canPass(this.map.blocks[this.x + dirFlashArea[0][0]][this.y + dirFlashArea[0][1]])) {
             ret.push(dirFlashArea[0]);
             ret.push(dirFlashArea[3]);
             ret.push(dirFlashArea[4]);
         }
-        if(this.canPass(this.map.blocks[this.x + dirFlashArea[1][0]][this.y + dirFlashArea[1][1]])){
+        if (this.canPass(this.map.blocks[this.x + dirFlashArea[1][0]][this.y + dirFlashArea[1][1]])) {
             ret.push(dirFlashArea[1]);
             ret.push(dirFlashArea[5]);
             ret.push(dirFlashArea[4]);
             ret.push(dirFlashArea[6]);
         }
-        if(this.canPass(this.map.blocks[this.x + dirFlashArea[2][0]][this.y + dirFlashArea[2][1]])){
+        if (this.canPass(this.map.blocks[this.x + dirFlashArea[2][0]][this.y + dirFlashArea[2][1]])) {
             ret.push(dirFlashArea[2]);
             ret.push(dirFlashArea[7]);
             ret.push(dirFlashArea[6]);
@@ -118,12 +143,13 @@ class PlayerObject {
 
     inFlashArea(block) {
         return this.getFlashArea(block).some(area => isEqual(area, [block.x - this.x, block.y - this.y]))
-        
+
     }
 
     useTrap(block) {
-        this.trap--;
-        if (block.type == 'F') { // 바닥에만 트랩 깔 수 있음
+        this.inventory.set('trap', this.inventory.get('trap') - 1);
+        
+        if (block.type === 'F') { // 바닥에만 트랩 깔 수 있음
             block.addTrap();
         } else {
             //'문, 문제상자, 벽에는 트랩을 놓을 수 없습니다.' 팝업
@@ -133,12 +159,12 @@ class PlayerObject {
     }
 
     useFlash() {
-        this.flash--;
+        this.inventory.set("flash", this.inventory.get("flash") -1 );
         this.usingFlash = true;
     }
 
     useHint() {
-        this.hint--;
+        this.inventory.set("hint", this.inventory.get("hint") -1 );
     }
 }
 

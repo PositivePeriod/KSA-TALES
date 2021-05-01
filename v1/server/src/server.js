@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const socketio = require('socket.io');
-const { MSG, AAtoCODE } = require('./constant');
+const { PROBLEMS, MSG, AAtoCODE, P } = require('./constant');
 const Game = require('./entity/gameObject');
 const cors = require('cors');
 
@@ -83,7 +83,7 @@ class ServerManager {
 
             socket.on(MSG.JOIN_PLAY, this.joinPlay.bind(this, socket));
 
-            socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));   
+            socket.on(MSG.LEAVE_PLAY, this.leaveGame.bind(this, socket));
 
             // socket.on(MSG.JOIN_SPECTATE, ); // TODO
             // socket.on(MSG.LEAVE_SPECTATE, ); // TODO
@@ -109,7 +109,7 @@ class ServerManager {
         }
     }
 
-    
+
 
     leaveGame() {
         this.game.removePlayer(socket);
@@ -132,4 +132,6 @@ class ServerManager {
     }
 }
 
-new ServerManager();
+new ServerManager(); {
+
+}

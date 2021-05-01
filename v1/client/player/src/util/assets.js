@@ -5,8 +5,6 @@ const ASSET_NAMES = [
     'wall2.png',
     'problem.png',
     'door.png'
-
-
 ];
 
 const assets = {};
@@ -32,5 +30,6 @@ export const downloadAssets = (callback) => {
 };
 
 export const getAsset = (assetName) => {
+    
     return assets[assetName];
 };

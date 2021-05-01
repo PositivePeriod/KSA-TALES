@@ -52,7 +52,7 @@ class MapObject {
                         this.startPos = { "x": x, "y": y };
                     case 'F':
                         var block = new FloorBlock(x, y, roomIDs);
-                        if(blockData.slice(1,2) == 'T'){
+                        if(blockData.slice(1,2) === 'T'){
                             block.addTrap()
                         }
                         break;

@@ -34,19 +34,19 @@ class DoorBlock extends BlockObject {
 class FloorBlock extends BlockObject {
     constructor(x, y, roomIDs) {
         super('F', x, y, roomIDs);
-        this.trapnum = 0;
+        this.trapNum = 0;
     }
 
     existTrap() {
-        return this.trapnum > 0
+        return this.trapNum > 0
     }
 
     addTrap() {
-        this.trapnum = 1;
+        this.trapNum = 1;
     }
 
     deleteTrap() {
-        this.trapnum = 0;
+        this.trapNum = 0;
     }
 
     show(player) {
@@ -78,18 +78,6 @@ class ProblemBlock extends BlockObject {
         this.answer = answer;
         this.reward = reward; // TODO set reward
     }
-
-    //getProblem(player) {
-    //  console.log(player.AA);
-    // var playerAnswer = null; // TODO get answer
-    // if (playerAnswer === this.answer && !(player.isSolved(this.id))) {
-    //     player.solve(this.id);
-    //     player.getItems(his.reward);
-    //     //player가 정답을 맞혔다면 this.id return, player에서는 player.isSolved에 문제 id 저장 (열쇠를 획득했다는 개념)
-    // } else {
-    //     return false;
-    // }
-    //}
 }
 
 module.exports = { WallBlock, DoorBlock, FloorBlock, ProblemBlock };

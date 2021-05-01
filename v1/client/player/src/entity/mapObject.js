@@ -56,7 +56,7 @@ export class MapObject {
         this.ctx.beginPath();
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
-                if(this.mapData[x][y].type == 'N'){
+                if(this.mapData[x][y].type === 'N'){
                     continue;
                 }
                 // console.log(this.miniMap.mapData)
@@ -68,7 +68,7 @@ export class MapObject {
         for (let x = 0; x < this.miniMap.width; x++) {
             for (let y = 0; y < this.miniMap.height; y++) {
                 this.ctx.strokeStyle = 'transparent';
-                if(this.miniMap.mapData[x][y] == null){
+                if(this.miniMap.mapData[x][y] === null){
                     this.ctx.fillStyle = COLOR['N']
                 }
                 else{
@@ -144,19 +144,19 @@ export class MapObject {
         if (this.mapData !== null) {
             for (let x = 0; x < this.x; x++) {
                 for (let y = 0; y < this.y; y++) {
-                    if(this.mapData[x][y].type == 'D'){
+                    if(this.mapData[x][y].type === 'D'){
                         var isHor = true;
                         if(x==this.x-1){
-                            if(this.mapData[x-1][y].type == 'F' || this.mapData[x-1][y].type == 'N'){
+                            if(this.mapData[x-1][y].type === 'F' || this.mapData[x-1][y].type === 'N'){
                                 isHor = false;
                             }
                         }
                         else{
-                            if(this.mapData[x+1][y].type == 'F' || this.mapData[x+1][y].type == 'N'){
+                            if(this.mapData[x+1][y].type === 'F' || this.mapData[x+1][y].type === 'N'){
                                 isHor = false;
                             }
                         }
-                        if(Math.floor(this.x/2) == x && Math.floor(this.y/2) == y){
+                        if(Math.floor(this.x/2) === x && Math.floor(this.y/2) === y){
                             isHor = !isHor
                         }
                         this.mapData[x][y].drawDoor(this.ctx,isHor);
