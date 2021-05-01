@@ -11,10 +11,15 @@ const assets = {};
 
 function downloadAsset(assetName) {
     return new Promise(resolve => {
+        console.log(assetName)
+        console.log('Client Start 2-1')
         const asset = new Image();
         asset.src = `/assets/${assetName}`;
+        console.log('Client Start 2-2')
         asset.onload = () => {
+            console.log('Client Start 2-3')
             assets[assetName] = asset;
+            console.log('Client Start 2-4')
             resolve();
         };
     });
