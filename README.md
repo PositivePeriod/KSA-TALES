@@ -1,6 +1,6 @@
 # KSA-TALES
 제목 : KSA Labyrinth : UNDER THE KSA
-설명 : KSA SAF 2020 Labyrinth
+설명 : KSA SAF 2021 Labyrinth
 
     <meta name="title" content="UNDER THE KSA" />
     <meta name="author" content="KSA 2021 SAF 추진위원회">
