@@ -1,109 +1,127 @@
-import { BlockObject } from './blockObject.js'
+const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
-export class MapObject {
-    constructor(width, height, data) {
-        this.width = width;
-        this.height = height;
+const mapNumber = 3;
+const mapData = require(`../../data/mapData${mapNumber}.json`);
+const Adjacents = [
+    [1, 1],
+    [1, 0],
+    [1, -1],
+    [0, 1],
+    [0, -1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1]
+];
+const isEqual = (first, second) => {
+    return JSON.stringify(first) === JSON.stringify(second);
+}
 
-        this.data = null;
-        if (data !== undefined) {
-            data.then(function(resolvedData) {
-                this.initData(resolvedData);
-            }.bind(this));
-        } else {
-            this.initData(null);
-        }
-
-
-        this.ratio = 0.8
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio
-        this.pos = {
-            'x': stageWidth / 2 - this.grid * this.x / 2,
-            'y': stageHeight / 2 - this.grid * this.y / 2
-        }
-    }
-
-    initData(blueprint) {
-        if (blueprint === null || blueprint === '') {
-            const data = new Array(this.x);
-            for (var x = 0; x < this.x; x++) {
-                data[x] = new Array(this.y);
-                for (var y = 0; y < this.y; y++) {
-                    const block = new BlockObject(
-                        'ground',
-                        this.x + x * this.size,
-                        this.y + y * this.size,
-                        this.size
-                    );
-                    data[x][y] = block;
+class MapObject {
+    constructor() {
+        this.width = mapData.width;
+        this.height = mapData.height;
+        this.achievement = mapData.achievement;
+        this.blocks = Array.from(Array(this.width), () => Array(this.height).fill(null));
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                var roomIDs = mapData.room[y][x];
+                var blockData = mapData.map[y][x];
+                // console.log(blockData,y,x)
+                var blockType = blockData.slice(0, 1);
+                switch (blockType) {
+                    case 'W':
+                        var block = new WallBlock(x, y, roomIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
+                        break;
+                    case 'D':
+                        // var problemIDs = mapData.door[blockData]
+                        var problemIDs = ['K1']
+                        var block = new DoorBlock(x, y, roomIDs, problemIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
+                        break;
+                    case 'P':
+                        var problemData = mapData.problem[blockData];
+                        var id ="-1";
+                        var answer ="-1";
+                        var reward = "-1";
+                        
+                        // var id = problemData["id"];
+                        // var answer = problemData["answer"];
+                        // var reward = problemData["reward"];
+                        var block = new ProblemBlock(x, y, roomIDs, id, answer, reward); // TODO
+                        break;
+                    case 'S':
+                        this.startPos = { "x": x, "y": y };
+                    case 'F':
+                        var block = new FloorBlock(x, y, roomIDs);
+                        if(blockData.slice(1,2) == 'T'){
+                            block.addTrap()
+                        }
+                        break;
                 }
+                this.blocks[x][y] = block;
             }
-            this.data = data
-
-        } else {
-            blueprint = blueprint.split('\n');
-
-            this.x = Math.max(...blueprint.map(el => el.trim().length));
-            this.y = blueprint.length;
-            for (var i = 0; i < this.y; i++) {
-                blueprint[i] = blueprint[i].trim();
-                blueprint[i] += 'W'.repeat(this.x - blueprint[i].length);
-            }
-
-            const data = new Array(this.x);
-            for (var x = 0; x < this.x; x++) {
-                data[x] = new Array(this.y);
-                for (var y = 0; y < this.y; y++) {
-                    const block = new BlockObject(
-                        blueprint[y][x],
-                        this.x + x * this.size,
-                        this.y + y * this.size,
-                        this.size
-                    );
-                    data[x][y] = block;
-                }
-            }
-            this.data = data
         }
-
     }
 
     getBlock(x, y) {
-        return (0 <= x < this.width && 0 <= y < this.height) ? this.data[x][y] : null
+        return (0 <= x && x < this.width && 0 <= y && y < this.height) ? this.blocks[x][y] : null;
     }
 
-    coordinate(x, y) {
-        return {
-            'x': this.pos.x + x * this.grid,
-            'y': this.pos.y + y * this.grid
+    destroyBlock(x, y, blocktype) {
+        var block = this.getBlock(x, y);
+        if (blocktype === 'W') {
+            this.blocks[x][y] = new DestroyedWallBlock(block.x, block.y, block.roomIDs);
+            for (let [adjx, adjy] of Adjacents) {
+                var adjBlock = this.getBlock(x + adjx, y + adjy);
+                if (adjBlock !== null && adjBlock.type === 'W') {
+                    adjBlock.appendRoomIDs(block.roomIDs);
+                    console.log(block.roomIDs);
+                    console.log(x + adjx, y + adjy, adjBlock.roomIDs);
+                }
+            }
+        } else if (blocktype === 'D') {
+            this.blocks[x][y] = new DestroyedDoorBlock(block.x, block.y, block.roomIDs);
         }
     }
 
-    show(playerX, playerY, range) {
-        const data = new Array(2 * range.width + 1);
-        for (var x = playerX - range.width; x < playerX + range.width; x++) {
-            data[x] = new Array(2 * range.height + 1);
-            for (var y = playerY - range.height; y < playerY + range.height; y++) {
-                const block = this.getBlock(x, y);
-                const block = new BlockObject(
-                    'ground',
-                    this.x + x * this.size,
-                    this.y + y * this.size,
-                    this.size
-                );
-                data[x][y] = block;
+    show(player, range, players) {
+        var playerX = player.x;
+        var playerY = player.y;
+
+        var roomIDs = this.getBlock(playerX, playerY).roomIDs;
+
+        var width = 2 * range.width + 1;
+        var height = 2 * range.height + 1;
+        var data = Array.from(Array(width), () => Array(height));
+        for (let dx = -range.width; dx <= range.width; dx++) {
+            for (let dy = -range.height; dy <= range.height; dy++) {
+                var block = this.getBlock(playerX + dx, playerY + dy);
+                var isVisible = (block !== null) && ((roomIDs.filter(roomID => block.roomIDs.includes(roomID)).length > 0));
+                data[range.width + dx][range.height + dy] = (isVisible) ? block.show(player) : null;
             }
         }
-        this.data = data
-        return data
+        const visiblePlayer = [];
+        players.forEach(player => {
+            var validX = (playerX - range.width <= player.x) && (player.x <= playerX + range.width);
+            var validY = (playerY - range.height <= player.y) && (player.y <= playerY + range.height);
+            var block = this.getBlock(player.x, player.y);
+            var isVisible = roomIDs.filter(roomID => block.roomIDs.includes(roomID)).length > 0;
+            if (validX && validY && isVisible) {
+                visiblePlayer.push({
+                    "x": player.x - (playerX - range.width),
+                    "y": player.y - (playerY - range.height)
+                })
+            }
+        });
+
+        return {
+            "map": data,
+            "players": visiblePlayer,
+            "myPos":{
+                x:playerX,
+                y:playerY,
+            }
+        }
     }
-
-    moveCheck(player,x,y) {
-        return this.data[x][y].canPass(player);
-    }
-
-    activate(player,x,y) {
-
-    }
-
 }
+
+module.exports = MapObject;
