@@ -173,8 +173,7 @@
         "xdg-basedir": "^4.0.0"
     },
     "scripts": {
-        "start": "node production/server/src/server.js",
-        "production": "node production/server/src/server.js",
+        "start": "node v1/server/src/server.js",
         "develop": "node v1/server/src/server.js",
         "develop:loop": "nodemon --watch v1",
         "test": "echo \"Error: no test specified\" && exit 1"
