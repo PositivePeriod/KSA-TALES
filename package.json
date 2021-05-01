@@ -2,7 +2,7 @@
   "name": "under-the-ksa",
   "version": "1.0.0",
   "description": "KSA SAF 2021 Labyrinth",
-  "main": "v1/server/src/server.js",
+  "main": "production/server/src/server.js",
   "dependencies": {
     "abbrev": "^1.1.1",
     "accepts": "^1.3.7",
@@ -173,7 +173,7 @@
     "xdg-basedir": "^4.0.0"
   },
   "scripts": {
-    "start": "node v1/server/src/server.js",
+    "production": "node production/server/src/server.js",
     "develop": "node v1/server/src/server.js",
     "develop:loop": "nodemon --watch v1",
     "test": "echo \"Error: no test specified\" && exit 1"

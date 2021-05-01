@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta name="title" content="UNDER THE KSA" />
+    <meta name="author" content="KSA 2021 SAF 추진위원회">
+    <meta name="description" content="KSA Labyrinth : UNDER THE KSA">
+    <title>UNDER THE KSA</title>
+    <!--style-->
+    <link rel="stylesheet" type="text/css" href="https://under-the-ksa.herokuapp.com/assets/style.css">
+</head>
+
+<body>
+    <div class='container'>
+        <div class="center">
+            <form name="registerAA">
+                <h2>
+                    &nbsp;AA&nbsp;&nbsp;&nbsp;<input type='text' id='AA' name='AA' placeholder='Enter AA' />
+                </h2>
+                <h2>
+                    CODE&nbsp;&nbsp;<input type='text' id="code" name='code' placeholder='Enter code' />
+                </h2>
+                <h2>
+                    NAME&nbsp;&nbsp;<input type='name' id='name' name='code' placeholder='Enter nickname if you are player' />
+                    <h4>Do not use / in username</h4>
+                </h2>
+            </form>
+            <button onclick="play()">Play</button>
+            <button onclick="spectate()">Spectate</button>
+            <h2>
+                "AA1_1": "CDQE",
+                "AA1_2": "DKRO",
+                "AA2_1": "CVPF"
+            </h2>
+            <audio src="./assets/background.mp3" type="audio/mp3" autoplay="true" loop> </audio>
+        </div>
+    </div>
+    <script>
+        function play() {
+            const AA = document.getElementById('AA').value;
+            const code = document.getElementById('code').value;
+            const name = document.getElementById('name').value;
+            window.location.href = `./register/play/${AA}/${code}/${name}`;
+        }
+
+        function spectate() {
+            const AA = document.getElementById('AA').value;
+            const code = document.getElementById('code').value;
+            window.location.href = `./register/spectate/${AA}/${code}`;
+        }
+    </script>
+</body>
+
+</html>
