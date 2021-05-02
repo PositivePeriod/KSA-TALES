@@ -54,7 +54,7 @@ const PROBLEMS = {
     "ancient_china": { "hint": "한자", "answer": 5 },
     "position_change": { "hint": "평행이동", "answer": "EFFECT" },
     "Bomb": { "hint": "3*3", "answer": "SONG" },
-    "Zigzag": { "hint": "색깔", "answer": "TO ENTER TAKE A PICTURE QR CODE NOBEL TREE" },
+    "Zigzag": { "hint": "색깔", "answer": "TO ENTER TAKE A PICTURE QR CODE NOBEL TREE" }, // TODO ?? QR code 암호가 답이 되어야 하는 거 아님?
     "AAA": { "hint": "덧셈", "answer": 406 },
     "guessing_word": { "hint": "1번째 글자는 M이다", "answer": "MESSAGE" },
     "mugcup": { "hint": "손잡이의 방향에 주목하라", "answer": "FORTUNE FAVORS THE BRAVE" },
@@ -67,7 +67,8 @@ const PROBLEMS = {
     "variable": { "hint": "그냥 푸세요 =D", "answer": { "A": 9876, "B": 5432 } },
     "arrangement": { "hint": "나홀로 집에", "answer": "H" },
     "password": { "hint": "밀자", "answer": "CURSE" },
-    "number": { "hint": "영어로", "answer": 3 }
+    "number": { "hint": "영어로", "answer": 3 },
+    "nucleotide": {"hint": "각각의 선을 평행이동", "answer": "Cytosin"}
 };
 
 module.exports = { MSG, AAtoCODE, CODEtoAA, PROBLEMS };

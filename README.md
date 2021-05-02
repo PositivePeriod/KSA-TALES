@@ -1,12 +1,12 @@
 # KSA-TALES
-제목 : KSA Labyrinth : UNDER THE KSA
+제목 : Labyrinth : UNDER THE KSA
 설명 : KSA SAF 2021 Labyrinth
 
-    <meta name="title" content="UNDER THE KSA" />
+    <meta name="title" content=" Labyrinth : UNDER THE KSA" />
     <meta name="author" content="KSA 2021 SAF 추진위원회">
-    <meta name="description" content="KSA Labyrinth : UNDER THE KSA">
+    <meta name="description" content="Labyrinth : UNDER THE KSA">
 
-1. 문제 번역 영어로 / 문제 올리기 보여주기
+<!-- 1. 문제 번역 영어로 / 문제 올리기 보여주기 -->
 <!-- 2. map 생성시 가장 바깥쪽은 wall로 두르는 것이 좋을 듯 (에러 방지) // 구현 자체는 안정적인 듯 에러 안 남 -->
 3. 사람 그리면서 다른 사람도 가져와야 하고 dir, 프로필 보내고 받기
 <!-- 4. 옆 방 안 보이게 수정 -->
@@ -17,11 +17,11 @@
 <!-- 사용자간 업적 공유 및  -->
 9. 리더보드 제작
 10. 관리자용 관전 페이지
-11. 소리 넣기
-12. dictionary 용도는 initialize Map으로 바꾸기
+<!-- 11. 소리 넣기 -->
+<!-- 12. dictionary 용도는 initialize Map으로 바꾸기 -->
 <!-- 13. problem.id 보여주면 안 됨 ?? 필요없을 듯 -->
 <!-- 14. Flash 켰을 때 보이는 범위 설정 (벽으로 막혀 있을 수도 있으니까 각도를 측정해야 되나? while 문이나 BFS 같은 거 필요할 듯) -->
-15. 튜토리얼 제작
+<!-- 15. 튜토리얼 제작 - 조작법 -->
 16. Hint 사진 띄우기 구현
 17. 문제 풀기 구현 
 19. 업적 종류 정하기 / 보여주기
@@ -29,11 +29,25 @@
 21. qr 코드
 22. 문제 올리기
 23. 서버 설정하기
-24. 반 설정
+<!-- 24. 반 설정 -->
+
+이동 애니메이션(엄ㅁ...)
+점수 구현
+    -첫 방문
+    -나머지 자잘한거
+리더보드
+콘솔창(업적등 뜨는거)
+힌트
+인벤토리
+프로필
+
+관전페이지 어드민을 만들던지 아니면 플레이어들 위치만 표시하던지 맵에 
+
+json 파일 저장
 
 
-1. 망치 - 문 부시는 거 / 꼴찌 위주로 주기 오오오오옹오오오오오오오오오오오옹옹옹오오오옹 사실 그사이에 해머 다만듬 ㅋ
-2. 지뢰 제거기
+<!-- 1. 망치 - 문 부시는 거 / 꼴찌 위주로 주기  -->
+<!-- 2. 지뢰 제거기 -->
 3. 먹물 / 시야 좁히기
 4. 아이템 많이 주기
 5. 가벼운 발걸음 (트랩 무시)

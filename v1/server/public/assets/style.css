@@ -1,6 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
 
 * {
+    outline: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+
     font-family: 'DotGothic16', sans-serif;
     letter-spacing: 3px;
     line-height: 1.5;
@@ -8,18 +14,25 @@
     background-color: black;
 }
 
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
 a {
     text-decoration: none;
 }
 
-.container {
-    border: 3px solid;
-    padding: 10px;
-}
-
-.center {
-    text-align: center;
-    vertical-align: middle;
+a:hover {
+    color: black;
+    background-color: white;
 }
 
 .size30 {
@@ -43,10 +56,6 @@ a {
 }
 
 
-.parent {
-    position: relative;
-}
-
 .child {
     position: absolute;
     top: 50%;
@@ -65,7 +74,58 @@ input {
     transition: .3s;
 }
 
-input:focus{
-    border-color: dodgerblue;
+input:focus {
+    border-color: gray;
     box-shadow: none;
+}
+
+/* .container {
+    border: 5px solid;
+    width: 80%;
+    padding: 5%;
+    margin: 5%;
+}
+
+.parent-center {
+    margin: auto;
+    width: 50%;
+}
+
+.child-center {
+    text-align: center;
+    vertical-align: middle;
+} */
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.under {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hidden {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+#gameFrame {
+    width: 100%;
+    height: 100%;
+}
+
+#gameCanvas {
+    margin: 0px auto;
+    display: flex;
+}
+
+#problem {
+    position: fixed;
+    margin: auto 0px;
 }

@@ -1,5 +1,6 @@
 import { InputDeque } from './deque.js';
 import { MSG } from '../constant.js';
+import { updateHTML } from './assets.js';
 
 export class Network {
     constructor(map) {
@@ -8,9 +9,11 @@ export class Network {
         const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
         this.socket = io(`${socketProtocol}://${window.location.host}`);
 
-        this.time = 50;
+        this.time = 20;
         this.commandQueue = new InputDeque();
         setInterval(this.sendCommand.bind(this), this.time);
+
+        this.isShownProblem = false;
 
         window.addEventListener("beforeunload", this.disconnect.bind(this));
     }
@@ -19,7 +22,7 @@ export class Network {
         this.socket.on(MSG.JOIN_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.SEND_PROBLEM, this.useProblem.bind(this));
+        this.socket.on(MSG.SEND_PROBLEM, this.showProblem.bind(this));
         this.socket.on(MSG.SEND_HINT, this.showHint.bind(this));
         this.socket.on(MSG.SEND_ACHIEVEMENT, this.getAchievement.bind(this));
     }
@@ -36,7 +39,12 @@ export class Network {
 
     tryToSendCommand(command) {
         if (this.commandQueue.getSize() < 1) {
-            this.commandQueue.push(command);
+            if (command === 'KeyInteract' && this.isShownProblem) {
+                this.hideProblem();
+                this.isShownProblem = false;
+            } else {
+                this.commandQueue.push(command);
+            }
         }
     }
 
@@ -48,51 +56,48 @@ export class Network {
     }
 
     useProblem(problemID) {
+        console.log(problemID)
         var problem = document.getElementById('problem');
-        if (!problem.hidden) {
+        if (!problem.classList.contains('hidden')) {
+            console.log('show', problemID);
+            this.isShownProblem = true;
             this.showProblem(problemID);
         } else {
+            console.log('hide');
             this.hideProblem();
         }
     }
 
     showProblem(problemID) {
-        console.log(problemID);
+        
+        document.getElementById('gameCanvas').classList.add('hidden');
+        document.getElementById('problem').classList.remove('hidden');
+        // document.getElementById('hint').classList.add('hidden');
+        document.getElementById('answer').classList.remove('hidden');
 
-        const asset = new Image();
-        asset.src = `/assets/${problemID}.png`;
-        asset.onload = () => {
-            const hint = document.getElementById('hint');
-            hint.hidden = true;
-
-            const gameCanvas = document.getElementById('gameCanvas');
-            gameCanvas.hidden = true;
-
-            const problem = document.getElementById('problem');
-            problem.hidden = false;
-            problem.appendChild(asset);
-        };
+        updateHTML(`/problems/${problemID}`);
+        this.isShownProblem = true;
     }
 
     hideProblem() {
-        const hint = document.getElementById('hint');
-        hint.hidden = true;
+        document.getElementById('gameCanvas').classList.remove('hidden');
+        document.getElementById('gameCanvas').hidden = true;
+        document.getElementById('problem').classList.add('hidden');
+        // document.getElementById('hint').classList.add('hidden');
+        document.getElementById('answer').classList.add('hidden');
 
         const problem = document.getElementById('problem');
-        problem.hidden = true;
         while (problem.firstChild) {
             problem.removeChild(problem.lastChild);
         }
-
-        const gameCanvas = document.getElementById('gameCanvas');
-        gameCanvas.hidden = false;
+        this.isShownProblem = false;
     }
 
     showHint(hintMSG) {
         console.log(hintMSG);
         const hint = document.getElementById('hint');
         hint.innerText = hintMSG;
-        hint.hidden = false;
+        document.getElementById('hint').classList.remove('hidden');
     }
 
     getAchievement(message) {
@@ -105,6 +110,7 @@ export class Network {
     }
 
     disconnectFromServer() {
+        console.log('disconnectFrom')
         window.location.href = `/register`;
     }
 }

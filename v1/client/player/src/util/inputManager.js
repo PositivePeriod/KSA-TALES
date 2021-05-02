@@ -2,6 +2,7 @@ export class KeyboardManager {
     constructor() {
         this.keyStatus = {};
         this.keyCallback = {};
+        this.shift = new Set();
     }
 
     isPressed(keyCode) {
@@ -10,6 +11,13 @@ export class KeyboardManager {
 
     handler(e) {
         // console.log(e.type, e.code);
+        if (e.shiftKey && this.shift.has(e.code)) {
+            if (e.type === 'keyup') {
+                this.keyCallback["Shift" + e.code]();
+                console.log('shift');
+            }
+            return;
+        }
         switch (e.type) {
             case 'keydown':
                 this.keyStatus[e.code] = true;
@@ -28,6 +36,9 @@ export class KeyboardManager {
 
     listen(keyCode, callback) {
         this.keyCallback[keyCode] = callback;
+        if (keyCode.includes('Shift')) {
+            this.shift.add(keyCode.slice(5));
+        }
     }
 
     activate() {

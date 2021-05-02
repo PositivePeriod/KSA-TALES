@@ -22,9 +22,9 @@ class Game {
         // this.spectateSocket = {}; // TODO
 
         this.turn = 0;
-        this.time = 100;
+        this.time = 30;
         this.map = new MapObject();
-        this.showRange = { width: 5, height: 3 };
+        this.showRange = { width: 4, height: 3 };
         this.io = null;
         this.players = new Map();
         this.joinedAA = new Set();
@@ -39,20 +39,18 @@ class Game {
     }
 
     addPlayer(socket, AA, name) {
-        if (!this.joinedAA.has(AA)) {
-            // if(true){
-            var socketID = socket.id;
-            var pos = this.map.startPos;
-            var player = new PlayerObject(socketID, AA, name, pos.x, pos.y, this.map);
-            this.players.set(socketID, player);
-            this.joinedAA.add(AA);
-        }
+        var socketID = socket.id;
+        var pos = this.map.startPos;
+        var player = new PlayerObject(socketID, AA, name, pos.x, pos.y, this.map);
+        this.players.set(socketID, player);
+        this.joinedAA.add(AA);
     }
 
     removePlayer(id) {
         if (this.players.has(id)) {
             var player = this.players.get(id);
-            var AA = player.AA;''
+            var AA = player.AA;
+            ''
             this.joinedAA.delete(AA);
             this.players.delete(id);
         }
@@ -66,6 +64,14 @@ class Game {
         if (!(player.canMove)) { return }
         switch (command) {
             case null:
+                break;
+            case 'ShiftKeyUp':
+            case 'ShiftKeyDown':
+            case 'ShiftKeyLeft':
+            case 'ShiftKeyRight':
+                var commandDir = command.slice(5);
+                var dir = MOVE[commandDir];
+                player.dir = dir;
                 break;
             case 'KeyUp':
             case 'KeyDown':
@@ -99,8 +105,13 @@ class Game {
                 var dir = player.dir;
                 var block = this.map.getBlock(nextX, nextY);
                 if (block !== null && block instanceof ProblemBlock) {
-                    player.canMove = false;
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, block.id);
+                    if(block.id.slice(0,1) =='X'){//Gift block
+                        player.solve(block.id, block.reward)
+                    }
+                    else{
+                        player.canMove = false;
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, block.id);
+                    }
                 }
                 break;
             case 'KeyAnswer':
@@ -117,7 +128,6 @@ class Game {
             case 'KeyFlash':
                 if (player.inventory.get("flash") > 0) {
                     player.useFlash();
-                    console.log("Used Flash");
                 }
                 break;
             case 'KeyHint':
@@ -135,28 +145,24 @@ class Game {
                     if (block !== null && block instanceof WallBlock && block.weak) {
                         this.map.destroyBlock(nextX, nextY, 'W');
                         player.useHammer();
-                    } else if (block !== null && block instanceof DoorBlock && block.weak) {
+                    } else if (block !== null && block instanceof DoorBlock) {
                         this.map.destroyBlock(nextX, nextY, 'D');
+                        player.useHammer();
+                    } else if (block !== null && block instanceof FloorBlock) {
+                        this.map.destroyBlock(nextX, nextY, 'F');
                         player.useHammer();
                     }
                 }
+                player.score += 50;
                 break;
-            case 'KeyTrapDeleter':
-                if (player.inventory.get("trapDeleter") > 0) {
-                    var block = this.map.getBlock(nextX, nextY);
-                    if (block !== null && block instanceof FloorBlock && block.existTrap()) {
-                        // TODO
-                        player.useTrapDeleter(block);
-                    }
-                }
-                default:
-                    console.log('Error | Impossible key');
+            default:
+                console.log('Error | Impossible key');
         }
     }
 
     update() {
         this.turn++;
-        if (this.turn % 40 === 0) {
+        if (this.turn % 200 === 0) {
             console.log(`Game | Turn ${this.turn} | ${Array.from(this.joinedAA.keys())}`);
         }
         for (let [socketID, player] of this.players) {
@@ -175,19 +181,10 @@ class Game {
     }
 
     show() {
-        var playerCoordList = [];
-        for (let [socketID, player] of this.players) {
-            playerCoordList.push({
-                x: player.x,
-                y: player.y,
-                socketID: player.socketID,
-                AA: player.AA
-            })
-        }
         for (let [socketID, player] of this.players) {
             var socket = this.sockets[socketID];
-            var visibleMap = this.map.show(player, this.showRange, playerCoordList);
-            socket.emit(MSG.UPDATE_GAME, visibleMap);
+            var data = this.map.show(player, this.showRange, this.players);
+            socket.emit(MSG.UPDATE_GAME, data);
         }
     }
 }

@@ -7,7 +7,11 @@ class BlockObject {
     }
 
     show(player) {
-        return { type: this.type, light: false, showTrap: false }
+        return {
+            type: this.type,
+            light: false,
+            showTrap: false
+        }
     }
 }
 
@@ -20,6 +24,21 @@ class WallBlock extends BlockObject {
     appendRoomIDs(newroomIDs) {
         var merged = this.roomIDs.concat(newroomIDs);
         this.roomIDs = merged.filter((item, pos) => merged.indexOf(item) === pos);
+    }
+    show(player) {
+        if(this.weak){
+            return {
+                type: 'Y',
+                light: false,
+                showTrap: false
+            }
+            
+        }
+        return {
+            type: this.type,
+            light: false,
+            showTrap: false
+        }
     }
 }
 
@@ -35,7 +54,9 @@ class FloorBlock extends BlockObject {
     constructor(x, y, roomIDs) {
         super('F', x, y, roomIDs);
         this.trapNum = 0;
+        this.isBroken = false;
     }
+    
 
     existTrap() {
         return this.trapNum > 0
@@ -50,10 +71,22 @@ class FloorBlock extends BlockObject {
     }
 
     show(player) {
+        var brokenType = this.type;
+        if(this.isBroken){
+            brokenType = "B";
+        }
         if (player.usingFlash && player.inFlashArea(this)) {
-            return { type: this.type, light: true, showTrap: this.existTrap() }
+            return {
+                type: brokenType,
+                light: true,
+                showTrap: this.existTrap()
+            }
         } else {
-            return { type: this.type, light: false, showTrap: false }
+            return {
+                type: brokenType,
+                light: false,
+                showTrap: false
+            }
         }
     }
 
@@ -78,6 +111,25 @@ class ProblemBlock extends BlockObject {
         this.answer = answer;
         this.reward = reward; // TODO set reward
     }
+    show(player) {
+        if (this.id.slice(0,1) == 'X') {
+            return {
+                type: "G", //Gift
+                light: false,
+                showTrap: false
+            }
+        }
+        return {
+            type: this.type,
+            light: false,
+            showTrap: false
+        }
+    }
 }
 
-module.exports = { WallBlock, DoorBlock, FloorBlock, ProblemBlock };
+module.exports = {
+    WallBlock,
+    DoorBlock,
+    FloorBlock,
+    ProblemBlock
+};

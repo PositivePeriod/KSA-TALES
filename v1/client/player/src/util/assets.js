@@ -4,7 +4,9 @@ const ASSET_NAMES = [
     'wall1.png',
     'wall2.png',
     'problem.png',
-    'door.png'
+    'door.png',
+    'weakblock.png',
+    'brokenblock.png'
 ];
 
 const assets = {};
@@ -12,14 +14,10 @@ const assets = {};
 function downloadAsset(assetName) {
     return new Promise(resolve => {
         console.log(assetName)
-        console.log('Client Start 2-1')
         const asset = new Image();
         asset.src = `/assets/${assetName}`;
-        console.log('Client Start 2-2')
         asset.onload = () => {
-            console.log('Client Start 2-3')
             assets[assetName] = asset;
-            console.log('Client Start 2-4')
             resolve();
         };
     });
@@ -28,13 +26,24 @@ function downloadAsset(assetName) {
 export const downloadAssets = (callback) => {
     Promise.all(ASSET_NAMES.map(downloadAsset)).then(
         () => {
-            console.info("All essets downloaded");
+            console.info("All assets downloaded");
             callback();
         }
     );
 };
 
-export const getAsset = (assetName) => {
-    
-    return assets[assetName];
+export const getAsset = (assetName) => { return assets[assetName]; };
+
+export const updateHTML = (url) => {
+    var problem = document.getElementById('problem');
+    problem.setAttribute("data-include-path", url);
+    var includePath = problem.dataset.includePath;
+    if (includePath) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) { problem.innerHTML = this.responseText; }
+        };
+        xhttp.open('GET', includePath, true);
+        xhttp.send();
+    }
 };

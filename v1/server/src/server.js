@@ -18,7 +18,7 @@ class ServerManager {
 
         const port = process.env.PORT || 8000;
         this.server = this.app.listen(port, function() {
-            console.log(`KSA Labyrinth : UNDER THE KSA listening on port ${port}`);
+            console.log(`Labyrinth : UNDER THE KSA listening on port ${port}`);
         }.bind(this));
 
         this.makeSocket();
@@ -31,13 +31,17 @@ class ServerManager {
         this.app.use('/about', function(req, res) { res.sendFile(path.join(__dirname, '../public/about.html')); });
         this.app.use('/leaderboard', function(req, res) { res.sendFile(path.join(__dirname, '../public/leaderboard.html')); });
 
-        this.app.get('/problems/:id', function(req, res) {
+        this.app.get('/develop/problems/:id', function(req, res) {
             var id = req.params.id;
             const data = {
                 title: id,
                 body: fs.readFileSync(path.resolve(__dirname, `../views/problems/${id}.html`), 'utf8')
             }
             res.render('problem.ejs', data);
+        });
+
+        this.app.get('/problems/:id', function(req, res) {
+            res.sendFile(path.join(__dirname, `../views/problems/${req.params.id}.html`))
         });
 
         this.app.get('/register/play/:AA/:code/:name', function(req, res) {
@@ -100,7 +104,7 @@ class ServerManager {
         var AA = data.AA;
         var code = data.code;
         var playerName = data.name;
-        if (AAtoCODE.has(AA) && AAtoCODE.get(AA) === code) {
+        if (AAtoCODE.has(AA) && AAtoCODE.get(AA) === code && (!this.game.joinedAA.has(AA))) {
             console.log(`${socket.id} | Join Room Success`);
             this.game.addPlayer(socket, AA, playerName); // TODO 한 반 당 한 명만
         } else {
@@ -108,8 +112,6 @@ class ServerManager {
             socket.emit(MSG.JOIN_PLAY, null);
         }
     }
-
-
 
     leaveGame() {
         this.game.removePlayer(socket);

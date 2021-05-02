@@ -2,6 +2,7 @@ const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObjec
 
 const mapNumber = 3;
 const mapData = require(`../../data/mapData${mapNumber}.json`);
+const { PROBLEMS } = require('../constant');
 const Adjacents = [
     [1, 1],
     [1, 0],
@@ -30,29 +31,36 @@ class MapObject {
                 var blockType = blockData.slice(0, 1);
                 switch (blockType) {
                     case 'W':
-                        var block = new WallBlock(x, y, roomIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
+                        var block = new WallBlock(x, y, roomIDs, (blockData.slice(1,2)=='W'));
                         break;
                     case 'D':
-                        // var problemIDs = mapData.door[blockData]
-                        var problemIDs = ['K1']
+                        // console.log(blockData);
+                        // console.log(mapData.door)
+                        var problemIDs = mapData.door[blockData]
+                        // var problemIDs = ['K1']
                         var block = new DoorBlock(x, y, roomIDs, problemIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
                         break;
                     case 'P':
                         var problemData = mapData.problem[blockData];
-                        var id ="-1";
-                        var answer ="-1";
-                        var reward = "-1";
-                        
-                        // var id = problemData["id"];
-                        // var answer = problemData["answer"];
-                        // var reward = problemData["reward"];
+                        // var id = "-1";
+                        // var answer = "-1";
+                        // var reward = "-1";
+                        // console.log(problemData,blockData)
+                        var id = problemData["id"];
+                        if(id.slice(0,1) == "X"){
+                            var answer = "X"
+                        }
+                        else{
+                            var answer = PROBLEMS[id];
+                        }
+                        var reward = problemData["reward"];
                         var block = new ProblemBlock(x, y, roomIDs, id, answer, reward); // TODO
                         break;
                     case 'S':
                         this.startPos = { "x": x, "y": y };
                     case 'F':
                         var block = new FloorBlock(x, y, roomIDs);
-                        if(blockData.slice(1,2) === 'T'){
+                        if (blockData.slice(1, 2) === 'T') {
                             block.addTrap()
                         }
                         break;
@@ -69,17 +77,16 @@ class MapObject {
     destroyBlock(x, y, blocktype) {
         var block = this.getBlock(x, y);
         if (blocktype === 'W') {
-            this.blocks[x][y] = new DestroyedWallBlock(block.x, block.y, block.roomIDs);
-            for (let [adjx, adjy] of Adjacents) {
-                var adjBlock = this.getBlock(x + adjx, y + adjy);
-                if (adjBlock !== null && adjBlock.type === 'W') {
-                    adjBlock.appendRoomIDs(block.roomIDs);
-                    console.log(block.roomIDs);
-                    console.log(x + adjx, y + adjy, adjBlock.roomIDs);
-                }
-            }
+            this.blocks[x][y] = new FloorBlock(block.x, block.y, block.roomIDs);
+            this.blocks[x][y].isBroken = true;
+            // this.blocks[x][y] = new DestroyedWallBlock(block.x, block.y, block.roomIDs);
         } else if (blocktype === 'D') {
-            this.blocks[x][y] = new DestroyedDoorBlock(block.x, block.y, block.roomIDs);
+            // this.blocks[x][y] = new DestroyedDoorBlock(block.x, block.y, block.roomIDs);
+            this.blocks[x][y] = new FloorBlock(block.x, block.y, block.roomIDs);
+            this.blocks[x][y].isBroken = true;
+
+        }else if (blocktype === 'F') {
+            this.blocks[x][y].deleteTrap();
         }
     }
 
@@ -99,32 +106,31 @@ class MapObject {
                 data[range.width + dx][range.height + dy] = (isVisible) ? block.show(player) : null;
             }
         }
-        const visiblePlayer = [];
-        const allPlayers = [];
-        players.forEach(player => {
-            var validX = (playerX - range.width <= player.x) && (player.x <= playerX + range.width);
-            var validY = (playerY - range.height <= player.y) && (player.y <= playerY + range.height);
-            var block = this.getBlock(player.x, player.y);
-            allPlayers.push({
-                "x": player.x - (playerX - range.width),
-                "y": player.y - (playerY - range.height)
-            });
+        const visiblePlayers = [];
+        const allPlayers = {};
+        var left = playerX - range.width;
+        var right = playerX + range.width;
+        var up = playerY - range.height;
+        var down = playerY + range.height;
+        players.forEach(eachPlayer => {
+            var block = this.getBlock(eachPlayer.x, eachPlayer.y);
+
+            allPlayers[eachPlayer.AA] =  eachPlayer.show(left, up);
+            
+            var validX = (left <= eachPlayer.x) && (eachPlayer.x <= right);
+            var validY = (up <= eachPlayer.y) && (eachPlayer.y <= down);
             var isVisible = roomIDs.filter(roomID => block.roomIDs.includes(roomID)).length > 0;
             if (validX && validY && isVisible) {
-                visiblePlayer.push({
-                    "x": player.x - (playerX - range.width),
-                    "y": player.y - (playerY - range.height)
-                })
+                visiblePlayers.push(eachPlayer.AA);
             }
         });
-
         return {
             "map": data,
-            "players": visiblePlayer,
-            "allPlayers":allPlayers,
-            "myPos":{
-                x:playerX,
-                y:playerY,
+            "visiblePlayers": visiblePlayers,
+            "allPlayers": allPlayers,
+            "myPos": {
+                x: playerX,
+                y: playerY,
             }
         }
     }

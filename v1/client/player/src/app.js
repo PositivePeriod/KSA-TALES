@@ -13,17 +13,14 @@ import {
 
 class App {
     constructor() {
-        console.log('Client Start 2')
         this.frame = document.getElementById("gameFrame");
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
 
-        console.log('Client Start 3')
-        this.showRange = { width: 5, height: 3 };
+        this.showRange = { width: 4, height: 3 };
         this.m = 2 * this.showRange.width + 1; // blockX
         this.n = 2 * this.showRange.height + 1; // blockY
 
-        console.log('Client Start 4')
         var stageWidth = document.body.clientWidth;
         var stageHeight = document.body.clientHeight;
         this.grid = Math.round(Math.min(stageWidth / this.m, stageHeight / this.n));
@@ -39,11 +36,13 @@ class App {
         // this.pixelRatio = window.devicePixelRatio || 1; // TODO error check?
         // this.ctx.scale(this.pixelRatio, this.pixelRatio);
 
-        console.log('Client Start 5')
         this.map = new MapObject(this.stageWidth, this.stageHeight, this.m, this.n, this.ctx);
 
-        console.log('Client Start 6')
         this.commandKey = {
+            "ShiftKeyUp": "ShiftKeyW",
+            "ShiftKeyLeft": "ShiftKeyA",
+            "ShiftKeyDown": "ShiftKeyS",
+            "ShiftKeyRight": "ShiftKeyD",
             "KeyUp": "KeyW",
             "KeyLeft": "KeyA",
             "KeyDown": "KeyS",
@@ -54,27 +53,28 @@ class App {
             "KeyFlash": "Digit2",
             "KeyHint": "Digit3",
             "KeyHammer": "Digit4",
-            "KeyTrapDeleter": "Digit5"
         }
-
-        console.log('Client Start 7');
 
         this.network = new Network(this.map);
         this.network.connect();
-        console.log('Client Start 8')
 
         this.keyboard = new KeyboardManager();
+        this.keyboard.listen(this.commandKey["ShiftKeyUp"], this.network.tryToSendCommand.bind(this.network, "ShiftKeyUp"));
+        this.keyboard.listen(this.commandKey["ShiftKeyLeft"], this.network.tryToSendCommand.bind(this.network, "ShiftKeyLeft"));
+        this.keyboard.listen(this.commandKey["ShiftKeyDown"], this.network.tryToSendCommand.bind(this.network, "ShiftKeyDown"));
+        this.keyboard.listen(this.commandKey["ShiftKeyRight"], this.network.tryToSendCommand.bind(this.network, "ShiftKeyRight"));
+
         this.keyboard.listen(this.commandKey["KeyUp"], this.network.tryToSendCommand.bind(this.network, "KeyUp"));
         this.keyboard.listen(this.commandKey["KeyLeft"], this.network.tryToSendCommand.bind(this.network, "KeyLeft"));
         this.keyboard.listen(this.commandKey["KeyDown"], this.network.tryToSendCommand.bind(this.network, "KeyDown"));
         this.keyboard.listen(this.commandKey["KeyRight"], this.network.tryToSendCommand.bind(this.network, "KeyRight"));
+
         this.keyboard.listen(this.commandKey["KeyInteract"], this.network.tryToSendCommand.bind(this.network, "KeyInteract"));
         this.keyboard.listen(this.commandKey["KeyAnswer"], this.network.tryToSendCommand.bind(this.network, "KeyAnswer"));
         this.keyboard.listen(this.commandKey["KeyTrap"], this.network.tryToSendCommand.bind(this.network, "KeyTrap"));
         this.keyboard.listen(this.commandKey["KeyFlash"], this.network.tryToSendCommand.bind(this.network, "KeyFlash"));
         this.keyboard.listen(this.commandKey["KeyHint"], this.network.tryToSendCommand.bind(this.network, "KeyHint"));
         this.keyboard.listen(this.commandKey["KeyHammer"], this.network.tryToSendCommand.bind(this.network, "KeyHammer"));
-        this.keyboard.listen(this.commandKey["KeyTrapDeleter"], this.network.tryToSendCommand.bind(this.network, "KeyTrapDeleter"));
         this.keyboard.activate();
 
         window.addEventListener("resize", this.resize.bind(this), false);
@@ -85,7 +85,6 @@ class App {
         const code = splitedUrl[5];
         const name = splitedUrl[6];
         this.network.joinGame(AA, code, name);
-        console.log('Client Start 8');
     }
 
     resize() {

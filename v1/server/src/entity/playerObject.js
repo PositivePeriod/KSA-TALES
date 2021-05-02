@@ -31,47 +31,49 @@ class PlayerObject {
         this.map = map;
         this.score = 0;
         this.visited = []
-
+        this.solvedProblemIDs = []
         this.inventory = new Map([
-            ['keys', ["K1"]],
+            ['keys', []],
             ['trap', 100],
-            ['flash', 100],
+            ['flash', 100000],
             ['hint', 1],
             ['trapDeleter', 100],
             ['hammer', 10]
         ]);
 
         this.commandQueue = new InputDeque();
-        this.dir = {
-            x: 0,
-            y: -1
-        };
+        this.dir = { x: 0, y: 1 };
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
         this.canMove = true;
         this.usingFlash = false;
     }
 
-    show() {
+    show(dx, dy) {
         return {
             'name': this.name,
             'AA': this.AA,
             'color': this.color,
-            'x': this.x,
-            'y': this.y,
+            'x': this.x - dx,
+            'y': this.y - dy,
             'dir': this.dir
         }
     }
 
-    enter() {
+    newRoom() {
         for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
             if (!this.visited.includes(i)) {
-                this.score += 10
+                this.score += 50
             }
         }
     }
+
+    newDoor(){
+
+    }
+
     checkAnswer(problemBlock, answer) {
         if (problemBlock.answer == answer) {
-            this.solve(problemBlock.id,problemBlock.answer);
+            this.solve(problemBlock.id, problemBlock.answer);
         }
     }
 
@@ -80,19 +82,29 @@ class PlayerObject {
 
 
     solve(problemID, rewards) {
+        if(this.solvedProblemIDs.includes(problemID)){
+            // console.log('Already solve this problem!')
+            return;
+        }
         this.solvedProblemIDs.push(problemID)
-        for (reward of rewards) {
-            switch (reward.charAt(0)) {
+        for (var reward of rewards) {
+            switch (reward.slice(0, 1)) {
                 case 'T':
-                    this.inventory.set("trap", this.inventory.get("trap") +1 );
+                    this.inventory.set("trap", this.inventory.get("trap") + 1);
+                    
+                    break;
                 case 'F':
-                    this.inventory.set("flash", this.inventory.get("flash") +1 );
+                    this.inventory.set("flash", this.inventory.get("flash") + 1);
+                    break;
                 case 'H':
-                    this.inventory.set("hint", this.inventory.get("hint") +1 );
+                    this.inventory.set("hint", this.inventory.get("hint") + 1);
+                    break;
                 case 'K':
                     var keys = this.inventory.get("keys");
                     keys.push(reward);
+                    console.log(keys)
                     this.inventory.set("keys", keys);
+                    break;
                 default:
                     console.log("Error | Impossible Reward");
             }
@@ -104,7 +116,10 @@ class PlayerObject {
             return false
         } else if (block instanceof DoorBlock) {
             var keys = this.inventory.get('keys');
-            return block.keyIDs.every(keyID => keys.includes(keyID));
+            console.log(block.keyIDs,keys)
+            return block.keyIDs.every(keyID => {
+                return keys.includes(keyID)
+            });
         } else if (block instanceof FloorBlock) {
             return true
         } else if (block instanceof ProblemBlock) {
@@ -148,7 +163,7 @@ class PlayerObject {
 
     useTrap(block) {
         this.inventory.set('trap', this.inventory.get('trap') - 1);
-        
+
         if (block.type === 'F') { // 바닥에만 트랩 깔 수 있음
             block.addTrap();
         } else {
@@ -159,12 +174,16 @@ class PlayerObject {
     }
 
     useFlash() {
-        this.inventory.set("flash", this.inventory.get("flash") -1 );
+        this.inventory.set("flash", this.inventory.get("flash") - 1);
         this.usingFlash = true;
     }
 
     useHint() {
-        this.inventory.set("hint", this.inventory.get("hint") -1 );
+        this.inventory.set("hint", this.inventory.get("hint") - 1);
+    }
+
+    useHammer(){
+        this.inventory.set("hammer", this.inventory.get("hammer") - 1);
     }
 }
 
