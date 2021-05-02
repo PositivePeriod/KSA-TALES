@@ -11,6 +11,7 @@ const ASSET_NAMES = [
     'door.png',
     'weakblock.png',
     'brokenblock.png',
+    'final.png',
     'AA/RAA_4.png',
     'AA/RAA_2.png',
     'AA/RAA_1.png',
@@ -47,7 +48,7 @@ function downloadAsset(assetName) {
         asset.src = `/assets/${assetName}`;
         asset.onload = () => {
             assets[assetName] = asset;
-            console.log(assetName)
+            // console.log(assetName)
             resolve();
         };
     });

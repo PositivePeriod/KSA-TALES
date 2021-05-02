@@ -15,7 +15,7 @@
 
 <body>
     <div id="opening" class="center container">
-        <iframe width="900" height="600" src="https://www.youtube.com/embed/YOKmeIaTIxM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width="450" alt="Waiting for video..." height="300" src="https://www.youtube.com/embed/YOKmeIaTIxM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         <div style="text-align: center;">
             <button id="startButton">Start</button>
         </div>
@@ -27,35 +27,25 @@
         <h2 id="hint" class="hidden under2"></h2>
         <input id='answer' class="hidden under" type='text' name='answer' placeholder='Enter Answer' />
         <div id="inventory" class="hidden"></div>
+        <div id="messagelog" style="position: absolute; right: 10px; bottom: 10px; overflow:auto; width:400px; height:50px;">
+            <div>Welcome!</div>
+        </div>
     </div>
-    <div id="audioPlayer" class="hidden container" style="display: flex;">
+
+    <!-- <div id="audioPlayer" class="hidden" style="display: flex;">
         <div>
             <audio controls loop style="height: 20px;">
                 <source src="/assets/background2.mp3" type="audio/mp3">
                 <source src="/assets/background.mp3" type="audio/mp3">
             </audio>
         </div>
-        <div id="messagelog" style="position: absolute; right: 10px; bottom: 10px; width:100px; height:20px;">
-            <div>Welcome!</div>
-        </div>
-    </div>
-    <script>
-        audio = new Audio("/assets/background2.mp3");
-        window.onload = function() {
-            audio.play();
-            audio.addEventListener('ended', function() {
-                if (audio.src === "/assets/background.mp3") {
-                    audio.src = "/assets/background2.mp3";
-                    audio.pause();
-                    audio.load();
-                    audio.play();
-                } else audio.src = "/assets/background.mp3";
-            });
-        }
-    </script>
+    </div> -->
+
+    <audio src="/assets/background.mp3" type="audio/mp3" autoplay="true" loop> </audio>
+
 
     <script type="module" type="text/javascript" src="/assets/play/src/app.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 </body>
 
-</html>t
+</html>

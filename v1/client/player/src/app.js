@@ -17,7 +17,7 @@ class App {
         this.frame = document.getElementById("gameFrame");
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
-u
+
         this.showRange = { width: 4, height: 3 };
         this.m = 2 * this.showRange.width + 1; // blockX
         this.n = 2 * this.showRange.height + 1; // blockY
@@ -102,9 +102,9 @@ u
         this.canvas.width = this.stageWidth * this.pixelRatio;
         this.canvas.height = this.stageHeight * this.pixelRatio;
 
-        console.log("frame", this.frame.width, this.frame.height);
-        console.log("canvas", this.canvas.width, this.canvas.height);
-        console.log("body", document.body.clientWidth, document.body.clientHeight, "stage", this.stageWidth, this.stageHeight);
+        // console.log("frame", this.frame.width, this.frame.height);
+        // console.log("canvas", this.canvas.width, this.canvas.height);
+        // console.log("body", document.body.clientWidth, document.body.clientHeight, "stage", this.stageWidth, this.stageHeight);
 
         // this.ctx.scale(this.pixelRatio, this.pixelRatio);
         this.map.resize(this.stageWidth, this.stageHeight, this.grid);
@@ -117,6 +117,5 @@ window.onload = () => {
     document.getElementById('startButton').onclick = () => {
         document.getElementById('opening').classList.add('hidden');
         document.getElementById('gameFrame').classList.remove('hidden');
-        document.getElementById('audioPlayer').classList.remove('hidden');
     }
 }

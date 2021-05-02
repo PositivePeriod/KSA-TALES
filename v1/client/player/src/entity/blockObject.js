@@ -19,7 +19,7 @@ const objectImgsname = {
     'Y': 'weakblock.png',
     'P': 'problem.png',
     'D': 'door.png',
-    'B':'brokenblock.png'
+    'B': 'brokenblock.png'
 };
 
 
@@ -41,7 +41,7 @@ export class BlockObject {
         }
     }
 
-    
+
 
     resize(x, y, size) {
         this.x = x;
@@ -49,29 +49,33 @@ export class BlockObject {
         this.size = size;
     }
 
-    drawDoor(ctx,isHor) {
+    drawDoor(ctx, isHor) {
         var img = getAsset(this.imgname);
         ctx.beginPath();
-        if(isHor){
+        if (isHor) {
             ctx.save();
-            ctx.translate(this.x + this.size/2,this.y + this.size/2);
-            ctx.rotate(Math.PI/2);
-            ctx.translate(-this.x - this.size/2,-this.y -this.size/2);
-            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+            ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.translate(-this.x - this.size / 2, -this.y - this.size / 2);
+            ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
             ctx.restore();
+        } else {
+            ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
         }
-        else{    
-            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
-        }
+    }
+    drawFinal(ctx) {
+        var img = getAsset('final.png');
+        ctx.beginPath()
+        ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
     }
 
     drawImg(ctx) {
         var img = getAsset(this.imgname);
         ctx.beginPath()
-        ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+        ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
     }
     draw(ctx) {
-        if(this.imgname !== undefined && this.type!='B' &&this.type!='Y' ){
+        if (this.imgname !== undefined && this.type != 'B' && this.type != 'Y') {
             this.drawImg(ctx)
             return
         }
@@ -81,20 +85,20 @@ export class BlockObject {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
 
-        if(this.type =='B'){
+        if (this.type == 'B') {
             var img = getAsset(this.imgname);
             ctx.beginPath()
-            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+            ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
         }
-        if(this.type =='Y'){
+        if (this.type == 'Y') {
             var img = getAsset(this.imgname);
             ctx.beginPath()
-            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+            ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
         }
-        if(this.type =='G'){
+        if (this.type == 'G') {
             var img = getAsset(this.imgname);
             ctx.beginPath()
-            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+            ctx.drawImage(img, this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
         }
         // ctx.fillRect(this.x + this.margin + (this.corner / 2), this.y + this.margin + (this.corner / 2),
         //     this.size - 2 * this.margin - 2 * (this.corner / 2), this.size - 2 * this.margin - 2 * (this.corner / 2));

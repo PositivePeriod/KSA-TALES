@@ -24,6 +24,7 @@ export class Network {
         this.socket.on(MSG.SEND_HINT, this.showHint.bind(this));
         this.socket.on(MSG.SEND_MESSAGE, this.getAchievement.bind(this));
         this.socket.on(MSG.SEND_LEADERBOARD, this.updateLeaderboard.bind(this));
+        this.socket.on(MSG.FINISH, this.finish.bind(this));
     }
 
     joinGame(AA, code, name) {
@@ -134,6 +135,11 @@ export class Network {
 
     disconnect() {
         this.socket.emit(MSG.DISCONNECT_SERVER, null);
+    }
+
+    finish() {
+        console.log('win');
+        window.location.href = '/endingUnderTheKSA';
     }
 
     disconnectFromServer() {

@@ -59,6 +59,7 @@ class Game {
         this.players.set(socketID, player);
         this.joinedAA.add(AA);
         this.leaderboard[AA] = { 'name': name, 'progress': 1 };
+        console.log(AA);
         this.io.emit(MSG.SEND_LEADERBOARD, this.leaderboard); // 리더보드 공지
     }
 
@@ -126,7 +127,6 @@ class Game {
                     player.useHint();
                     this.sockets[player.socketID].emit(MSG.SEND_HINT, problemHint);
                 }
-                return;
                 return;
             case 'KeyAnswer':
                 if (player.watchProblem !== null) {
@@ -211,7 +211,7 @@ class Game {
                     }
                     if (newX === 100 && newY === 11) {
                         // TODO Ending HTML
-                        window.location.href = '/endingUnderTheKSA';
+                        this.sockets[player.socketID].emit(MSG.FINISH, null);
                     }
                 }
                 break;
