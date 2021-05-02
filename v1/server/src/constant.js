@@ -64,16 +64,16 @@ for (let [key, value] of Object.entries(AAtoCODE)) {
 const CODEtoAA = Object.freeze(reverse);
 
 const TRAPS = {
-    0: { "id": "GBVS", "hint": "중강당 안쪽 문 앞", "answer": "6113" },
-    1: { "id": "UNZV", "hint": "창조관 8층 하늘공원 의자 뒤", "answer": "9065" },
-    2: { "id": "YVKT", "hint": "형설관 4층 eoz", "answer": "2657" },
-    3: { "id": "IPQY", "hint": "형설 1층 도서관 사이 기둥", "answer": "0837" },
-    4: { "id": "BHDI", "hint": "오작공원 옆 클라이밍 벽", "answer": "4305" },
-    5: { "id": "VXSS", "hint": "상담실 앞", "answer": "1822" },
-    6: { "id": "MBNT", "hint": "아크로폴리스 의자 뒤", "answer": "8839" },
-    7: { "id": "JXDK", "hint": "운동장 운동기구", "answer": "9834" },
-    8: { "id": "NRMC", "hint": "창조관 1층 엘리베이터 옆", "answer": "5820" },
-    9: { "id": "YFAB", "hint": "시청각실 입구", "answer": "4786" }
+    0: { "id": "GBVS", "hint": "6113", "location": "중강당 안쪽 문 앞", "answer": "6113" },
+    1: { "id": "UNZV", "hint": "9065", "location": "창조관 8층 하늘공원 의자 뒤", "answer": "9065" },
+    2: { "id": "YVKT", "hint": "2657", "location": "형설관 4층 eoz", "answer": "2657" },
+    3: { "id": "IPQY", "hint": "0837", "location": "형설 1층 도서관 사이 기둥", "answer": "0837" },
+    4: { "id": "BHDI", "hint": "4305", "location": "오작공원 옆 클라이밍 벽", "answer": "4305" },
+    5: { "id": "VXSS", "hint": "1822", "location": "상담실 앞", "answer": "1822" },
+    6: { "id": "MBNT", "hint": "8839", "location": "아크로폴리스 의자 뒤", "answer": "8839" },
+    7: { "id": "JXDK", "hint": "9834", "location": "운동장 운동기구", "answer": "9834" },
+    8: { "id": "NRMC", "hint": "5820", "location": "창조관 1층 엘리베이터 옆", "answer": "5820" },
+    9: { "id": "YFAB", "hint": "4786", "location": "시청각실 입구", "answer": "4786" }
 }
 
 const PROBLEMS = {
@@ -92,16 +92,16 @@ const PROBLEMS = {
     "school_geography": { "hint": "Where is 대강당?", "answer": "1212" },
     "ancient_china": { "hint": "Chinese character", "answer": "5" },
     "position_change": { "hint": "Parallel Translation", "answer": "EFFECT" },
-    "Bomb": { "hint": "3*3", "answer": "SONG" },
-    "Zigzag": { "hint": "Color", "answer": "1221" },
-    "AAA": { "hint": "Addition", "answer": "406" },
+    "bomb": { "hint": "3*3", "answer": "SONG" },
+    "zigzag": { "hint": "Color", "answer": "1221" },
+    "aaa": { "hint": "Addition", "answer": "406" },
     "guessing_word": { "hint": "1st character is M", "answer": "MESSAGE" },
     "mugcup": { "hint": "Pay attention to the direction of handle", "answer": "FORTUNE FAVORS THE BRAVE" },
     "keypad": { "hint": "folder phone", "answer": "들어가면 죽어" },
     "color": { "hint": "The colors are important", "answer": "lineate" },
     "formula_conversion": { "hint": "Sqaure", "answer": "10" },
     "pyramid": { "hint": "Set the blanks in the fourth row below to x,y,z", "answer": "282" },
-    "USB": { "hint": "USC", "answer": "USB" },
+    "usb": { "hint": "USC", "answer": "USB" },
     "integral": { "hint": "적분", "answer": "2" },
     "variable": { "hint": "answer", "answer": "15308" },
     "arrangement": { "hint": "Home Alone", "answer": "H" },

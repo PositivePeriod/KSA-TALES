@@ -46,7 +46,7 @@ class PlayerObject {
             ['trap', 100],
             ['flash', 100],
             ['hint', 1],
-            ['hammer', 10]
+            ['hammer', 100]
         ]);
 
         this.commandQueue = new InputDeque();

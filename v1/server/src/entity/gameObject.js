@@ -87,7 +87,7 @@ class Game {
         // var problemHint = player.hint;
         // var problemAnswer = player.answer;
 
-        if ((player.watchTrap !== null) && (command !== 'KeyAnswer')) {
+        if ((player.watchTrap !== null) && ((command !== 'KeyAnswer') || (command !== 'KeyHint'))) {
             return;
         }
 
@@ -119,6 +119,14 @@ class Game {
                     player.useHint();
                     this.sockets[player.socketID].emit(MSG.SEND_HINT, problemHint);
                 }
+                if (player.watchTrap !== null) {
+                    var problemID = player.watchProblem.id;
+                    var problem = PROBLEMS[problemID];
+                    var problemHint = problem.hint;
+                    player.useHint();
+                    this.sockets[player.socketID].emit(MSG.SEND_HINT, problemHint);
+                }
+                return;
                 return;
             case 'KeyAnswer':
                 if (player.watchProblem !== null) {
@@ -190,7 +198,7 @@ class Game {
                     var newPos = [newX, newY];
                     for (let [blockEventID, blockEvent] of Object.entries(this.map.achievement.blockEvents)) {
                         if (!(blockEvent.rankings.includes(player.socketID)) && blockEvent.blocks.some(block => isEqual(block, newPos))) {
-                            this.leaderboard[player.AA].progress++;
+                            this.leaderboard[player.AA].progress = blockEvent.progress;
                             this.io.emit(MSG.SEND_LEADERBOARD, this.leaderboard); // 리더보드 공지
                             if (blockEvent.leftrank > 0) {
                                 this.io.emit(MSG.SEND_MESSAGE, player.AA + ' ' + blockEvent.message); // 공지
@@ -199,6 +207,10 @@ class Game {
                                 blockEvent.rankings.push(player.socketID); // 최초 room
                             }
                         }
+                    }
+                    if (newX === 100 && newY === 11) {
+                        // TODO Ending HTML
+                        window.location.href = '/endingUnderTheKSA';
                     }
                 }
                 break;

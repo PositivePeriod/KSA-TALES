@@ -14,6 +14,10 @@
 </head>
 
 <body>
+    <div id="opening" class="center">
+        <iframe width="900" height="600" src="https://www.youtube.com/embed/YOKmeIaTIxM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
     <div id="gameFrame">
         <canvas id="gameCanvas"></canvas>
         <div id="problem" data-include-path="" class="center"></div>
@@ -21,11 +25,29 @@
         <input id='answer' class="hidden under" type='text' name='answer' placeholder='Enter Answer' />
         <div id="inventory" class="hidden"></div>
     </div>
-    <div id="messagelog" style="position: absolute; right: 10px; bottom: 10px; width:400px; height:20px; float: right;">
-        Welcome!
-        <audio src="./assets/background.mp3" type="audio/mp3" controls autoplay> </audio>
+    <div id="messagelog" style="position: absolute; right: 10px; bottom: 10px; width:400px; height:20px;;">
+        <div>Welcome!</div>
     </div>
-    
+
+    <audio controls loop style="height: 20px;">
+        <source src="/assets/background2.mp3" type="audio/mp3">
+        <source src="/assets/background.mp3" type="audio/mp3">
+    </audio>
+    <script>
+        audio = new Audio("/assets/background2.mp3");
+        window.onload = function() {
+            audio.play();
+            audio.addEventListener('ended', function() {
+                if (audio.src === "/assets/background.mp3") {
+                    audio.src = "/assets/background2.mp3";
+                    audio.pause();
+                    audio.load();
+                    audio.play();
+                } else audio.src = "/assets/background.mp3";
+            });
+        }
+    </script>
+
     <script type="module" type="text/javascript" src="/assets/play/src/app.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 </body>

@@ -66,6 +66,8 @@ class ServerManager {
             }
         });
 
+        this.app.use('/endingUnderTheKSA', function(req, res) { res.sendFile(path.join(__dirname, '../public/ending.html')); });
+
         this.app.use('/register', function(req, res) { res.sendFile(path.join(__dirname, '../public/register.html')); });
         this.app.use('/help', function(req, res) { res.sendFile(path.join(__dirname, '../public/help.html')); });
         this.app.use('/cheat', function(req, res) { res.sendFile(path.join(__dirname, '../public/cheat.html')); });
