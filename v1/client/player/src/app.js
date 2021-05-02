@@ -48,7 +48,7 @@ class App {
             "KeyLeft": "ArrowLeft",
             "KeyDown": "ArrowDown",
             "KeyRight": "ArrowRight",
-            "KeyInteract": "Space",
+            "KeyInteract": "ShiftSpace",
             "KeyAnswer": "Enter",
             "KeyTrap": "ShiftDigit1",
             "KeyFlash": "ShiftDigit2",
