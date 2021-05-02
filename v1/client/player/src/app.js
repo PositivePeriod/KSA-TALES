@@ -113,5 +113,9 @@ class App {
 
 window.onload = () => {
     console.log('Client Start');
-    downloadAssets(() => { new App(); })
+
+    downloadAssets(() => { 
+        
+        new App(); 
+    })
 }

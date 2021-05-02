@@ -137,6 +137,7 @@ class Game {
                     if (problemAnswer.trim().toLowerCase() === data.data.trim().toLowerCase()) {
                         player.solve(problemID, problemReward);
                         this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": true });
+                        this.sockets[player.socketID].emit(MSG.SEND_MESSAGE, "Answer Correct!");
                         // cause hideProblem in client
                         player.watchProblem = null;
                         player.canMove = true;
