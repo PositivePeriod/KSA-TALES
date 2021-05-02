@@ -13,6 +13,7 @@ import {
 
 class App {
     constructor() {
+        console.log('start')
         this.frame = document.getElementById("gameFrame");
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
@@ -39,14 +40,14 @@ class App {
         this.map = new MapObject(this.stageWidth, this.stageHeight, this.m, this.n, this.ctx);
 
         this.commandKey = {
-            "ShiftKeyUp": "ShiftKeyW",
-            "ShiftKeyLeft": "ShiftKeyA",
-            "ShiftKeyDown": "ShiftKeyS",
-            "ShiftKeyRight": "ShiftKeyD",
-            "KeyUp": "KeyW",
-            "KeyLeft": "KeyA",
-            "KeyDown": "KeyS",
-            "KeyRight": "KeyD",
+            "ShiftKeyUp": "ShiftArrowUp",
+            "ShiftKeyLeft": "ShiftArrowLeft",
+            "ShiftKeyDown": "ShiftArrowDown",
+            "ShiftKeyRight": "ShiftArrowRight",
+            "KeyUp": "ArrowUp",
+            "KeyLeft": "ArrowLeft",
+            "KeyDown": "ArrowDown",
+            "KeyRight": "ArrowRight",
             "KeyInteract": "Space",
             "KeyAnswer": "Enter",
             "KeyTrap": "ShiftDigit1",
@@ -83,7 +84,8 @@ class App {
         const splitedUrl = window.location.href.split('/');
         const AA = splitedUrl[4];
         const code = splitedUrl[5];
-        const name = splitedUrl[6];
+        var name = splitedUrl[6];
+        name = name.replace('%20', ' ');
         this.network.joinGame(AA, code, name);
     }
 

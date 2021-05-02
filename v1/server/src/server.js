@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const socketio = require('socket.io');
-const { PROBLEMS, MSG, AAtoCODE } = require('./constant');
+const { MSG, AAtoCODE } = require('./constant');
 const Game = require('./entity/gameObject');
 const cors = require('cors');
 
@@ -48,6 +48,7 @@ class ServerManager {
             const AA = req.params.AA;
             const code = req.params.code;
             const name = req.params.name;
+            console.log(AA, code, AAtoCODE.get(AA))
             if (AAtoCODE.get(AA) === code) {
                 res.redirect(`/play/${AA}/${code}/${name}`);
             } else {
@@ -66,6 +67,8 @@ class ServerManager {
         });
 
         this.app.use('/register', function(req, res) { res.sendFile(path.join(__dirname, '../public/register.html')); });
+        this.app.use('/help', function(req, res) { res.sendFile(path.join(__dirname, '../public/help.html')); });
+        this.app.use('/cheat', function(req, res) { res.sendFile(path.join(__dirname, '../public/cheat.html')); });
 
         this.app.use('/play', function(req, res) { res.sendFile(path.join(__dirname, `../../../${version}/client/player/index.html`)); });
         this.app.use('/spectate', function(req, res) { res.sendFile(path.join(__dirname, `../../../${version}/client/spectate/index.html`)); });

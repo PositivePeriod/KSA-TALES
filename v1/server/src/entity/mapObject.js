@@ -1,8 +1,9 @@
-const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
+ const { DoorBlock, FloorBlock, ProblemBlock, WallBlock } = require('./blockObject.js');
 
 const mapNumber = 3;
 const mapData = require(`../../data/mapData${mapNumber}.json`);
 const { PROBLEMS } = require('../constant');
+
 const Adjacents = [
     [1, 1],
     [1, 0],
@@ -22,6 +23,9 @@ class MapObject {
         this.width = mapData.width;
         this.height = mapData.height;
         this.achievement = mapData.achievement;
+        
+        
+
         this.blocks = Array.from(Array(this.width), () => Array(this.height).fill(null));
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
@@ -38,7 +42,7 @@ class MapObject {
                         // console.log(mapData.door)
                         var problemIDs = mapData.door[blockData]
                         // var problemIDs = ['K1']
-                        var block = new DoorBlock(x, y, roomIDs, problemIDs, mapData.weakBlock.some(coord => isEqual(coord, [x, y])));
+                        var block = new DoorBlock(x, y, roomIDs, problemIDs);
                         break;
                     case 'P':
                         var problemData = mapData.problem[blockData];

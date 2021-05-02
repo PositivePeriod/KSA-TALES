@@ -6,6 +6,7 @@ const {
     ProblemBlock
 } = require("./blockObject");
 
+
 // TODO / define const Flash area of player
 const FlashArea = [
     [1, 1],
@@ -21,6 +22,12 @@ const isEqual = (first, second) => {
     return JSON.stringify(first) === JSON.stringify(second);
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
+}
+
 class PlayerObject {
     constructor(socketID, AA, name, x, y, map) {
         this.socketID = socketID;
@@ -28,8 +35,9 @@ class PlayerObject {
         this.name = name;
         this.x = x;
         this.y = y;
+
+
         this.map = map;
-        this.score = 0;
         this.visitedRoom = []
         this.visitedDoor = []
         this.solvedProblemIDs = []
@@ -42,11 +50,58 @@ class PlayerObject {
         ]);
 
         this.commandQueue = new InputDeque();
+
         this.dir = { x: 0, y: 1 };
+
+        this.flashx = x;
+        this.flashy = y;
+        this.flashdir = this.dir;
+
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
         this.canMove = true;
         this.watchProblem = null;
+
+        this.trapNum = getRandomInt(0, 10);
+        this.watchTrap = null;
+
         this.usingFlash = false;
+    }
+    
+    toData(){
+        return {
+            'x' : this.x,
+            'y' : this.y,
+            'inventory' : new Map([
+                ['keys', this.inventory.keys],
+                ['trap', this.inventory.trap],
+                ['flash', this.inventory.flash],
+                ['hint', this.inventory.hint],
+                ['hammer', this.inventory.hammer]
+            ]),
+            'isTraped' : (this.watchTrap == null),
+            "trapNum" :this.trapNum
+        }
+    }
+    
+    applyData(data,map){
+        this.x = data.x,
+        this.y = data.y,
+        this.inventory = new Map([
+            ['keys', data.keys],
+            ['trap', data.trap],
+            ['flash', data.flash],
+            ['hint', data.hint],
+            ['hammer', data.hammer]
+        ]);
+        this.trapNum = data.trapNum
+        if(data.isTraped){
+            this.trapNum-=1;
+            block = this.map.getBlock(this.x, this.y);
+            this.inventory.trap += 1
+            this.useTrap(block);
+        }
+
     }
 
     show(dx, dy) {
@@ -60,33 +115,11 @@ class PlayerObject {
         }
     }
 
-    newRoom() {
-        for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
-            if (!this.visitedRoom.includes(i)) {
-                this.visitedRoom.push(i);
-                this.score += 50;
-            }
-        }
-    }
-
-    newDoor() {
-        for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
-            if (!this.visitedDoor.includes(i)) {
-                this.visitedDoor.push(i);
-                this.score += 10;
-            }
-        }
-    }
-
     checkAnswer(problemBlock, answer) {
         if (problemBlock.answer == answer) {
             this.solve(problemBlock.id, problemBlock.answer);
         }
     }
-
-
-
-
 
     solve(problemID, rewards) {
         if (this.solvedProblemIDs.includes(problemID)) {
@@ -99,7 +132,6 @@ class PlayerObject {
             switch (reward.slice(0, 1)) {
                 case 'T':
                     this.inventory.set("trap", this.inventory.get("trap") + 1);
-
                     break;
                 case 'F':
                     this.inventory.set("flash", this.inventory.get("flash") + 1);
@@ -173,17 +205,33 @@ class PlayerObject {
         this.inventory.set('trap', this.inventory.get('trap') - 1);
 
         if (block.type === 'F') { // 바닥에만 트랩 깔 수 있음
-            block.addTrap();
+            block.addTrap(this.name);
         } else {
             //'문, 문제상자, 벽에는 트랩을 놓을 수 없습니다.' 팝업
         }
-
         // 어떤 칸에서 나갈 때 감지하기
     }
 
     useFlash() {
-        this.inventory.set("flash", this.inventory.get("flash") - 1);
-        this.usingFlash = true;
+        this.usingFlash = !this.usingFlash;
+    }
+
+    checkFlash() {
+        if (this.usingFlash == false) {
+            return;
+        }
+        if (this.flashx == this.x && this.flashy == this.y && this.flashdir == this.dir) {
+            this.usingFlash = true;
+        } else {
+            if (this.inventory.get('flash') == 0) {
+                this.usingFlash = false
+            } else {
+                this.inventory.set('flash', this.inventory.get('flash') - 1);
+            }
+        }
+        this.flashx = this.x;
+        this.flashy = this.y;
+        this.flashdir = this.dir;
     }
 
     useHint() {

@@ -9,7 +9,7 @@ export class Network {
         const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
         this.socket = io(`${socketProtocol}://${window.location.host}`);
 
-        this.time = 30;
+        this.time = 20;
         this.commandQueue = new InputDeque();
         setInterval(this.sendCommand.bind(this), this.time);
 
@@ -22,7 +22,8 @@ export class Network {
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
         this.socket.on(MSG.SEND_PROBLEM, this.sendProblem.bind(this));
         this.socket.on(MSG.SEND_HINT, this.showHint.bind(this));
-        this.socket.on(MSG.SEND_ACHIEVEMENT, this.getAchievement.bind(this));
+        this.socket.on(MSG.SEND_MESSAGE, this.getAchievement.bind(this));
+        this.socket.on(MSG.SEND_LEADERBOARD, this.updateLeaderboard.bind(this));
     }
 
     joinGame(AA, code, name) {
@@ -37,6 +38,10 @@ export class Network {
 
     tryToSendCommand(command) {
         if (this.commandQueue.getSize() < 1) {
+            var hint = document.getElementById('hint');
+            if (hint.classList.contains('hidden') && command === "KeyHint") {
+                return;
+            }
             this.commandQueue.push({ "command": command });
         }
     }
@@ -68,6 +73,14 @@ export class Network {
                 break;
             case "solve":
                 console.log('solve', data.data)
+                if (data.data) { this.hideProblem(); }
+                break;
+            case "showTrap":
+                console.log('showTrap');
+                this.showProblem(data.data);
+                break;
+            case "solveTrap":
+                console.log('solveTrap');
                 if (data.data) { this.hideProblem(); }
                 break;
         }
@@ -103,7 +116,15 @@ export class Network {
     getAchievement(message) {
         console.log(message)
         // TODO / should load to html
-        this.map.updateMessageLog(message);
+        var newMessage = document.createElement("div");
+        newMessage.innerHTML = message;
+        var messagelog = document.getElementById("messagelog");
+        messagelog.appendChild(newMessage)
+        messagelog.scrollTop = messagelog.scrollHeight;
+    }
+
+    updateLeaderboard(leaderboard) {
+        this.map.leaderboard = leaderboard;
     }
 
     disconnect() {

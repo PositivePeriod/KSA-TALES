@@ -1,12 +1,12 @@
 import { getAsset } from '../util/assets.js';
 
 const COLOR = {
-    'F': 'rgba(255, 255, 255, 0.9)',
-    'W': 'rgba(32, 99, 155, 1)',
-    'D': 'rgba(237, 85, 59, 1)',
-    'P': 'rgba(60, 174, 121, 1)',
-    'G': 'rgba(121, 174, 60, 1)',
-    'N': 'rgba(30, 30, 30, 1)',
+    'F': 'rgba(255, 255, 255, 0.9)', // Floor
+    'W': 'rgba(32, 99, 155, 1)', // Wall
+    'D': 'rgba(237, 85, 59, 1)', // Door
+    'P': 'rgba(60, 174, 121, 1)', // Problem
+    'G': 'rgba(121, 174, 60, 1)', // Gift
+    'N': 'rgba(30, 30, 30, 1)', // null
     'TRAP': 'rgba(100, 100, 100, 1)',
     'LIGHT': 'rgba(200, 200, 100, 1)'
 };
@@ -14,12 +14,13 @@ COLOR['B'] = COLOR['F']
 COLOR['Y'] = COLOR['F']
 
 const objectImgsname = {
+    'G': 'reward.png',
     'W': 'wall1.png',
     'Y': 'weakblock.png',
     'P': 'problem.png',
     'D': 'door.png',
     'B':'brokenblock.png'
-}
+};
 
 
 export class BlockObject {
@@ -86,6 +87,11 @@ export class BlockObject {
             ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
         }
         if(this.type =='Y'){
+            var img = getAsset(this.imgname);
+            ctx.beginPath()
+            ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);
+        }
+        if(this.type =='G'){
             var img = getAsset(this.imgname);
             ctx.beginPath()
             ctx.drawImage(img,this.x + this.margin, this.y + this.margin, this.size - 2 * this.margin, this.size - 2 * this.margin);

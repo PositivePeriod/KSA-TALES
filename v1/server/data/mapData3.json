@@ -14406,7 +14406,7 @@
     ],
     "problem": {
         "P1": {
-            "id": "X1",
+            "id": "number",
             "reward": ["K1", "T", "F", "F", "H", "H"]
         },
         "P2": {
@@ -14414,7 +14414,7 @@
             "reward": ["K2", "F", "F", "H"]
         },
         "P3": {
-            "id": "annual",
+            "id": "color",
             "reward": ["K3", "F", "F", "F", "H"]
         },
         "P4": {
@@ -14426,7 +14426,7 @@
             "reward": ["K7", "F"]
         },
         "P8": {
-            "id": "cross_word_puzzle",
+            "id": "USB",
             "reward": ["K8", "F"]
         },
         "P9": {
@@ -14590,7 +14590,7 @@
             "reward": ["K53", "T", "T", "T", "T", "T", "F", "F", "F", "F", "F", "M", "M", "H"]
         },
         "P54": {
-            "id": "four_character_idioms",
+            "id": "integral",
             "reward": ["K54", "T", "F"]
         },
         "P55": {
@@ -14734,20 +14734,69 @@
     }
 
     ,
-    "weakBlock": [
-        [0, 3],
-        [5, 2]
-    ],
     "achievement": {
         "blockEvents": {
             "BE1": {
                 "blocks": [
-                    [96, 13],
-                    [5, 3]
+                    [96, 13]
                 ],
                 "message": "First Entered 2nd room",
                 "leftrank": 3
+            },
+            "BE2": {
+                "blocks": [
+                    [96, 14]
+                ],
+                "message": "First Entered 3rd room",
+                "leftrank": 3
+            },
+            "BE3": {
+                "blocks": [
+                    [96, 15]
+                ],
+                "message": "First Entered 4th room",
+                "leftrank": 3
+            },
+
+            "AREA2":{
+                "blocks":[
+                    [62,4]
+                ],
+                "message" : "First Entered 2th area",
+                "leftrank": 3
+            },
+            "AREA3":{
+                "blocks":[
+                    [25,5]
+                ],
+                "message" : "First Entered 3th area",
+                "leftrank": 3
+            },
+            "AREA4":{
+                "blocks":[
+                    [19,71]
+                ],
+                "message" : "First Entered 4th area",
+                "leftrank": 3
+            },
+            "AREA5":{
+                "blocks":[
+                    [19,71]
+                ],
+                "message" : "First Entered 4th area",
+                "leftrank": 3
+            },
+            "AREA6":{
+                "blocks":[
+                    [55,110],
+                    [55,111]
+                ],
+                "message" : "First Entered FINAL area!!",
+                "leftrank": 3
             }
+            
+
+
         }
     }
 }

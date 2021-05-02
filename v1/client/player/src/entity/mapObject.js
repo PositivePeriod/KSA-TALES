@@ -5,7 +5,7 @@ import {
 import { getAsset } from '../util/assets.js';
 const COLOR = {
     'ME': 'rgba(0,0,255,1)',
-    'PLAYER': 'rgba(246, 213, 92, 1)',
+    'PLAYER': 'rgba(255, 255, 255, 1)',
     'PLAYER_MINIMAP': 'rgba(255, 0, 0, 1)',
     'F': 'rgba(255, 255, 255, 1)',
     'W': 'rgba(0, 0, 0, 1)',
@@ -16,14 +16,76 @@ const COLOR = {
     'TRAP': 'rgba(100, 100, 100, 1)',
     'LIGHT': 'rgba(200, 200, 100, 1)',
     'INVEN': 'rgba(255, 255, 255, 1)',
-    'MESSAGE': 'rgba(255, 255, 255, 1)',
+    'LEADERBOARD': 'rgba(0, 0, 0, 1)',
 };
 
 
 const playerImg = {
-    'default': 'brokenblock.png'
+    'RAA-4' : 'AA/RAA_4.png',
+    'RAA-2' :'AA/RAA_2.png',
+    'RAA-1' :'AA/RAA_1.png',
+    'AA3-9' :'AA/AA3_9.png',
+    'AA3-8' :'AA/AA3_8.png',
+    'AA3-6' :'AA/AA3_6.png',
+    'AA3-5' :'AA/AA3_5.png',
+    'AA3-4' :'AA/AA3_4.png',
+    'AA3-2' :'AA/AA3_2.png',
+    'AA3-1' :'AA/AA3_1.png',
+    'AA2-9' :'AA/AA2_9.png',
+    'AA2-8' :'AA/AA2_8.png',
+    'AA2-7' :'AA/AA2_7.png',
+    'AA2-6' :'AA/AA2_6.png',
+    'AA2-4' :'AA/AA2_4.png',
+    'AA2-3' :'AA/AA2_3.png',
+    'AA2-2' :'AA/AA2_2.png',
+    'AA2-1' :'AA/AA2_1.png',
+    'AA1-10' :'AA/AA1_10.png',
+    'AA1-8' :'AA/AA1_8.png',
+    'AA1-9' :'AA/AA1_9.png',
+    'AA1-7' :'AA/AA1_7.png',
+    'AA1-5' :'AA/AA1_5.png',
+    'AA1-4' :'AA/AA1_4.png',
+    'AA1-1' :'AA/AA1_1.png',
+    'default' :'AA/default.png'
 
-}
+};
+
+const playerLeaderboardCoord = {
+    'AA1-1' : [0, 0.15],
+    'AA1-2' : [0, 0.3],
+    'AA1-3' : [0, 0.45],
+    'AA1-4' : [0, 0.6],
+    'AA1-5' : [0, 0.75],
+    'AA1-6' : [0, 0.9],
+    'AA1-7' : [0, 1.05],
+    'AA1-8' : [0, 1.2],
+    'AA1-9' : [0, 1.35],
+    'AA1-10' : [0, 1.5],
+    'AA2-1' : [1.3, 1.65],
+    'AA2-2' : [1.3, 1.8],
+    'AA2-3' : [1.3, 1.95],
+    'AA2-4' : [1.3, 0.15],
+    'AA2-5' : [1.3, 0.3],
+    'AA2-6' : [1.3, 0.45],
+    'AA2-7' : [1.3, 0.6],
+    'AA2-8' : [1.3, 0.75],
+    'AA2-9' : [1.3, 0.9],
+    'AA3-1' : [1.3, 1.05],
+    'AA3-2' : [1.3, 1.2],
+    'AA3-3' : [1,3, 1.35],
+    'AA3-4' : [1.3, 1.5],
+    'AA3-5' : [1.3, 1.65],
+    'AA3-6' : [1.3, 1.8],
+    'AA3-7' : [1.3, 1.95],
+    'AA3-8' : [2.6, 1.65],
+    'AA3-9' : [2.6, 1.8],
+    'RAA-1' : [2.6, 1.95],
+    'RAA-2' : [2.6, 0.15],
+    'RAA-3' : [2.6, 0.3],
+    'RAA-4' : [2.6, 0.45],
+    'RAA-5' : [2.6, 0.6],
+
+};
 
 
 export class MapObject {
@@ -34,7 +96,7 @@ export class MapObject {
 
         this.y = y; // 세로 칸 개수
         this.ctx = ctx;
-        
+        this.leaderboard = {};
 
         this.data = null;
         this.ratio = 0.8;
@@ -68,6 +130,7 @@ export class MapObject {
 
         this.ctx.strokeStyle = 'transparent';
         this.ctx.beginPath();
+        var cnt = 0;
 
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
@@ -108,9 +171,11 @@ export class MapObject {
         this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         this.ctx.fill();
 
-        this.updateinven()
+        this.updateInven();
+        this.updateLeaderboard();
     }
-    updateinven() {
+
+    updateInven() {
         var invengrid = this.grid;
         this.ctx.beginPath()
         this.ctx.fillStyle = COLOR['INVEN'];
@@ -123,29 +188,41 @@ export class MapObject {
         this.ctx.fillRect(invenx + invengrid * 2, inveny, invengrid, invengrid);
         this.ctx.fillRect(invenx + invengrid * 3, inveny, invengrid, invengrid);
 
+        
+        // console.log(getAsset('trap.png'))
+        this.ctx.drawImage(getAsset('trap.png'),invenx, inveny, invengrid, invengrid*0.75);
+        this.ctx.drawImage(getAsset('flash.png'),invenx + invengrid, inveny, invengrid, invengrid*0.75);
+        this.ctx.drawImage(getAsset('hammer.png'),invenx + invengrid * 2, inveny, invengrid, invengrid*0.75);
+        this.ctx.drawImage(getAsset('hint.png'),invenx + invengrid * 3, inveny, invengrid, invengrid*0.75);
+
         this.ctx.fillStyle = 'black';
-        this.ctx.font = "15px bold serif";
+
+        this.ctx.font = toString(Math.floor(invengrid/5))+"px bold serif";
         this.ctx.textAlign = "center";
-        this.ctx.fillText(this.inventory.trap, invenx + invengrid * 0.5, invengrid * 0.5 + inveny);
-        this.ctx.fillText(this.inventory.flash, invenx + invengrid + invengrid * 0.5, invengrid * 0.5 + inveny);
-        this.ctx.fillText(this.inventory.hammer, invenx + invengrid * 2 + invengrid * 0.5, invengrid * 0.5 + inveny);
-        this.ctx.fillText(this.inventory.hint, invenx + invengrid * 3 + invengrid * 0.5, invengrid * 0.5 + inveny);
+        this.ctx.fillText(this.inventory.trap, invenx + invengrid * 0.5, invengrid  + inveny);
+        this.ctx.fillText(this.inventory.flash, invenx + invengrid + invengrid * 0.5, invengrid  + inveny);
+        this.ctx.fillText(this.inventory.hammer, invenx + invengrid * 2 + invengrid * 0.5, invengrid  + inveny);
+        this.ctx.fillText(this.inventory.hint, invenx + invengrid * 3 + invengrid * 0.5, invengrid + inveny);
     }
 
-    updateMessageLog(message) {
+    updateLeaderboard() {
         this.ctx.beginPath();
-        this.ctx.fillStyle = COLOR['MESSAGE'];
+        this.ctx.fillStyle = COLOR['LEADERBOARD'];
 
-        var messagex = this.miniMap.posx;
-        var messagey = this.pos.endy - 2 * this.grid - this.miniMapGrid * this.miniMap.height;
+        var boardx = this.miniMap.posx;
+        var boardy = this.pos.endy - 3 * this.grid - this.miniMapGrid * this.miniMap.height;
 
-        this.ctx.fillRect(messagex, messagey, 2 * this.grid, this.grid);
-        console.log(message, 'eee');
+        this.ctx.fillRect(boardx, boardy, 4 * this.grid, 2*this.grid);
 
-        this.ctx.fillStyle = 'black';
-        this.ctx.font = "15px bold serif";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText(message, messagex + this.grid * 0.5, this.grid * 0.5 + messagey);
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = "12px bold serif";
+        this.ctx.textAlign = "left";
+        if (Object.keys(playerLeaderboardCoord).length == 0) {return; }
+        for (const [player, coord] of Object.entries(playerLeaderboardCoord)) {
+            var name = this.leaderboard[player].name;
+            var progress = this.leaderboard[player].progress;
+            this.ctx.fillText(name + ": " + String(progress) + "%", boardx + this.grid * coord[0], boardy + this.grid * coord[1]);
+        }
     }
 
     updateData(data) {
@@ -249,13 +326,12 @@ export class MapObject {
             this.ctx.beginPath();
             // console.log(playerImg['default'],'asdklf3333j');
 
-            // if(playerImg[playerAA] !== undefined){
-            //     var pattern = this.ctx.createPattern(getAsset(playerImg[playerAA]),"repeat")
-            // }
-            // else{
-            //     var pattern = this.ctx.createPattern(getAsset(playerImg['default']),"repeat")
-
-            // }
+            if(playerImg[playerAA] !== undefined){
+                var img = getAsset(playerImg[playerAA])
+            }
+            else{
+                var img = getAsset(playerImg['default'])
+            }
 
             // this.ctx.strokeStyle = pattern;
             // this.ctx.beginPath();
@@ -263,11 +339,30 @@ export class MapObject {
             
             // this.ctx.stroke();
 
+            
+            this.ctx.save();
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+            this.ctx.closePath();
+            this.ctx.clip();
+
+            this.ctx.drawImage(img,centerX-radius, centerY-radius,radius*2, radius*2);
+
+            this.ctx.beginPath();
+            this.ctx.arc(centerX-radius, centerY-radius, radius*2, 0, Math.PI * 2, true);
+            this.ctx.clip();
+            this.ctx.closePath();
+            this.ctx.restore();
+            
+            this.ctx.fillStyle = 'black';
+
+
+            this.ctx.beginPath();
             this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            this.ctx.fill();
+            // this.ctx.fill();
             this.ctx.stroke();
 
-            this.ctx.fillStyle = 'black';
+
             this.ctx.fillText(player.name, centerX, centerY - this.grid * 0.5);
             this.ctx.fillStyle = COLOR['PLAYER'];
 

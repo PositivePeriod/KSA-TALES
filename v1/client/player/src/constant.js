@@ -7,7 +7,8 @@ export const MSG = Object.freeze({
 
     SEND_PROBLEM: 'sendProblem',
     SEND_HINT: 'sendHint',
-    SEND_ACHIEVEMENT: 'sendAchievement',
+    SEND_MESSAGE: 'sendAchievement',
+    SEND_LEADERBOARD: "sendLeaderboard",
 
     JOIN_SPECTATE: 'joinSpectate',
     LEAVE_SPECTATE: 'joinSpectate',

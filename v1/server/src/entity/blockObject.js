@@ -37,10 +37,9 @@ class WallBlock extends BlockObject {
 }
 
 class DoorBlock extends BlockObject {
-    constructor(x, y, roomIDs, keyIDs, weakness) {
+    constructor(x, y, roomIDs, keyIDs) {
         super('D', x, y, roomIDs);
         this.keyIDs = keyIDs;
-        this.weak = weakness;
     }
 }
 
@@ -48,6 +47,7 @@ class FloorBlock extends BlockObject {
     constructor(x, y, roomIDs) {
         super('F', x, y, roomIDs);
         this.trapNum = 0;
+        this.trapname = null;
         this.isBroken = false;
     }
 
@@ -55,8 +55,9 @@ class FloorBlock extends BlockObject {
         return this.trapNum > 0
     }
 
-    addTrap() {
+    addTrap(name) {
         this.trapNum = 1;
+        this.trapname = name;
     }
 
     deleteTrap() {

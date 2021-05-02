@@ -2,7 +2,7 @@ const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObjec
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
 
-const { MSG, PROBLEMS } = require('../constant');
+const { MSG, PROBLEMS, TRAPS } = require('../constant');
 
 const MOVE = Object.freeze({
     'KeyUp': { x: 0, y: -1 },
@@ -21,13 +21,21 @@ class Game {
         // this.playSocket = {}; // TO
         // this.spectateSocket = {}; // TODO
 
+        this.savedData = {}; // player => dict { x, y, inven,isTraped }
+        // AAtoCODE.forEach((AA,key,map)=>{
+        //     this.savedData[AA] = {
+
+        //     }
+        // });
+
         this.turn = 0;
-        this.time = 50;
+        this.time = 30;
         this.map = new MapObject();
         this.showRange = { width: 4, height: 3 };
         this.io = null;
         this.players = new Map();
         this.joinedAA = new Set();
+        this.leaderboard = {};
         this.prepareAchievement();
         setInterval(this.update.bind(this, 1), this.time);
     }
@@ -42,8 +50,15 @@ class Game {
         var socketID = socket.id;
         var pos = this.map.startPos;
         var player = new PlayerObject(socketID, AA, name, pos.x, pos.y, this.map);
+        
+        if(this.savedData[AA]!== undefined){
+            player.applyData(this.savedData[AA],this.map);
+        }
+
+
         this.players.set(socketID, player);
         this.joinedAA.add(AA);
+        this.leaderboard[AA] = { 'name': name, 'progress': 0 };
     }
 
     removePlayer(id) {
@@ -56,7 +71,9 @@ class Game {
     }
 
     updatePlayer(player) {
-        player.usingFlash = false;
+        player.checkFlash();
+        this.savedData[player.AA] = player.toData();
+
         var nextX = player.x + player.dir.x;
         var nextY = player.y + player.dir.y;
         var data = player.commandQueue.pop();
@@ -68,6 +85,11 @@ class Game {
         // var problem = PROBLEMS[player.watchProblem.id];
         // var problemHint = player.hint;
         // var problemAnswer = player.answer;
+
+        if ((player.watchTrap !== null) && (command !== 'KeyAnswer')) {
+            return;
+        }
+
         switch (command) {
             case 'KeyInteract':
                 var block = this.map.getBlock(nextX, nextY);
@@ -103,7 +125,7 @@ class Game {
                     var problem = PROBLEMS[problemID];
                     var problemAnswer = problem.answer;
                     var problemReward = player.watchProblem.reward;
-                    if (problemAnswer === data.data) {
+                    if (problemAnswer.trim().toLowerCase() === data.data.trim().toLowerCase()) {
                         player.solve(problemID, problemReward);
                         this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": true });
                         // cause hideProblem in client
@@ -111,6 +133,19 @@ class Game {
                         player.canMove = true;
                     } else {
                         this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": false });
+                    }
+                }
+                if (player.watchTrap !== null) {
+                    var problemID = player.watchTrap.id;
+                    var problem = TRAPS[problemID];
+                    var problemAnswer = problem.answer;
+                    if (problemAnswer.trim().toLowerCase() === data.data.trim().toLowerCase()) {
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solveTrap", "data": true });
+                        // cause hideProblem in client
+                        player.watchTrap = null;
+                        player.canMove = true;
+                    } else {
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solveTrap", "data": false });
                     }
                 }
                 return;
@@ -138,18 +173,30 @@ class Game {
                 var newblock = this.map.getBlock(newX, newY);
                 if (curblock instanceof FloorBlock && curblock.existTrap()) {
                     player.canMove = false;
+                    var trapname = curblock.trapname;
                     curblock.deleteTrap();
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap"); // Trap 걸림
+
+                    player.trapNum = (player.trapNum + 1) % 10
+                    player.watchTrap = player.trapNum;
+                    player.canMove = false;
+                    var trapProblemID = TRAPS[player.watchTrap].id;
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "trapShow", "data": `trap${trapProblemID}}` }); // Trap 걸림
+
+                    this.io.emit(MSG.SEND_MESSAGE, player.name + ' trapped in ' + trapname + "'s trap"); // 공지
                 } else if (newblock !== null && player.canPass(newblock)) {
                     player.x = newX;
                     player.y = newY;
                     var newPos = [newX, newY];
                     for (let [blockEventID, blockEvent] of Object.entries(this.map.achievement.blockEvents)) {
-                        if (blockEvent.leftrank > 0 && !(blockEvent.rankings.includes(player.socketID)) && blockEvent.blocks.some(block => isEqual(block, newPos))) {
-                            this.io.emit(MSG.SEND_ACHIEVEMENT, player.AA + ' ' + blockEvent.message);
-                            console.log(player.AA + ' ' + blockEvent.message);
-                            blockEvent.leftrank--;
-                            blockEvent.rankings.push(player.socketID); // 최초 room
+                        if (!(blockEvent.rankings.includes(player.socketID)) && blockEvent.blocks.some(block => isEqual(block, newPos))) {
+                            this.leaderboard[player.AA].progress++;
+                            this.io.emit(MSG.SEND_LEADERBOARD, this.leaderboard); // 리더보드 공지
+                            if (blockEvent.leftrank > 0) {
+                                this.io.emit(MSG.SEND_MESSAGE, player.AA + ' ' + blockEvent.message); // 공지
+                                console.log(player.AA + ' ' + blockEvent.message);
+                                blockEvent.leftrank--;
+                                blockEvent.rankings.push(player.socketID); // 최초 room
+                            }
                         }
                     }
                 }
@@ -163,9 +210,7 @@ class Game {
                 }
                 break;
             case 'KeyFlash':
-                if (player.inventory.get("flash") > 0) {
-                    player.useFlash();
-                }
+                player.useFlash();
                 break;
             case 'KeyHammer':
                 if (player.inventory.get("hammer") > 0) {
@@ -181,7 +226,6 @@ class Game {
                         player.useHammer();
                     }
                 }
-                player.score += 50;
                 break;
             default:
                 console.log('Error | Impossible key', command);
