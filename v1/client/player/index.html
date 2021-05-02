@@ -14,25 +14,27 @@
 </head>
 
 <body>
-    <!-- <div id="opening" class="center">
+    <div id="opening" class="center container">
         <iframe width="900" height="600" src="https://www.youtube.com/embed/YOKmeIaTIxM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <a href="/" style="text-align: center;">
-            <button>Start</button>
-        </a>
-    </div> -->
+        <div style="text-align: center;">
+            <button id="startButton">Start</button>
+        </div>
+    </div>
 
-    <div id="gameFrame">
+    <div id="gameFrame" class="hidden">
         <canvas id="gameCanvas"></canvas>
         <div id="problem" data-include-path="" class="center"></div>
         <h2 id="hint" class="hidden under2"></h2>
         <input id='answer' class="hidden under" type='text' name='answer' placeholder='Enter Answer' />
         <div id="inventory" class="hidden"></div>
     </div>
-    <div class="container" style="display: flex;">
-        <audio controls loop style="height: 20px;">
-        <source src="/assets/background2.mp3" type="audio/mp3">
-        <source src="/assets/background.mp3" type="audio/mp3">
-        </audio>
+    <div id="audioPlayer" class="hidden container" style="display: flex;">
+        <div>
+            <audio controls loop style="height: 20px;">
+                <source src="/assets/background2.mp3" type="audio/mp3">
+                <source src="/assets/background.mp3" type="audio/mp3">
+            </audio>
+        </div>
         <div id="messagelog" style="position: absolute; right: 10px; bottom: 10px; width:100px; height:20px;">
             <div>Welcome!</div>
         </div>
@@ -56,4 +58,4 @@
     <script src="/socket.io/socket.io.js"></script>
 </body>
 
-</html>
+</html>t

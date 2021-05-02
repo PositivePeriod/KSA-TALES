@@ -17,7 +17,7 @@ class App {
         this.frame = document.getElementById("gameFrame");
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
-
+u
         this.showRange = { width: 4, height: 3 };
         this.m = 2 * this.showRange.width + 1; // blockX
         this.n = 2 * this.showRange.height + 1; // blockY
@@ -113,9 +113,10 @@ class App {
 
 window.onload = () => {
     console.log('Client Start');
-
-    downloadAssets(() => { 
-        
-        new App(); 
-    })
+    downloadAssets(() => { new App(); })
+    document.getElementById('startButton').onclick = () => {
+        document.getElementById('opening').classList.add('hidden');
+        document.getElementById('gameFrame').classList.remove('hidden');
+        document.getElementById('audioPlayer').classList.remove('hidden');
+    }
 }
