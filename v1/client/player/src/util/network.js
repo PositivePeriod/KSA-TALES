@@ -9,11 +9,9 @@ export class Network {
         const socketProtocol = (window.location.protocol.includes('https')) ? 'wss' : 'ws';
         this.socket = io(`${socketProtocol}://${window.location.host}`);
 
-        this.time = 20;
+        this.time = 30;
         this.commandQueue = new InputDeque();
         setInterval(this.sendCommand.bind(this), this.time);
-
-        this.isShownProblem = false;
 
         window.addEventListener("beforeunload", this.disconnect.bind(this));
     }
@@ -22,7 +20,7 @@ export class Network {
         this.socket.on(MSG.JOIN_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.LEAVE_PLAY, this.disconnectFromServer.bind(this));
         this.socket.on(MSG.UPDATE_GAME, this.updateGame.bind(this));
-        this.socket.on(MSG.SEND_PROBLEM, this.showProblem.bind(this));
+        this.socket.on(MSG.SEND_PROBLEM, this.sendProblem.bind(this));
         this.socket.on(MSG.SEND_HINT, this.showHint.bind(this));
         this.socket.on(MSG.SEND_ACHIEVEMENT, this.getAchievement.bind(this));
     }
@@ -39,12 +37,14 @@ export class Network {
 
     tryToSendCommand(command) {
         if (this.commandQueue.getSize() < 1) {
-            if (command === 'KeyInteract' && this.isShownProblem) {
-                this.hideProblem();
-                this.isShownProblem = false;
-            } else {
-                this.commandQueue.push(command);
-            }
+            this.commandQueue.push({ "command": command });
+        }
+    }
+
+    tryToSendAnswer(command) {
+        if (this.commandQueue.getSize() < 1) {
+            var answer = document.getElementById('answer').value;
+            this.commandQueue.push({ "command": command, "data": answer });
         }
     }
 
@@ -55,54 +55,55 @@ export class Network {
         }
     }
 
-    useProblem(problemID) {
-        console.log(problemID)
-        var problem = document.getElementById('problem');
-        if (!problem.classList.contains('hidden')) {
-            console.log('show', problemID);
-            this.isShownProblem = true;
-            this.showProblem(problemID);
-        } else {
-            console.log('hide');
-            this.hideProblem();
+    sendProblem(data) {
+        var command = data.command;
+        switch (command) {
+            case "hide":
+                console.log('hide')
+                this.hideProblem();
+                break;
+            case "show":
+                console.log('show', data.data);
+                this.showProblem(data.data);
+                break;
+            case "solve":
+                console.log('solve', data.data)
+                if (data.data) { this.hideProblem(); }
+                break;
         }
     }
 
     showProblem(problemID) {
-        
         document.getElementById('gameCanvas').classList.add('hidden');
         document.getElementById('problem').classList.remove('hidden');
-        // document.getElementById('hint').classList.add('hidden');
+        document.getElementById('hint').classList.add('hidden');
         document.getElementById('answer').classList.remove('hidden');
-
         updateHTML(`/problems/${problemID}`);
-        this.isShownProblem = true;
     }
 
     hideProblem() {
         document.getElementById('gameCanvas').classList.remove('hidden');
         document.getElementById('gameCanvas').hidden = true;
         document.getElementById('problem').classList.add('hidden');
-        // document.getElementById('hint').classList.add('hidden');
+        document.getElementById('hint').classList.add('hidden');
         document.getElementById('answer').classList.add('hidden');
 
         const problem = document.getElementById('problem');
         while (problem.firstChild) {
             problem.removeChild(problem.lastChild);
         }
-        this.isShownProblem = false;
     }
 
     showHint(hintMSG) {
-        console.log(hintMSG);
-        const hint = document.getElementById('hint');
-        hint.innerText = hintMSG;
+        console.log('showHint', hintMSG);
+        document.getElementById('hint').innerText = hintMSG;
         document.getElementById('hint').classList.remove('hidden');
     }
 
     getAchievement(message) {
         console.log(message)
         // TODO / should load to html
+        this.map.updateMessageLog(message);
     }
 
     disconnect() {

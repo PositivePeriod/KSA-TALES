@@ -71,7 +71,7 @@ input {
     outline: none;
     padding: 8px;
     box-sizing: border-box;
-    transition: .3s;
+    /* transition: .3s; */
 }
 
 input:focus {
@@ -96,14 +96,21 @@ input:focus {
     vertical-align: middle;
 } */
 
-.center {
+.center { /* problem */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.under {
+.under2 { /* hint */
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.under { /* answer */
     position: absolute;
     top: 90%;
     left: 50%;

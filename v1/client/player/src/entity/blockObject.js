@@ -20,6 +20,8 @@ const objectImgsname = {
     'D': 'door.png',
     'B':'brokenblock.png'
 }
+
+
 export class BlockObject {
     constructor(type, light, showTrap, x, y, size) {
         this.type = type;

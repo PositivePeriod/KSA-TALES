@@ -2,7 +2,7 @@ const { WallBlock, DoorBlock, FloorBlock, ProblemBlock } = require("./blockObjec
 const MapObject = require("./mapObject");
 const PlayerObject = require("./playerObject");
 
-const { MSG } = require('../constant');
+const { MSG, PROBLEMS } = require('../constant');
 
 const MOVE = Object.freeze({
     'KeyUp': { x: 0, y: -1 },
@@ -22,7 +22,7 @@ class Game {
         // this.spectateSocket = {}; // TODO
 
         this.turn = 0;
-        this.time = 30;
+        this.time = 50;
         this.map = new MapObject();
         this.showRange = { width: 4, height: 3 };
         this.io = null;
@@ -50,7 +50,6 @@ class Game {
         if (this.players.has(id)) {
             var player = this.players.get(id);
             var AA = player.AA;
-            ''
             this.joinedAA.delete(AA);
             this.players.delete(id);
         }
@@ -60,11 +59,65 @@ class Game {
         player.usingFlash = false;
         var nextX = player.x + player.dir.x;
         var nextY = player.y + player.dir.y;
-        var command = player.commandQueue.pop();
-        if (!(player.canMove)) { return }
+        var data = player.commandQueue.pop();
+
+        if (data === null) { return }
+        var command = data.command;
+        // var problemID = player.watchProblem.id;
+        // var problemReWard = player.watchProblem.reward;
+        // var problem = PROBLEMS[player.watchProblem.id];
+        // var problemHint = player.hint;
+        // var problemAnswer = player.answer;
         switch (command) {
-            case null:
-                break;
+            case 'KeyInteract':
+                var block = this.map.getBlock(nextX, nextY);
+                if (block !== null && block instanceof ProblemBlock) {
+                    var blockID = block.id;
+                    var blockReward = block.reward;
+
+                    if (blockID.slice(0, 1) == 'X') { //Gift block
+                        player.solve(blockID, blockReward)
+                    } else if (player.watchProblem === null) { // Want to show problem
+                        player.watchProblem = block;
+                        player.canMove = false;
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "show", "data": blockID });
+                    } else { // Want to hide problem
+                        player.watchProblem = null;
+                        player.canMove = true;
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "hide" });
+                    }
+                }
+                return;
+            case 'KeyHint':
+                if ((player.watchProblem !== null) && (player.inventory.get("hint") > 0)) {
+                    var problemID = player.watchProblem.id;
+                    var problem = PROBLEMS[problemID];
+                    var problemHint = problem.hint;
+                    player.useHint();
+                    this.sockets[player.socketID].emit(MSG.SEND_HINT, problemHint);
+                }
+                return;
+            case 'KeyAnswer':
+                if (player.watchProblem !== null) {
+                    var problemID = player.watchProblem.id;
+                    var problem = PROBLEMS[problemID];
+                    var problemAnswer = problem.answer;
+                    var problemReward = player.watchProblem.reward;
+                    if (problemAnswer === data.data) {
+                        player.solve(problemID, problemReward);
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": true });
+                        // cause hideProblem in client
+                        player.watchProblem = null;
+                        player.canMove = true;
+                    } else {
+                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": false });
+                    }
+                }
+                return;
+        }
+        if (!player.canMove) { return }
+
+        switch (command) {
             case 'ShiftKeyUp':
             case 'ShiftKeyDown':
             case 'ShiftKeyLeft':
@@ -86,7 +139,7 @@ class Game {
                 if (curblock instanceof FloorBlock && curblock.existTrap()) {
                     player.canMove = false;
                     curblock.deleteTrap();
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap");
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, "trap"); // Trap 걸림
                 } else if (newblock !== null && player.canPass(newblock)) {
                     player.x = newX;
                     player.y = newY;
@@ -96,26 +149,10 @@ class Game {
                             this.io.emit(MSG.SEND_ACHIEVEMENT, player.AA + ' ' + blockEvent.message);
                             console.log(player.AA + ' ' + blockEvent.message);
                             blockEvent.leftrank--;
-                            blockEvent.rankings.push(player.socketID);
+                            blockEvent.rankings.push(player.socketID); // 최초 room
                         }
                     }
                 }
-                break;
-            case 'KeyInteract':
-                var dir = player.dir;
-                var block = this.map.getBlock(nextX, nextY);
-                if (block !== null && block instanceof ProblemBlock) {
-                    if(block.id.slice(0,1) =='X'){//Gift block
-                        player.solve(block.id, block.reward)
-                    }
-                    else{
-                        player.canMove = false;
-                        this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, block.id);
-                    }
-                }
-                break;
-            case 'KeyAnswer':
-                console.log('Error | No need key');
                 break;
             case 'KeyTrap':
                 if (player.inventory.get("trap") > 0) {
@@ -128,15 +165,6 @@ class Game {
             case 'KeyFlash':
                 if (player.inventory.get("flash") > 0) {
                     player.useFlash();
-                }
-                break;
-            case 'KeyHint':
-                if (player.inventory.get("hint") > 0) {
-                    var block = this.map.getBlock(nextX, nextY);
-                    if (block !== null && block instanceof ProblemBlock) {
-                        player.useHint();
-                        this.sockets[player.socketID].emit(MSG.SEND_HINT, block.id);
-                    }
                 }
                 break;
             case 'KeyHammer':
@@ -156,9 +184,10 @@ class Game {
                 player.score += 50;
                 break;
             default:
-                console.log('Error | Impossible key');
+                console.log('Error | Impossible key', command);
         }
     }
+
 
     update() {
         this.turn++;

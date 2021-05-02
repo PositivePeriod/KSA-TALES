@@ -6,18 +6,43 @@ const ASSET_NAMES = [
     'problem.png',
     'door.png',
     'weakblock.png',
-    'brokenblock.png'
+    'brokenblock.png',
+    // 'RAA_4.png',
+    // 'RAA_2.png',
+    // 'RAA_1.png',
+    // 'AA3_9.png',
+    // 'AA3_8.png',
+    // 'AA3_6.png',
+    // 'AA3_4.png',
+    // 'AA3_2.png',
+    // 'AA3_1.png',
+    // 'AA2_9.png',
+    // 'AA2_8.png',
+    // 'AA2_7.png',
+    // 'AA2_6.png',
+    // 'AA2_4.png',
+    // 'AA2_3.png',
+    // 'AA2_2.png',
+    // 'AA2_1.png',
+    // 'AA1_10.png',
+    // 'AA1_8.png',
+    // 'AA1_9.png',
+    // 'AA1_7.png',
+    // 'AA1_5.png',
+    // 'AA1_4.png',
+    // 'AA1_1.png',
+    // 'default.png'
 ];
 
 const assets = {};
 
 function downloadAsset(assetName) {
     return new Promise(resolve => {
-        console.log(assetName)
         const asset = new Image();
         asset.src = `/assets/${assetName}`;
         asset.onload = () => {
             assets[assetName] = asset;
+            console.log(assetName)
             resolve();
         };
     });

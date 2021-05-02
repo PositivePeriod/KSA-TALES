@@ -49,10 +49,10 @@ class App {
             "KeyRight": "KeyD",
             "KeyInteract": "Space",
             "KeyAnswer": "Enter",
-            "KeyTrap": "Digit1",
-            "KeyFlash": "Digit2",
-            "KeyHint": "Digit3",
-            "KeyHammer": "Digit4",
+            "KeyTrap": "ShiftDigit1",
+            "KeyFlash": "ShiftDigit2",
+            "KeyHammer": "ShiftDigit3",
+            "KeyHint": "ShiftDigit4",
         }
 
         this.network = new Network(this.map);
@@ -70,11 +70,11 @@ class App {
         this.keyboard.listen(this.commandKey["KeyRight"], this.network.tryToSendCommand.bind(this.network, "KeyRight"));
 
         this.keyboard.listen(this.commandKey["KeyInteract"], this.network.tryToSendCommand.bind(this.network, "KeyInteract"));
-        this.keyboard.listen(this.commandKey["KeyAnswer"], this.network.tryToSendCommand.bind(this.network, "KeyAnswer"));
+        this.keyboard.listen(this.commandKey["KeyAnswer"], this.network.tryToSendAnswer.bind(this.network, "KeyAnswer"));
         this.keyboard.listen(this.commandKey["KeyTrap"], this.network.tryToSendCommand.bind(this.network, "KeyTrap"));
         this.keyboard.listen(this.commandKey["KeyFlash"], this.network.tryToSendCommand.bind(this.network, "KeyFlash"));
-        this.keyboard.listen(this.commandKey["KeyHint"], this.network.tryToSendCommand.bind(this.network, "KeyHint"));
         this.keyboard.listen(this.commandKey["KeyHammer"], this.network.tryToSendCommand.bind(this.network, "KeyHammer"));
+        this.keyboard.listen(this.commandKey["KeyHint"], this.network.tryToSendCommand.bind(this.network, "KeyHint"));
         this.keyboard.activate();
 
         window.addEventListener("resize", this.resize.bind(this), false);
@@ -91,8 +91,8 @@ class App {
         var stageWidth = document.body.clientWidth;
         var stageHeight = document.body.clientHeight;
 
-        this.grid = Math.round(Math.min(stageWidth / this.m, stageHeight / this.n));
-        this.stageWidth = this.grid * this.m;
+        this.grid = Math.round(Math.min(stageWidth / (this.m + 4), stageHeight / this.n));
+        this.stageWidth = this.grid * (this.m + 4);
         this.stageHeight = this.grid * this.n;
 
         this.frame.width = this.stageWidth * this.pixelRatio;

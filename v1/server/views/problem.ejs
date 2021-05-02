@@ -17,8 +17,14 @@
 </head>
 
 <body>
-    <div class="child">
-        <%- body %>
+    <div id="gameFrame">
+        <canvas id="gameCanvas" class="hidden"></canvas>
+        <div id="problem" data-include-path="" class="center">
+            <%- body %>
+        </div>
+        <h2 id="hint"></h2>
+        <input id='answer' class="under" type='text' name='answer' placeholder='Enter Answer' />
+        <div id="inventory" class="""></div>
     </div>
 </body>
 

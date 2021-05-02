@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const socketio = require('socket.io');
-const { PROBLEMS, MSG, AAtoCODE, P } = require('./constant');
+const { PROBLEMS, MSG, AAtoCODE } = require('./constant');
 const Game = require('./entity/gameObject');
 const cors = require('cors');
 
@@ -36,7 +36,7 @@ class ServerManager {
             const data = {
                 title: id,
                 body: fs.readFileSync(path.resolve(__dirname, `../views/problems/${id}.html`), 'utf8')
-            }
+            };
             res.render('problem.ejs', data);
         });
 
@@ -51,7 +51,7 @@ class ServerManager {
             if (AAtoCODE.get(AA) === code) {
                 res.redirect(`/play/${AA}/${code}/${name}`);
             } else {
-                res.redirect(`/register`)
+                res.redirect(`/register`);
             }
         });
 
@@ -118,9 +118,8 @@ class ServerManager {
     }
 
     handleInput(socket, command) {
-        // console.log(`${socket.id} | Handle Input`);
+        // console.log(`${this.game.players.get(socket.id).AA} | Handle Input`);
         if (this.game.players.has(socket.id)) {
-            this.game.players.get(socket.id).commandQueue.push(command);
             var commandQueue = this.game.players.get(socket.id).commandQueue;
             if (commandQueue.getSize() < 1) {
                 commandQueue.push(command);

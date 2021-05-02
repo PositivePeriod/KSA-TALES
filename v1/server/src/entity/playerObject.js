@@ -30,14 +30,14 @@ class PlayerObject {
         this.y = y;
         this.map = map;
         this.score = 0;
-        this.visited = []
+        this.visitedRoom = []
+        this.visitedDoor = []
         this.solvedProblemIDs = []
         this.inventory = new Map([
             ['keys', []],
             ['trap', 100],
-            ['flash', 100000],
+            ['flash', 100],
             ['hint', 1],
-            ['trapDeleter', 100],
             ['hammer', 10]
         ]);
 
@@ -45,6 +45,7 @@ class PlayerObject {
         this.dir = { x: 0, y: 1 };
         this.color = "#" + Math.floor(Math.random() * 16777215).toString(16);
         this.canMove = true;
+        this.watchProblem = null;
         this.usingFlash = false;
     }
 
@@ -61,14 +62,20 @@ class PlayerObject {
 
     newRoom() {
         for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
-            if (!this.visited.includes(i)) {
-                this.score += 50
+            if (!this.visitedRoom.includes(i)) {
+                this.visitedRoom.push(i);
+                this.score += 50;
             }
         }
     }
 
-    newDoor(){
-
+    newDoor() {
+        for (const i in this.map.getBlock(this.x, this.y).roomIDs) {
+            if (!this.visitedDoor.includes(i)) {
+                this.visitedDoor.push(i);
+                this.score += 10;
+            }
+        }
     }
 
     checkAnswer(problemBlock, answer) {
@@ -82,16 +89,17 @@ class PlayerObject {
 
 
     solve(problemID, rewards) {
-        if(this.solvedProblemIDs.includes(problemID)){
+        if (this.solvedProblemIDs.includes(problemID)) {
             // console.log('Already solve this problem!')
             return;
         }
         this.solvedProblemIDs.push(problemID)
-        for (var reward of rewards) {
+        console.log(rewards);
+        rewards.forEach((reward) => {
             switch (reward.slice(0, 1)) {
                 case 'T':
                     this.inventory.set("trap", this.inventory.get("trap") + 1);
-                    
+
                     break;
                 case 'F':
                     this.inventory.set("flash", this.inventory.get("flash") + 1);
@@ -108,7 +116,7 @@ class PlayerObject {
                 default:
                     console.log("Error | Impossible Reward");
             }
-        }
+        })
     }
 
     canPass(block) {
@@ -116,7 +124,7 @@ class PlayerObject {
             return false
         } else if (block instanceof DoorBlock) {
             var keys = this.inventory.get('keys');
-            console.log(block.keyIDs,keys)
+            console.log(block.keyIDs, keys)
             return block.keyIDs.every(keyID => {
                 return keys.includes(keyID)
             });
@@ -182,7 +190,7 @@ class PlayerObject {
         this.inventory.set("hint", this.inventory.get("hint") - 1);
     }
 
-    useHammer(){
+    useHammer() {
         this.inventory.set("hammer", this.inventory.get("hammer") - 1);
     }
 }

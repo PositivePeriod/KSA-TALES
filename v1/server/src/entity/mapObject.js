@@ -85,7 +85,7 @@ class MapObject {
             this.blocks[x][y] = new FloorBlock(block.x, block.y, block.roomIDs);
             this.blocks[x][y].isBroken = true;
 
-        }else if (blocktype === 'F') {
+        } else if (blocktype === 'F') {
             this.blocks[x][y].deleteTrap();
         }
     }
@@ -131,6 +131,12 @@ class MapObject {
             "myPos": {
                 x: playerX,
                 y: playerY,
+            },
+            "myinventory":{
+                "trap":player.inventory.get("trap"),
+                "flash":player.inventory.get("flash"),
+                "hint":player.inventory.get("hint"),
+                "hammer":player.inventory.get("hammer")
             }
         }
     }

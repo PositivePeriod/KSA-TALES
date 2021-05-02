@@ -14742,7 +14742,7 @@
         "blockEvents": {
             "BE1": {
                 "blocks": [
-                    [5, 2],
+                    [96, 13],
                     [5, 3]
                 ],
                 "message": "First Entered 2nd room",

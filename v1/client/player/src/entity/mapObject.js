@@ -1,4 +1,8 @@
-import { BlockObject } from './blockObject.js';
+import {
+    BlockObject
+} from './blockObject.js';
+
+import { getAsset } from '../util/assets.js';
 const COLOR = {
     'ME': 'rgba(0,0,255,1)',
     'PLAYER': 'rgba(246, 213, 92, 1)',
@@ -10,9 +14,16 @@ const COLOR = {
     'G': 'rgba(121, 174, 60, 1)',
     'N': 'rgba(30, 30, 30, 1)',
     'TRAP': 'rgba(100, 100, 100, 1)',
-    'LIGHT': 'rgba(200, 200, 100, 1)'
+    'LIGHT': 'rgba(200, 200, 100, 1)',
+    'INVEN': 'rgba(255, 255, 255, 1)',
+    'MESSAGE': 'rgba(255, 255, 255, 1)',
 };
 
+
+const playerImg = {
+    'default': 'brokenblock.png'
+
+}
 
 
 export class MapObject {
@@ -20,18 +31,19 @@ export class MapObject {
         this.stageWidth = stageWidth;
         this.stageHeight = stageHeight;
         this.x = x; // 가로 칸 개수
+
         this.y = y; // 세로 칸 개수
         this.ctx = ctx;
-
+        
 
         this.data = null;
         this.ratio = 0.8;
-        this.grid = Math.min(stageWidth / this.x, stageHeight / this.y) * this.ratio;
+        this.grid = Math.min(stageWidth / (this.x + 4), stageHeight / this.y) * this.ratio;
 
         this.pos = {
-            'x': stageWidth / 2 - this.grid * this.x / 2,
+            'x': stageWidth / 2 - this.grid * (this.x + 4) / 2,
             'y': stageHeight / 2 - this.grid * this.y / 2,
-            'endx': stageWidth / 2 + this.grid * this.x / 2,
+            'endx': stageWidth / 2 + this.grid * (this.x + 4) / 2,
             'endy': stageHeight / 2 + this.grid * this.y / 2,
 
         }
@@ -44,10 +56,9 @@ export class MapObject {
 
         this.miniMap.mapData = Array.from(Array(this.miniMap.width), () => Array(this.miniMap.height).fill(null));
 
-        this.miniMapratio = 0.4;
-        this.miniMapGrid = Math.min(stageWidth / this.miniMap.width, stageHeight / this.miniMap.height) * this.miniMapratio;
-
-        this.miniMap.posx = this.pos.endx - this.miniMapGrid * this.miniMap.width;
+        this.miniMapGrid = Math.min(this.grid * 4 / this.miniMap.width, this.grid * 4 / this.miniMap.height)
+        // console.log(this.miniMapGrid)
+        this.miniMap.posx = this.pos.endx + -this.miniMapGrid * this.miniMap.width;
         this.miniMap.posy = this.pos.endy - this.miniMapGrid * this.miniMap.height;
 
     }
@@ -96,6 +107,45 @@ export class MapObject {
 
         this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
         this.ctx.fill();
+
+        this.updateinven()
+    }
+    updateinven() {
+        var invengrid = this.grid;
+        this.ctx.beginPath()
+        this.ctx.fillStyle = COLOR['INVEN'];
+
+        var invenx = this.miniMap.posx;
+        var inveny = this.pos.endy - invengrid - this.miniMapGrid * this.miniMap.height;
+
+        this.ctx.fillRect(invenx, inveny, invengrid, invengrid);
+        this.ctx.fillRect(invenx + invengrid, inveny, invengrid, invengrid);
+        this.ctx.fillRect(invenx + invengrid * 2, inveny, invengrid, invengrid);
+        this.ctx.fillRect(invenx + invengrid * 3, inveny, invengrid, invengrid);
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.font = "15px bold serif";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(this.inventory.trap, invenx + invengrid * 0.5, invengrid * 0.5 + inveny);
+        this.ctx.fillText(this.inventory.flash, invenx + invengrid + invengrid * 0.5, invengrid * 0.5 + inveny);
+        this.ctx.fillText(this.inventory.hammer, invenx + invengrid * 2 + invengrid * 0.5, invengrid * 0.5 + inveny);
+        this.ctx.fillText(this.inventory.hint, invenx + invengrid * 3 + invengrid * 0.5, invengrid * 0.5 + inveny);
+    }
+
+    updateMessageLog(message) {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = COLOR['MESSAGE'];
+
+        var messagex = this.miniMap.posx;
+        var messagey = this.pos.endy - 2 * this.grid - this.miniMapGrid * this.miniMap.height;
+
+        this.ctx.fillRect(messagex, messagey, 2 * this.grid, this.grid);
+        console.log(message, 'eee');
+
+        this.ctx.fillStyle = 'black';
+        this.ctx.font = "15px bold serif";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(message, messagex + this.grid * 0.5, this.grid * 0.5 + messagey);
     }
 
     updateData(data) {
@@ -104,6 +154,7 @@ export class MapObject {
         this.miniMap.x = data.myPos.x;
         this.miniMap.y = data.myPos.y;
         this.mapData = Array.from(Array(this.x), () => Array(this.y).fill(null));
+        this.inventory = data.myinventory;
         for (let x = 0; x < this.x; x++) {
             for (let y = 0; y < this.y; y++) {
                 var blockType = (data.map[x][y] !== null) ? data.map[x][y]['type'] : 'N';
@@ -111,6 +162,7 @@ export class MapObject {
                 var showTrap = (data.map[x][y] !== null) ? data.map[x][y]['showTrap'] : false;
                 const block = new BlockObject(blockType, light, showTrap, this.pos.x + x * this.grid, this.pos.y + y * this.grid, this.grid);
                 this.mapData[x][y] = block;
+
             }
         }
     }
@@ -120,7 +172,7 @@ export class MapObject {
         this.stageHeight = stageHeight;
         this.grid = grid * this.ratio;
         this.pos = {
-            'x': stageWidth / 2 - this.grid * this.x / 2,
+            'x': stageWidth / 2 - this.grid * (this.x + 4) / 2,
             'y': stageHeight / 2 - this.grid * this.y / 2
         }
 
@@ -131,13 +183,13 @@ export class MapObject {
                 }
             }
         }
-        
+
         this.pos.endx = this.stageWidth / 2 + this.grid * this.x / 2;
         this.pos.endy = this.stageHeight / 2 + this.grid * this.y / 2;
         // console.log(this.pos.endy)
-        this.miniMapGrid = Math.min(this.stageWidth / this.miniMap.width, this.stageHeight / this.miniMap.height) * this.miniMapratio;
+        this.miniMapGrid = Math.min(this.grid * 4 / this.miniMap.width, this.grid * 4 / this.miniMap.height)
         // console.log(this.miniMapGrid)
-        this.miniMap.posx = this.pos.endx - this.miniMapGrid * this.miniMap.width;
+        this.miniMap.posx = this.pos.endx + this.grid * 4 / 2 - this.miniMapGrid * this.miniMap.width;
         this.miniMap.posy = this.pos.endy - this.miniMapGrid * this.miniMap.height;
         // console.log(this.miniMap.posx)
     }
@@ -190,11 +242,27 @@ export class MapObject {
 
         this.visiblePlayers.forEach(playerAA => {
             var player = this.allPlayers[playerAA];
-
-            var centerX = this.stageWidth / 2 + this.grid * (player.x - this.x / 2 + 1 / 2);
+            var centerX = this.stageWidth / 2 + this.grid * (player.x - (this.x + 4) / 2 + 1 / 2);
             var centerY = this.stageHeight / 2 + this.grid * (player.y - this.y / 2 + 1 / 2);
 
+
             this.ctx.beginPath();
+            // console.log(playerImg['default'],'asdklf3333j');
+
+            // if(playerImg[playerAA] !== undefined){
+            //     var pattern = this.ctx.createPattern(getAsset(playerImg[playerAA]),"repeat")
+            // }
+            // else{
+            //     var pattern = this.ctx.createPattern(getAsset(playerImg['default']),"repeat")
+
+            // }
+
+            // this.ctx.strokeStyle = pattern;
+            // this.ctx.beginPath();
+            // this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            
+            // this.ctx.stroke();
+
             this.ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
             this.ctx.fill();
             this.ctx.stroke();
