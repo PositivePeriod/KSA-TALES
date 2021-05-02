@@ -16,7 +16,7 @@ const COLOR = {
     'TRAP': 'rgba(100, 100, 100, 1)',
     'LIGHT': 'rgba(200, 200, 100, 1)',
     'INVEN': 'rgba(255, 255, 255, 1)',
-    'LEADERBOARD': 'rgba(0, 0, 0, 1)',
+    'LEADERBOARD': 'rgba(30, 30, 30, 1)',
 };
 
 
@@ -61,9 +61,9 @@ const playerLeaderboardCoord = {
     'AA1-8' : [0, 1.2],
     'AA1-9' : [0, 1.35],
     'AA1-10' : [0, 1.5],
-    'AA2-1' : [1.3, 1.65],
-    'AA2-2' : [1.3, 1.8],
-    'AA2-3' : [1.3, 1.95],
+    'AA2-1' : [0, 1.65],
+    'AA2-2' : [0, 1.8],
+    'AA2-3' : [0, 1.95],
     'AA2-4' : [1.3, 0.15],
     'AA2-5' : [1.3, 0.3],
     'AA2-6' : [1.3, 0.45],
@@ -77,13 +77,13 @@ const playerLeaderboardCoord = {
     'AA3-5' : [1.3, 1.65],
     'AA3-6' : [1.3, 1.8],
     'AA3-7' : [1.3, 1.95],
-    'AA3-8' : [2.6, 1.65],
-    'AA3-9' : [2.6, 1.8],
-    'RAA-1' : [2.6, 1.95],
-    'RAA-2' : [2.6, 0.15],
-    'RAA-3' : [2.6, 0.3],
-    'RAA-4' : [2.6, 0.45],
-    'RAA-5' : [2.6, 0.6],
+    'AA3-8' : [2.6, 0.15],
+    'AA3-9' : [2.6, 0.3],
+    'RAA-1' : [2.6, 0.45],
+    'RAA-2' : [2.6, 0.6],
+    'RAA-3' : [2.6, 0.75],
+    'RAA-4' : [2.6, 0.9],
+    'RAA-5' : [2.6, 1.05],
 
 };
 
@@ -217,11 +217,12 @@ export class MapObject {
         this.ctx.fillStyle = 'white';
         this.ctx.font = "12px bold serif";
         this.ctx.textAlign = "left";
-        if (Object.keys(playerLeaderboardCoord).length == 0) {return; }
-        for (const [player, coord] of Object.entries(playerLeaderboardCoord)) {
+        if (Object.keys(this.leaderboard).length == 0) {return; }
+        for (let player of Object.keys(this.leaderboard)) {
             var name = this.leaderboard[player].name;
             var progress = this.leaderboard[player].progress;
-            this.ctx.fillText(name + ": " + String(progress) + "%", boardx + this.grid * coord[0], boardy + this.grid * coord[1]);
+            var coord = playerLeaderboardCoord[player];
+            this.ctx.fillText(name.slice(0,5) + ": #" + String(progress), boardx + this.grid * 0.1 + this.grid * coord[0], boardy + this.grid * coord[1]);
         }
     }
 

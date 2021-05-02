@@ -50,15 +50,16 @@ class Game {
         var socketID = socket.id;
         var pos = this.map.startPos;
         var player = new PlayerObject(socketID, AA, name, pos.x, pos.y, this.map);
-        
-        if(this.savedData[AA]!== undefined){
-            player.applyData(this.savedData[AA],this.map);
+
+        if (this.savedData[AA] !== undefined) {
+            player.applyData(this.savedData[AA], this.map);
         }
 
 
         this.players.set(socketID, player);
         this.joinedAA.add(AA);
-        this.leaderboard[AA] = { 'name': name, 'progress': 0 };
+        this.leaderboard[AA] = { 'name': name, 'progress': 1 };
+        this.io.emit(MSG.SEND_LEADERBOARD, this.leaderboard); // 리더보드 공지
     }
 
     removePlayer(id) {
@@ -136,7 +137,7 @@ class Game {
                     }
                 }
                 if (player.watchTrap !== null) {
-                    var problemID = player.watchTrap.id;
+                    var problemID = player.watchTrap;
                     var problem = TRAPS[problemID];
                     var problemAnswer = problem.answer;
                     if (problemAnswer.trim().toLowerCase() === data.data.trim().toLowerCase()) {
@@ -180,7 +181,7 @@ class Game {
                     player.watchTrap = player.trapNum;
                     player.canMove = false;
                     var trapProblemID = TRAPS[player.watchTrap].id;
-                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "trapShow", "data": `trap${trapProblemID}}` }); // Trap 걸림
+                    this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "showTrap", "data": `trap${trapProblemID}` }); // Trap 걸림
 
                     this.io.emit(MSG.SEND_MESSAGE, player.name + ' trapped in ' + trapname + "'s trap"); // 공지
                 } else if (newblock !== null && player.canPass(newblock)) {

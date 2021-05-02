@@ -72,14 +72,14 @@ class PlayerObject {
         return {
             'x' : this.x,
             'y' : this.y,
-            'inventory' : new Map([
-                ['keys', this.inventory.keys],
-                ['trap', this.inventory.trap],
-                ['flash', this.inventory.flash],
-                ['hint', this.inventory.hint],
-                ['hammer', this.inventory.hammer]
+            'inventory' :new Map([
+                ['keys', this.inventory.get("keys")],
+                ['trap', this.inventory.get("trap")],
+                ['flash', this.inventory.get("flash")],
+                ['hint', this.inventory.get("hint")],
+                ['hammer', this.inventory.get("hammer")]
             ]),
-            'isTraped' : (this.watchTrap == null),
+            'isTraped' : (this.watchTrap !== null),
             "trapNum" :this.trapNum
         }
     }
@@ -88,17 +88,17 @@ class PlayerObject {
         this.x = data.x,
         this.y = data.y,
         this.inventory = new Map([
-            ['keys', data.keys],
-            ['trap', data.trap],
-            ['flash', data.flash],
-            ['hint', data.hint],
-            ['hammer', data.hammer]
+            ['keys', data.inventory.get("keys")],
+            ['trap', data.inventory.get("trap")],
+            ['flash', data.inventory.get("flash")],
+            ['hint', data.inventory.get("hint")],
+            ['hammer', data.inventory.get("hammer")]
         ]);
         this.trapNum = data.trapNum
         if(data.isTraped){
             this.trapNum-=1;
-            block = this.map.getBlock(this.x, this.y);
-            this.inventory.trap += 1
+            var block = this.map.getBlock(this.x, this.y);
+            this.inventory.set("trap", this.inventory.get("trap") + 1);
             this.useTrap(block);
         }
 
@@ -127,7 +127,7 @@ class PlayerObject {
             return;
         }
         this.solvedProblemIDs.push(problemID)
-        console.log(rewards);
+        // console.log(rewards);
         rewards.forEach((reward) => {
             switch (reward.slice(0, 1)) {
                 case 'T':
@@ -142,7 +142,7 @@ class PlayerObject {
                 case 'K':
                     var keys = this.inventory.get("keys");
                     keys.push(reward);
-                    console.log(keys)
+                    // console.log(keys)
                     this.inventory.set("keys", keys);
                     break;
                 default:
@@ -156,7 +156,7 @@ class PlayerObject {
             return false
         } else if (block instanceof DoorBlock) {
             var keys = this.inventory.get('keys');
-            console.log(block.keyIDs, keys)
+            // console.log(block.keyIDs, keys)
             return block.keyIDs.every(keyID => {
                 return keys.includes(keyID)
             });

@@ -111,21 +111,32 @@ button:focus {
     vertical-align: middle;
 } */
 
-.center { /* problem */
+.center {
+    /* problem */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.under2 { /* hint */
+.under0 {
+    /* hint */
     position: absolute;
     top: 80%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.under { /* answer */
+.under2 {
+    /* hint */
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.under {
+    /* answer */
     position: absolute;
     top: 90%;
     left: 50%;
@@ -154,9 +165,9 @@ button:focus {
 
 .main_container {
     position: relative;
-    padding-right: 15px; 
-    padding-left: 15px; 
-    margin-right: auto; 
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
     margin-left: auto;
     text-align: center;
 }

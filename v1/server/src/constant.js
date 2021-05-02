@@ -8,6 +8,7 @@ const MSG = Object.freeze({
     SEND_PROBLEM: "sendProblem",
     SEND_HINT: "sendHint",
     SEND_MESSAGE: "sendAchievement",
+    SEND_LEADERBOARD: "sendLeaderboard",
 
     JOIN_SPECTATE: "joinSpectate",
     LEAVE_SPECTATE: "joinSpectate",
@@ -63,16 +64,16 @@ for (let [key, value] of Object.entries(AAtoCODE)) {
 const CODEtoAA = Object.freeze(reverse);
 
 const TRAPS = {
-    0: { "id": "GBVS", "hint": "중강당 안쪽 문 앞", "answer": 6113 },
-    1: { "id": "UNZV", "hint": "창조관 8층 하늘공원 의자 뒤", "answer": 9065 },
-    2: { "id": "YVKT", "hint": "형설관 4층 eoz", "answer": 2657 },
-    3: { "id": "IPQY", "hint": "형설 1층 도서관 사이 기둥", "answer": 0837 },
-    4: { "id": "BHDI", "hint": "오작공원 옆 클라이밍 벽", "answer": 4305 },
-    5: { "id": "VXSS", "hint": "상담실 앞", "answer": 1822 },
-    6: { "id": "MBNT", "hint": "아크로폴리스 의자 뒤", "answer": 8839 },
-    7: { "id": "JXDK", "hint": "운동장 운동기구", "answer": 9834 },
-    8: { "id": "NRMC", "hint": "창조관 1층 엘리베이터 옆", "answer": 5820 },
-    9: { "id": "YFAB", "hint": "시청각실 입구", "answer": 4786 }
+    0: { "id": "GBVS", "hint": "중강당 안쪽 문 앞", "answer": "6113" },
+    1: { "id": "UNZV", "hint": "창조관 8층 하늘공원 의자 뒤", "answer": "9065" },
+    2: { "id": "YVKT", "hint": "형설관 4층 eoz", "answer": "2657" },
+    3: { "id": "IPQY", "hint": "형설 1층 도서관 사이 기둥", "answer": "0837" },
+    4: { "id": "BHDI", "hint": "오작공원 옆 클라이밍 벽", "answer": "4305" },
+    5: { "id": "VXSS", "hint": "상담실 앞", "answer": "1822" },
+    6: { "id": "MBNT", "hint": "아크로폴리스 의자 뒤", "answer": "8839" },
+    7: { "id": "JXDK", "hint": "운동장 운동기구", "answer": "9834" },
+    8: { "id": "NRMC", "hint": "창조관 1층 엘리베이터 옆", "answer": "5820" },
+    9: { "id": "YFAB", "hint": "시청각실 입구", "answer": "4786" }
 }
 
 const PROBLEMS = {
@@ -92,7 +93,7 @@ const PROBLEMS = {
     "ancient_china": { "hint": "Chinese character", "answer": "5" },
     "position_change": { "hint": "Parallel Translation", "answer": "EFFECT" },
     "Bomb": { "hint": "3*3", "answer": "SONG" },
-    "Zigzag": { "hint": "Color", "answer": "TO ENTER TAKE A PICTURE QR CODE NOBEL TREE" }, // TODO ?? QR code 암호가 답이 되어야 하는 거 아님?
+    "Zigzag": { "hint": "Color", "answer": "1221" },
     "AAA": { "hint": "Addition", "answer": "406" },
     "guessing_word": { "hint": "1st character is M", "answer": "MESSAGE" },
     "mugcup": { "hint": "Pay attention to the direction of handle", "answer": "FORTUNE FAVORS THE BRAVE" },
@@ -101,7 +102,7 @@ const PROBLEMS = {
     "formula_conversion": { "hint": "Sqaure", "answer": "10" },
     "pyramid": { "hint": "Set the blanks in the fourth row below to x,y,z", "answer": "282" },
     "USB": { "hint": "USC", "answer": "USB" },
-    "four_character_idioms": { "hint": null, "answer": "확인필요" },
+    "integral": { "hint": "적분", "answer": "2" },
     "variable": { "hint": "answer", "answer": "15308" },
     "arrangement": { "hint": "Home Alone", "answer": "H" },
     "password": { "hint": "Push", "answer": "CURSE" },

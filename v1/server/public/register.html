@@ -23,10 +23,10 @@
                 <h2>
                     CODE&nbsp;&nbsp;<input type='text' id="code" name='code' placeholder='Enter code' />
                 </h2>
-                <h2>
+                <!-- <h2>
                     NAME&nbsp;&nbsp;<input type='name' id='name' name='code' placeholder='Enter nickname if you are player' />
                     <h4>Your name can only use enable a-z A-Z 0-9 [ ] ( ) : = + - . ! ~</h4>
-                </h2>
+                </h2> -->
             </form>
             <br>
             <button onclick="play()">Play</button>
@@ -38,8 +38,8 @@
         function play() {
             const AA = document.getElementById('AA').value;
             const code = document.getElementById('code').value;
-            const name = document.getElementById('name').value;
-            window.location.href = `/register/play/${AA}/${code}/${name}`;
+            // const name = document.getElementById('name').value;
+            window.location.href = `/register/play/${AA}/${code}/${AA}`;
         }
 
         function spectate() {

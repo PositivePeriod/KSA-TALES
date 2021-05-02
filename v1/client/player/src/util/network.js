@@ -87,14 +87,19 @@ export class Network {
     }
 
     showProblem(problemID) {
+        document.getElementById('messagelog').classList.add('hidden');
         document.getElementById('gameCanvas').classList.add('hidden');
         document.getElementById('problem').classList.remove('hidden');
         document.getElementById('hint').classList.add('hidden');
-        document.getElementById('answer').classList.remove('hidden');
+        var answer = document.getElementById('answer')
+        answer.value = '';
+        answer.classList.remove('hidden');
+        answer.focus();
         updateHTML(`/problems/${problemID}`);
     }
 
     hideProblem() {
+        document.getElementById('messagelog').classList.remove('hidden');
         document.getElementById('gameCanvas').classList.remove('hidden');
         document.getElementById('gameCanvas').hidden = true;
         document.getElementById('problem').classList.add('hidden');
