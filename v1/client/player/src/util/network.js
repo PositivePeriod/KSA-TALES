@@ -65,23 +65,23 @@ export class Network {
         var command = data.command;
         switch (command) {
             case "hide":
-                console.log('hide')
+                // console.log('hide')
                 this.hideProblem();
                 break;
             case "show":
-                console.log('show', data.data);
+                // console.log('show', data.data);
                 this.showProblem(data.data);
                 break;
             case "solve":
-                console.log('solve', data.data)
+                // console.log('solve', data.data)
                 if (data.data) { this.hideProblem(); }
                 break;
             case "showTrap":
-                console.log('showTrap');
+                // console.log('showTrap');
                 this.showProblem(data.data);
                 break;
             case "solveTrap":
-                console.log('solveTrap');
+                // console.log('solveTrap');
                 if (data.data) { this.hideProblem(); }
                 break;
         }

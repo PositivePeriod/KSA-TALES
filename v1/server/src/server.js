@@ -48,7 +48,7 @@ class ServerManager {
             const AA = req.params.AA;
             const code = req.params.code;
             const name = req.params.name;
-            console.log(AA, code, AAtoCODE.get(AA));
+            // console.log(AA, code, AAtoCODE.get(AA));
             if (AAtoCODE.get(AA) === code) {
                 res.redirect(`/play/${AA}/${code}/${name}`);
             } else {

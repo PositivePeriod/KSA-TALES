@@ -43,10 +43,10 @@ class PlayerObject {
         this.solvedProblemIDs = []
         this.inventory = new Map([
             ['keys', []],
-            ['trap', 100],
+            ['trap', 1],
             ['flash', 100],
-            ['hint', 1],
-            ['hammer', 100]
+            ['hint', 2],
+            ['hammer', 0]
         ]);
 
         this.commandQueue = new InputDeque();

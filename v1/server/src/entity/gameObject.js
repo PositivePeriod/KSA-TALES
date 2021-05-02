@@ -212,6 +212,7 @@ class Game {
                     if (newX === 100 && newY === 11) {
                         // TODO Ending HTML
                         this.sockets[player.socketID].emit(MSG.FINISH, null);
+                        console.log(player.AA, "finished");
                     }
                 }
                 break;
@@ -249,7 +250,7 @@ class Game {
 
     update() {
         this.turn++;
-        if (this.turn % 200 === 0) {
+        if (this.turn % 1500 === 0) {
             console.log(`Game | Turn ${this.turn} | ${Array.from(this.joinedAA.keys())}`);
         }
         for (let [socketID, player] of this.players) {
