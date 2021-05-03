@@ -29,7 +29,7 @@ class Game {
         // });
 
         this.turn = 0;
-        this.time = 30;
+        this.time = 60;
         this.map = new MapObject();
         this.showRange = { width: 4, height: 3 };
         this.io = null;
