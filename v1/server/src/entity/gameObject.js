@@ -101,6 +101,7 @@ class Game {
 
                     if (blockID.slice(0, 1) == 'X') { //Gift block
                         player.solve(blockID, blockReward)
+                        this.sockets[player.socketID].emit(MSG.SEND_MESSAGE, "Get Gift!");
                     } else if (player.watchProblem === null) { // Want to show problem
                         player.watchProblem = block;
                         player.canMove = false;
@@ -143,6 +144,7 @@ class Game {
                         player.canMove = true;
                     } else {
                         this.sockets[player.socketID].emit(MSG.SEND_PROBLEM, { "command": "solve", "data": false });
+                        this.sockets[player.socketID].emit(MSG.SEND_MESSAGE, "Answer Incorrect!");
                     }
                 }
                 if (player.watchTrap !== null) {
