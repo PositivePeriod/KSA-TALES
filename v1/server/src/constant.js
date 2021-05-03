@@ -51,12 +51,18 @@ const AAtoCODE = Object.freeze(new Map([
     ['AA3-8', 'VCHI'],
     ['AA3-9', 'RGHO'],
     ['AA3-10', 'XJDH'],
+    ['AA3-11', 'TKVJ'],
     ['RAA-1', 'OLEY'],
     ['RAA-2', 'IANN'],
     ['RAA-3', 'RFGF'],
     ['RAA-4', 'SCUF'],
     ['RAA-5', 'WJNO'],
-    ['RAA-6', 'ZKSJ']
+    ['RAA-6', 'ZKSJ'],
+    ['1', 'TKVJ'],
+    ['2', 'TKVJ'],
+    ['3', 'TKVJ'],
+    ['4', 'TKVJ'],
+    ['5', 'TKVJ'],
 ]));
 
 var reverse = {};
