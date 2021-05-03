@@ -40,7 +40,7 @@ const AAtoCODE = Object.freeze(new Map([
     ['AA2-7', 'XFYA'],
     ['AA2-8', 'IZQG'],
     ['AA2-9', 'JALH'],
-
+    ['AA2-10', 'IKCO'],
     ['AA3-1', 'GWQY'],
     ['AA3-2', 'XFJF'],
     ['AA3-3', 'QAIT'],
