@@ -98,8 +98,6 @@ class PlayerObject {
         if(data.isTraped){
             this.trapNum-=1;
             var block = this.map.getBlock(this.x, this.y);
-            this.inventory.set("trap", this.inventory.get("trap") + 1);
-            this.useTrap(block);
         }
 
     }
